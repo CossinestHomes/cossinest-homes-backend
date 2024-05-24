@@ -1,3 +1,4 @@
-# cossinest-homes-backend
+# Cossinest Homes Backend
 
 ![Spring Initializr](./spring-initializr.png)
+
