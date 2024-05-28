@@ -23,7 +23,7 @@ public class AdvertRequest {
 
     @NotNull(message = "Title must not be empty")
     @Size(min=5, max= 150, message = "Title should be at least 5 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Description must consist of the characters .")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
     private String title;
 
     @NotNull(message = "Description must not be empty")
@@ -56,13 +56,6 @@ public class AdvertRequest {
     @NotNull(message = "Please enter location")
     private String location;
 
-    @NotNull(message = "Please enter the create time and date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm", timezone = "US")
-    private LocalDateTime createAt;
-
-    @NotNull(message = "Please enter the update time and date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm", timezone = "US")
-    private LocalDateTime updateAt;
 
     //TODO: advertType, country, city, district, user, category
 }
