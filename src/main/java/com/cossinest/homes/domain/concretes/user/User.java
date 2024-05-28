@@ -4,6 +4,9 @@ package com.cossinest.homes.domain.concretes.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,14 +27,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name",nullable = false, length = 30)
+    @Column(name = "first_name", nullable = false, length = 30)
     private String firstName;
 
-    @Column(name = "last_name",nullable = false, length = 30)
+    @Column(name = "last_name", nullable = false, length = 30)
     private String lastName;
 
     // @Email
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
 
@@ -40,7 +43,9 @@ public class User {
     private String phone;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name = "password_hash",unique = true,nullable = false)
+    @Column(name = "password_hash", unique = true, nullable = false)
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
+            message = "Password must contain at least one digit, one lowercase character, one uppercase character, and one special character (@#$%^&+=)")
     private String passwordHash;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -49,13 +54,25 @@ public class User {
 
     private Boolean built_in;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name="create_at",nullable = false)
-    private LocalDateTime createAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
+    @Column(name = "create_at", nullable = false)
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime createdAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(name = "update_at")
-    private LocalDateTime updateAt;
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime updatedAt;
 
+    @PrePersist
 
+    private void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
+

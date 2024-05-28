@@ -34,6 +34,7 @@ public class BaseUserResponse {
     private LocalDateTime createAt;
 
     private LocalDateTime updateAt;
+
     private Boolean built_in;
 
 }
