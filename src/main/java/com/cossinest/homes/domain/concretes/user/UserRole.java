@@ -1,6 +1,7 @@
 package com.cossinest.homes.domain.concretes.user;
 
 import com.cossinest.homes.domain.enums.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,8 @@ public class UserRole {
     private RoleType roleType;
 
     private String roleName;
+
+    @ManyToMany(mappedBy = "userRole")
+    @JsonIgnore
+    private User user;
 }
