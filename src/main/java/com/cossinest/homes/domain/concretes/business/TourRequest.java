@@ -1,5 +1,6 @@
 package com.cossinest.homes.domain.concretes.business;
 
+import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -25,28 +26,30 @@ public class TourRequest {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern ="dd-MM-yyyy" )
     @Column(nullable = false)
-    private LocalDate tour_date;
+    private LocalDate tourDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
     @Column(nullable = false)
-    private LocalDateTime tour_time;
+    private LocalDateTime tourTime;
 
     @Enumerated(EnumType.STRING)
     private StatusType status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
     @Column(nullable = false)
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
-    private LocalDateTime update_at;
-
-    @Column(nullable = false)
-    private int advert_id; // Adverts datatype
-
-    @Column(nullable = false)
-    private int owner_user_id; // User datatype
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
+    private LocalDateTime updateAt;
 
     @Column(nullable = false)
-    private int guest_user_id; // User datatype
+    private Advert advertId;
+
+    @Column(nullable = false)
+    private User ownerUserId;
+
+    @Column(nullable = false)
+    private User guestUserId;
 
 
 
