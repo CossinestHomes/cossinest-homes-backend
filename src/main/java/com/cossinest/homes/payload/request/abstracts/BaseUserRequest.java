@@ -25,7 +25,7 @@ public class BaseUserRequest extends AbstractUserRequest{
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
             message = "Password must contain at least one digit, one lowercase character, one uppercase character, and one special character (@#$%^&+=)")
-    private String passwordHash;
+    private String password;
 
     @NotNull(message = "Please enter your password")
     private String resetPasswordCode;

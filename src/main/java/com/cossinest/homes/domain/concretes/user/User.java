@@ -1,6 +1,7 @@
 package com.cossinest.homes.domain.concretes.user;
 
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -10,6 +11,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Getter
@@ -54,18 +57,28 @@ public class User {
 
     private Boolean built_in;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH-mm", timezone = "Turkey")
     @Column(name = "create_at", nullable = false)
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH-mm", timezone = "Turkey")
     @Column(name = "update_at")
     @Setter(AccessLevel.NONE)
     private LocalDateTime updatedAt;
 
-    @PrePersist
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns=@JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name="user_id")
+    )
+    private UserRole userRole;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true) //ask
+    private Set<Advert> advert=new HashSet<>();
+
+    @PrePersist
     private void onCreate() {
         createdAt = LocalDateTime.now();
     }

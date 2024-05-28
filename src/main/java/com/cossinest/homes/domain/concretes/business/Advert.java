@@ -39,7 +39,7 @@ public class Advert {
     @Column(nullable = false)
     private Status status=Status.PENDING; //TODO:Tekrar bakılacak
     //kullanımı
-        /*
+        /*/
     public class Main {
     public static void main(String[] args) {
         Status status = Status.PENDING;
