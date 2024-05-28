@@ -19,15 +19,15 @@ public class TourRequestRequest {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern ="dd-MM-yyyy" )
     @NotNull(message = "Tour date can not be empty")
-    private LocalDate tour_date;
+    private LocalDate tourDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @NotNull(message = "Tour date can not be empty")
     @FutureOrPresent(message = "Tour time must be today or in the future")
-    private LocalDateTime tour_time;
+    private LocalDateTime tourTime;
 
     @NotNull(message = "Advert can not be empty")
-    private int advert_id; // Adverts datatype
+    private int advertId; // Adverts datatype
 
 
 }
