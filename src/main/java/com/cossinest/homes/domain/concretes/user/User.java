@@ -75,11 +75,10 @@ public class User {
     )
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true) //ask
     private Set<Advert> advert=new HashSet<>();
 
     @PrePersist
-
     private void onCreate() {
         createdAt = LocalDateTime.now();
     }
