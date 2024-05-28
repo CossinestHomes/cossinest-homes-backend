@@ -31,11 +31,11 @@ public class Cities {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "country_name") //TODO:find name
+    @JoinColumn(name = "country_id")
     private Countries countries;
 
     @OneToMany (mappedBy = "advertList")
-    //todo:jsonIgnore ?
+    @JsonIgnore
     private List<Advert> advertList = new ArrayList<>();
 
     //TODO:district
