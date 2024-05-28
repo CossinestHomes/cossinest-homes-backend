@@ -1,6 +1,7 @@
 package com.cossinest.homes.payload.response.abstracts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseUserResponse {
 
     private Long id;
@@ -34,6 +36,7 @@ public class BaseUserResponse {
     private LocalDateTime createAt;
 
     private LocalDateTime updateAt;
+
     private Boolean built_in;
 
 }

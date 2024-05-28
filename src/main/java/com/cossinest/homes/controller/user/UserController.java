@@ -1,9 +1,9 @@
 package com.cossinest.homes.controller.user;
 
-import com.cossinest.homes.payload.messages.SuccesMessages;
+
 import com.cossinest.homes.payload.request.user.UserRequest;
 import com.cossinest.homes.payload.request.user.UserRequestWithoutPassword;
-import com.cossinest.homes.payload.request.user.UserUpdatePasswordRequest;
+import com.cossinest.homes.payload.request.user.UserPasswordAndResetRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.service.user.UserService;
@@ -11,32 +11,34 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
-private UserService userService;
+private final UserService userService;
+
+
+
 
     @GetMapping("/auth")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
-    public ResponseEntity<UserResponse>getUserByEmail(HttpServletRequest request){
+    public ResponseEntity<UserResponse>getAuthenticatedUser(HttpServletRequest request){
 
-     // UserResponse response = userService.getUserByEmail(request);
-     // return ResponseEntity.ok(response);
+        // UserResponse response = userService.getAuthenticatedUser(request);
+        // return ResponseEntity.ok(response);
 
-      return null;
+        return null;
     }
 
-    @PutMapping("/auth")
+
+
+    @PutMapping("/auth") //request dto da sifre olcak mi
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
-        public ResponseEntity<UserResponse>updateUser(@Valid @RequestBody UserRequestWithoutPassword request, HttpServletRequest auth ){
+        public ResponseEntity<UserResponse>updateAuthenticatedUser(@Valid @RequestBody UserRequestWithoutPassword request, HttpServletRequest auth ){
 
       //  return userService.updateAuthenticatedUser(request,auth);
         return null;
@@ -44,18 +46,18 @@ private UserService userService;
 
     @PatchMapping("/auth")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
-    public ResponseMessage<UserResponse>updateUserPassword(@Valid @RequestBody UserRequest request){
+    public ResponseMessage<String>updateUserPassword(@Valid @RequestBody UserPasswordAndResetRequest request, HttpServletRequest auth){
 
-       // return userService.updateUserPassword(request);
+       // return userService.updateUserPassword(request,auth);
         return null;
     }
 
 
-    @DeleteMapping("auth")
+    @DeleteMapping("auth") // bunun icin ayri dto mu acayim sadece password olan yoksa
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseEntity<String>deleteCustomer(@Valid @RequestBody UserUpdatePasswordRequest request,HttpServletRequest auth){
+    public ResponseEntity<String>deleteCustomer(HttpServletRequest auth, UserPasswordAndResetRequest request){
 
-       //String message=userService.deleteCustomer(request,auth);
+       //String message=userService.deleteCustomer(auth);
        // return ResponseEntity.ok(message);
         return null;
     }
@@ -63,15 +65,47 @@ private UserService userService;
 
     @GetMapping("/admin")
     //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
-    public ResponseMessage<Page<ResponseMessage>>getAllAdminAndManagerByPage(
+    public ResponseMessage<Page<UserResponse>>getAllAdminAndManagerByPage(
             HttpServletRequest request,
+            @RequestParam(value = "q",required = false)String query,
             @RequestParam(value = "page",defaultValue = "0")int page,
             @RequestParam(value = "size",defaultValue = "0")int size,
             @RequestParam(value = "sort",defaultValue = "name")String sort,
             @RequestParam(value = "type",defaultValue = "desc")String type
     ){
-       // return userService.getAllAdminAndManagerByPage(request, page,size,sort,type);
+       // return userService.getAllAdminAndManagerByPage(request,query,page,size,sort,type);
+        return null;
+    }
+
+    @GetMapping("/{id}/admin")
+    //@PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
+    public ResponseEntity<UserResponse>getUserById(@PathVariable Long id,HttpServletRequest request){
+
+     // return userService.getUserById(id,request);
+        return null;
+    }
+
+
+
+    @PutMapping("/{id}/admin")
+    //@PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
+    public ResponseEntity<UserResponse>updateUser(@PathVariable Long id, UserRequest request,HttpServletRequest auth){
+
+        // return userService.getUserById(id,request,auth);
+        return null;
+    }
+
+    @DeleteMapping("auth")
+    //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    public ResponseEntity<String>deleteUser(@PathVariable Long id, HttpServletRequest auth){
+
+        //String message=userService.deleteCustomer(id,auth);
+        // return ResponseEntity.ok(message);
         return null;
     }
 
 }
+
+
+
+ //if (query != null && !query.isEmpty()) {}

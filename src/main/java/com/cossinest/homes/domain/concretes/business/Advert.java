@@ -1,14 +1,13 @@
 package com.cossinest.homes.domain.concretes.business;
 
 
+import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -25,18 +24,22 @@ public class Advert {
     private Long id;
 
 
+    @Column(nullable = false,length = 150)
     private String title;
 
+    @Column(length = 300)
     private String desc;
 
-    private String slug;
+    private String slug;//TODO:Tekrar bakılacak
 
-    private Double price;
+    @Column(nullable = false)
+    private Double price= 0.0;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column(nullable = false)
+    private Status status=Status.PENDING; //TODO:Tekrar bakılacak
     //kullanımı
-        /*
+        /*/
     public class Main {
     public static void main(String[] args) {
         Status status = Status.PENDING;
@@ -55,22 +58,37 @@ public class Advert {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "view_count")
+    @Column(name = "view_count",nullable = false)
     private Integer viewCount;
 
     private String location;
 
-    @NotNull(message = "Please enter the create time and date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm", timezone = "US")
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
+    @Column(name = "create_at", nullable = false)
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime createdAt;
 
-    @NotNull(message = "Please enter the update time and date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm", timezone = "US")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(name = "update_at")
-    private LocalDateTime updateAt;
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime updatedAt;
 
-    //TODO: advertType, country, city, district, user, category
+    @PrePersist
+    private void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name="user_id")
+    private User user;
+
+    //TODO: advertType, country, city, district, category
 
 
 
