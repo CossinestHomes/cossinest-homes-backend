@@ -12,15 +12,7 @@ public class UserMapper {
 
 
 
-//    public UserResponse userToUserResponseWithoutPassword(User user) {
-//        return UserResponse.builder()
-//                .id(user.getId())
-//                .email(user.getEmail())
-//                .phone(user.getPhone())
-//                .createAt(LocalDateTime.now())
-//                .firstName(user.getFirstName())
-//                .lastName(user.getLastName())
-//                .built_in(user.getBuilt_in())
-//                .build();
-//    }
+
+
+
 }
