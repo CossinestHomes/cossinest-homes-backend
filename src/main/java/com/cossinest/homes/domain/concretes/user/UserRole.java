@@ -22,7 +22,7 @@ public class UserRole {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10) //DB de varchar olarak saklanacak. Bunu yapmazsak default da 255 olur
+    @Column(length = 10) //DB de varchar olarak saklanacak. Bunu yapmazsak default da 255 olur/
     private RoleType roleType;
 
     private String roleName;
