@@ -10,6 +10,7 @@ import lombok.*;
 import java.io.ObjectInputFilter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class TourRequest {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
     @Column(nullable = false)
-    private LocalDateTime tourTime;
+    private LocalTime tourTime;
 
     @Enumerated(EnumType.STRING)
     private StatusType status;
