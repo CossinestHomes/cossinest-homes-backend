@@ -14,10 +14,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapper {
 
-
-
-
-
     public CustomerResponse customerToCustomerResponse(User user) {
         return CustomerResponse.builder()
                 .id(user.getId())
