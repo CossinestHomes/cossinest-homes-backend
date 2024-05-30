@@ -15,7 +15,4 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
 
     List<TourRequest> findAllByTourDate(LocalDate tourDate);
 
-
-    @Query("SELECT (COUNT(t) > 0) FROM TourRequest t WHERE t.tourDate=?1 AND EXTRACT(HOUR FROM t.tourTime)=?2")
-    Boolean isExistsOnDateByTime(LocalDate tourDate, LocalDateTime tourTime);
 }

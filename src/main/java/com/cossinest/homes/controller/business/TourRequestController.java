@@ -20,9 +20,9 @@ public class TourRequestController {
     private final TourRequestService tourRequestService;
 
     @PostMapping // http://localhost:8080/tour-requests  + POST + JSON
-    public ResponseMessage<TourRequestResponse> save(@Valid @RequestBody TourRequestRequest tourRequestRequest){
+    public ResponseMessage<TourRequestResponse> save(@Valid @RequestBody TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest){
 
-        return tourRequestService.saveTourRequest(tourRequestRequest);
+        return tourRequestService.saveTourRequest(tourRequestRequest,httpServletRequest);
     }
 
     @GetMapping("/auth") // http://localhost:8080/tour-requests/auth?page=0&size=7&sort=tour_date&type=asc  + GET
