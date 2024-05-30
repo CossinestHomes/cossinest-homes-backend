@@ -12,11 +12,13 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "adverts")
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 public class Advert {
 
     @Id
