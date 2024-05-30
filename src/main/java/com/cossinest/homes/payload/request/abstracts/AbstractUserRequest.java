@@ -1,11 +1,10 @@
 package com.cossinest.homes.payload.request.abstracts;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
 
 
 
@@ -14,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class AbstractUserRequest {
+public abstract class AbstractUserRequest {
 
     @NotBlank
     @Size(min = 2, max = 30, message = "First name '${validatedValue}' must be between {min} and {max}")
@@ -40,7 +39,9 @@ public class AbstractUserRequest {
     private String phone;
 
 
-    private Boolean built_in = false;
+
+
+
 
 
 

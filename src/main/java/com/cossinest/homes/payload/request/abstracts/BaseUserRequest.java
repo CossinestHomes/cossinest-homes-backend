@@ -16,21 +16,20 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Getter
 @Setter
-
 @SuperBuilder
-public class BaseUserRequest extends AbstractUserRequest{
+public abstract class BaseUserRequest extends AbstractUserRequest{
 
 
     @NotBlank(message = "Enter a valid Password")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
             message = "Password must contain at least one digit, one lowercase character, one uppercase character, and one special character (@#$%^&+=)")
-    private String passwordHash;
+    private String password;
 
     @NotNull(message = "Please enter your password")
     private String resetPasswordCode;
 
-
+//burayi baska bir yere mi koymaliyim yoksa jsoninclude not null desem olur mu
 
 
 }
