@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "roles")
 
@@ -29,5 +32,5 @@ public class UserRole {
 
     @ManyToMany(mappedBy = "userRole")
     @JsonIgnore
-    private User user;
+    private Set<User> user=new HashSet<>();
 }

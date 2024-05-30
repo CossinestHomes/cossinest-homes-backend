@@ -2,6 +2,7 @@ package com.cossinest.homes.domain.concretes.user;
 
 
 import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -15,6 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +27,8 @@ import java.util.Set;
 @Entity
 @Table(name = "t_users")
 public class User {
+
+
 
     @Id
     @Setter(AccessLevel.NONE)
@@ -55,7 +60,7 @@ public class User {
     @Column(name = "reset_password_code")
     private String resetPasswordCode;
 
-    private Boolean built_in;
+    private Boolean built_in=false;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH-mm", timezone = "Turkey")
     @Column(name = "create_at", nullable = false)
@@ -71,12 +76,17 @@ public class User {
     @JoinTable(
             name = "user_roles",
             joinColumns=@JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name="user_id")
+            inverseJoinColumns = @JoinColumn(name="role_id")
     )
-    private UserRole userRole;
+    private Set<UserRole> userRole=new HashSet<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true) //ask
     private Set<Advert> advert=new HashSet<>();
+
+    @OneToMany(mappedBy = "ownerUserId",cascade = CascadeType.ALL,orphanRemoval = true) //iliski ismine bak yaz
+    private Set<TourRequest>tourRequests=new HashSet<>();
+
+    // todo:favori ve log eklenecek
 
     @PrePersist
     private void onCreate() {

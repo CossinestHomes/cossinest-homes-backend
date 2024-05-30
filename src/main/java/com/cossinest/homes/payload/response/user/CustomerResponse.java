@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse extends BaseUserResponse {
+public class CustomerResponse extends BaseUserResponse {
 
-    private Boolean built_in = false;
+    private Boolean built_in=false;
 }

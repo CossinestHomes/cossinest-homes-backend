@@ -1,5 +1,8 @@
 package com.cossinest.homes.payload.response.abstracts;
 
+import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.TourRequest;
+import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
@@ -14,6 +17,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +25,7 @@ import java.time.LocalDateTime;
 @Setter
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BaseUserResponse {
+public abstract class BaseUserResponse {
 
     private Long id;
 
@@ -37,6 +41,14 @@ public class BaseUserResponse {
 
     private LocalDateTime updateAt;
 
-    private Boolean built_in;
+    private Set<UserRole> userRole;
+
+    private Set<Advert> advert;
+
+    private Set<TourRequest> tourRequests;
+
+
+    //TODO: Favorities ve Logs
+    //Role donulur mu
 
 }

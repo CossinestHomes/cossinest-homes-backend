@@ -16,9 +16,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Getter
 @Setter
-
 @SuperBuilder
-public class BaseUserRequest extends AbstractUserRequest{
+public abstract class BaseUserRequest extends AbstractUserRequest{
 
 
     @NotBlank(message = "Enter a valid Password")
@@ -30,7 +29,7 @@ public class BaseUserRequest extends AbstractUserRequest{
     @NotNull(message = "Please enter your password")
     private String resetPasswordCode;
 
-
+//burayi baska bir yere mi koymaliyim yoksa jsoninclude not null desem olur mu
 
 
 }
