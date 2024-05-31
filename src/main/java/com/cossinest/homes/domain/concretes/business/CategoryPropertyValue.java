@@ -1,15 +1,20 @@
 package com.cossinest.homes.domain.concretes.business;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class CategoryPropertyValues {
+@Table(name="category_property_values")
+public class CategoryPropertyValue {
 
 
 
@@ -28,14 +33,17 @@ public class CategoryPropertyValues {
     private Integer advert_id;
 
 
-
+    @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
     @JoinColumn(name="category_Property_Key_id")
-    @OneToOne
-    private CategoryPropertyKeys categoryPropertyKeys;
+    @ManyToOne
+    private CategoryPropertyKey categoryPropertyKeys;
+
 
     @JoinColumn(name="advert_id")
-    @ManyToMany
-    private Adverts adverts;
+    @ManyToOne
+    private Advert adverts;
+
+
 
 
 }
