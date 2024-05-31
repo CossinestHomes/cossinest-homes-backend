@@ -1,6 +1,7 @@
 package com.cossinest.homes.payload.request.business;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -30,6 +31,7 @@ public class TourRequestRequest {
 
     @NotNull(message = "Advert can not be empty")
     private Advert advertId; // Adverts datatype
+
 
 
 }
