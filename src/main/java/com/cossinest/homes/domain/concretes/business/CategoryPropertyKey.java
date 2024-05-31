@@ -8,12 +8,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class CategoryPropertyKeys {
+@Table(name="category_property_keys")
+public class CategoryPropertyKey {
 
 
 
@@ -38,10 +42,11 @@ public class CategoryPropertyKeys {
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
     @ManyToOne
     @JoinColumn(name="category_id") // Bu anotasyon ile CategoryPropertyKeys table'ina ismi "category_id" olan bir Sutun ekliyoruz
-    private Categories categories;
+    private Category category;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "categoryPropertyKeys")
-    private CategoryPropertyValues categoryPropertyValues;
+    @OneToMany(mappedBy = "categoryPropertyKeys")
+    private List<CategoryPropertyValue> categoryPropertyValues = new ArrayList<>();
+
+
 
 }
