@@ -1,12 +1,14 @@
 package com.cossinest.homes.payload.messages;
 
 public class ErrorMessages {
-
-
-    public static final String USER_IS_NOT_FOUND ="The user with %s id is not found" ;
-
     private ErrorMessages() {
     }
+
+    public static final String LOW_ROLE_USERS_CAN_NOT_DELETE_HIGH_ROLE_USERS = "Low role users can not delete high role users";
+
+    public static final String USER_IS_NOT_FOUND ="The user with %s id is not found" ;
+    public static final String ADMIN_OR_MANAGER_CAN_NOT_USE_THIS_METHOD = "Admin or manager can not use this method";
+
 
     public static final String USER_HAS_NOT_CUSTOMER_ROLE = "User is not customer";
     public static final String THE_PASSWORDS_ARE_NOT_MATCHED = "The passwords entered do not match. Please re-enter your password";

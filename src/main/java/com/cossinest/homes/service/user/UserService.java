@@ -10,9 +10,9 @@ import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.request.user.UserPasswordRequest;
+import com.cossinest.homes.payload.request.user.UsersUpdateRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
-import com.cossinest.homes.payload.response.user.CustomerResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,20 +45,17 @@ public class UserService {
 
         return userMapper.authenticatedUsersResponse(user);
 
+
     }
 
     public ResponseEntity<AuthenticatedUsersResponse> updateAuthenticatedUser(AuthenticatedUsersRequest request, HttpServletRequest auth) {
         User user = methodHelper.getUserByHttpRequest(auth);
-
+        methodHelper.checkRoles(user,RoleType.ADMIN,RoleType.MANAGER,RoleType.CUSTOMER);
         if (methodHelper.isBuiltIn(user)) {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
-
         methodHelper.checkUniqueProperties(user, request);
-
-
         User updatedUser = userMapper.authenticatedUsersRequestToAutheticatedUser(user, request);
-
         userRepository.save(updatedUser);
 
         return ResponseEntity.ok(userMapper.authenticatedUsersResponse(updatedUser));
@@ -69,7 +66,7 @@ public class UserService {
     public ResponseEntity<String> updateUserPassword(UserPasswordRequest request, HttpServletRequest auth) {
         User user = methodHelper.getUserByHttpRequest(auth);
         if (methodHelper.isBuiltIn(user)) {
-            throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED); //builtIn password update eder mi
+            throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
 
         String password = passwordEncoder.encode(request.getPassword());
@@ -92,12 +89,7 @@ public class UserService {
         if (methodHelper.isBuiltIn(user)) {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
         }
-
-        boolean role = user.getUserRole().stream().
-                anyMatch(roles -> roles.getRoleType().equals(userRoleService.getUserRole(RoleType.CUSTOMER)));
-        if (!role) {
-            throw new BadRequestException(ErrorMessages.USER_HAS_NOT_CUSTOMER_ROLE);
-        }
+        methodHelper.checkRoles(user,RoleType.CUSTOMER);
 
         String requestPassword = passwordEncoder.encode(request.getPassword());
         request.setPassword(requestPassword);
@@ -123,6 +115,7 @@ public class UserService {
 
         Page<UserPageableResponse> pageableUsers = users.map(userMapper::usersToUserPageableResponse);
 
+
         return ResponseMessage.<Page<UserPageableResponse>>builder()
                 .status(HttpStatus.OK)
                 .message(SuccesMessages.USERS_FETCHED_SUCCESSFULLY)
@@ -138,6 +131,49 @@ public class UserService {
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         UserResponse userResponse = userMapper.userToUserResponse(methodHelper.findUserWithId(id));
         return ResponseEntity.ok(userResponse);
+
+
+    }
+
+
+    public ResponseMessage<UserResponse> updateUser(Long id, UsersUpdateRequest request, HttpServletRequest auth) {
+
+        User businessUser = methodHelper.getUserByHttpRequest(auth);
+        methodHelper.checkRoles(businessUser, RoleType.MANAGER, RoleType.ADMIN);
+        User user = methodHelper.findUserWithId(id);
+        if(methodHelper.isBuiltIn(user)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
+        User updatedUser=userMapper.usersUpdateRequestToUser(user,request);
+
+
+        return ResponseMessage.<UserResponse>builder()
+                .message(SuccesMessages.USER_UPDATED_SUCCESSFULLY)
+                .status(HttpStatus.OK)
+                .object(userMapper.userToUserResponse(updatedUser))
+                .build();
+
+
+    }
+
+    public UserResponse deleteUserBusiness(Long id, HttpServletRequest auth) {
+       User businessUser =methodHelper.getUserByHttpRequest(auth);
+       methodHelper.checkRoles(businessUser,RoleType.MANAGER,RoleType.ADMIN);
+       User deleteUser=methodHelper.findUserWithId(id);
+       if(methodHelper.isBuiltIn(deleteUser)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
+
+       if(businessUser.getUserRole().stream().anyMatch(t->t.getRoleType().getName().equalsIgnoreCase(RoleType.ADMIN.name()))){
+           userRepository.delete(deleteUser);
+       }else if(businessUser.getUserRole().stream().anyMatch(t->t.getRoleName().equalsIgnoreCase(RoleType.MANAGER.name()))){
+            try{
+                methodHelper.checkRoles(deleteUser,RoleType.CUSTOMER);
+                userRepository.delete(deleteUser);
+            }
+            catch (BadRequestException e){
+                throw new BadRequestException(ErrorMessages.LOW_ROLE_USERS_CAN_NOT_DELETE_HIGH_ROLE_USERS);
+            }
+
+       }
+
+       return userMapper.userToUserResponse(deleteUser);
 
 
     }
