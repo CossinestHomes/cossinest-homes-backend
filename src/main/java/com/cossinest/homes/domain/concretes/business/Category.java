@@ -1,6 +1,7 @@
 package com.cossinest.homes.domain.concretes.business;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,8 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Categories {
+@Table(name="categories")
+public class Category {
 
+
+
+
+ /*     OneToMany       --> LAZY    // SAG Taraf MANY ise LAZY yapiyor (DEFAULT Olarak)     MANY -- MAZY -- LAZY
+        ManyToMany      --> LAZY    // SAG Taraf MANY ise LAZY yapiyor (DEFAULT Olarak)
+        OneToOne        --> EAGER   // SAG Taraf ONE ise EAGER yapiyor (DEFAULT Olarak)
+        ManyToOne       --> EAGER   // SAG Taraf ONE ise EAGER yapiyor (DEFAULT Olarak)         */
 
 
 
@@ -41,7 +50,7 @@ public class Categories {
     @Column(nullable = false, length = 50)
     private String icon;
 
-
+    @Column(name = "built_in")
     private boolean built_in;
 
 
@@ -59,23 +68,32 @@ public class Categories {
 
     @NotNull(message = "is_active can not be null")
     @NotBlank(message = "is_active can not be white space")
-    private boolean is_active;
+    @Column(name = "is_active")
+    private boolean isActive;
 
 
     @NotNull(message = "create_at can not be null")
     @NotBlank(message = "create_at can not be white space")
     @Setter(AccessLevel.NONE)
-    private LocalDateTime create_at = LocalDateTime.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
+    @Column(nullable = false)
+    @JoinColumn(name="create_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
 
     @Column(nullable = true)
     @Setter(AccessLevel.NONE)
-    private LocalDateTime update_at = LocalDateTime.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
+    @JoinColumn(name="update_at")
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
 
-    @OneToMany(mappedBy = "categories")
-    private List<CategoryPropertyKeys> categoryPropertyKeys = new ArrayList<>();
 
+    @OneToMany(mappedBy = "category")
+    private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<Advert> adverts = new ArrayList<>();
 
 
 }

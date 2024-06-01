@@ -11,6 +11,7 @@ import java.io.ObjectInputFilter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -63,7 +64,13 @@ public class TourRequest {
     private User guestUserId;
 
 
+    @PrePersist
+    private void onCreate() {
+        createAt = LocalDateTime.now();
+    }
 
-
-
+    @PreUpdate
+    private void onUpdate(){
+        updateAt= LocalDateTime.now();
+    }
 }
