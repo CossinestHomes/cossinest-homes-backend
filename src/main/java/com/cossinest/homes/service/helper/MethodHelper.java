@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -105,29 +102,27 @@ public class MethodHelper {
 
 
     public void checkRoles(User user, RoleType... roleTypes) {
-        boolean found = false;
+
         Set<RoleType> roles = new HashSet<>();
-        user.getUserRole().stream().map(item -> roles.add(item.getRoleType()));
+        Collections.addAll(roles,roleTypes);
 
-        for (RoleType role : roleTypes) {
+       for (UserRole userRole:user.getUserRole()){
+           if (roles.contains(userRole.getRoleType())) return;
+       }
+       throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
+    }
 
-            if (roles.contains(role)) {
-                found = true;
-                break;
-            }
+
+
+    public Set<UserRole> roleStringToUserRole(Set<String> request) {
+
+        return request.stream().map(item -> userRoleService.getUserRole(RoleType.valueOf(item))).collect(Collectors.toSet());
+    }
+
+
+    public void UpdatePasswordControl(String password, String reWritePassword) {
+        if(!Objects.equals(password,reWritePassword)){
+            throw new BadRequestException(ErrorMessages.PASSWORDS_DID_NOT_MATCH);
         }
-
-        if (!found) throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
-
-
     }
-
-
-    public Set<UserRole> roleStringToUserRoleClass(Set<String> request) {
-
-        return request.stream().map(item->userRoleService.getUserRole(RoleType.valueOf(item))).collect(Collectors.toSet());
-    }
-
-
-
 }

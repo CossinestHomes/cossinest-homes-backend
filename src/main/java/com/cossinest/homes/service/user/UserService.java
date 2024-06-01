@@ -7,10 +7,7 @@ import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.payload.mappers.UserMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
-import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
-import com.cossinest.homes.payload.request.user.CustomerRequest;
-import com.cossinest.homes.payload.request.user.UserPasswordRequest;
-import com.cossinest.homes.payload.request.user.UsersUpdateRequest;
+import com.cossinest.homes.payload.request.user.*;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
@@ -39,6 +36,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PageableHelper pageableHelper;
+    private final EmailService emailService;
 
     public AuthenticatedUsersResponse getAuthenticatedUser(HttpServletRequest request) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -50,7 +48,7 @@ public class UserService {
 
     public ResponseEntity<AuthenticatedUsersResponse> updateAuthenticatedUser(AuthenticatedUsersRequest request, HttpServletRequest auth) {
         User user = methodHelper.getUserByHttpRequest(auth);
-        methodHelper.checkRoles(user,RoleType.ADMIN,RoleType.MANAGER,RoleType.CUSTOMER);
+        methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER, RoleType.CUSTOMER);
         if (methodHelper.isBuiltIn(user)) {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
@@ -89,7 +87,7 @@ public class UserService {
         if (methodHelper.isBuiltIn(user)) {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
         }
-        methodHelper.checkRoles(user,RoleType.CUSTOMER);
+        methodHelper.checkRoles(user, RoleType.CUSTOMER);
 
         String requestPassword = passwordEncoder.encode(request.getPassword());
         request.setPassword(requestPassword);
@@ -141,8 +139,8 @@ public class UserService {
         User businessUser = methodHelper.getUserByHttpRequest(auth);
         methodHelper.checkRoles(businessUser, RoleType.MANAGER, RoleType.ADMIN);
         User user = methodHelper.findUserWithId(id);
-        if(methodHelper.isBuiltIn(user)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
-        User updatedUser=userMapper.usersUpdateRequestToUser(user,request);
+        if (methodHelper.isBuiltIn(user)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
+        User updatedUser = userMapper.usersUpdateRequestToUser(user, request);
 
 
         return ResponseMessage.<UserResponse>builder()
@@ -155,26 +153,53 @@ public class UserService {
     }
 
     public UserResponse deleteUserBusiness(Long id, HttpServletRequest auth) {
-       User businessUser =methodHelper.getUserByHttpRequest(auth);
-       methodHelper.checkRoles(businessUser,RoleType.MANAGER,RoleType.ADMIN);
-       User deleteUser=methodHelper.findUserWithId(id);
-       if(methodHelper.isBuiltIn(deleteUser)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
+        User businessUser = methodHelper.getUserByHttpRequest(auth);
+        methodHelper.checkRoles(businessUser, RoleType.MANAGER, RoleType.ADMIN);
+        User deleteUser = methodHelper.findUserWithId(id);
+        if (methodHelper.isBuiltIn(deleteUser))
+            throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
 
-       if(businessUser.getUserRole().stream().anyMatch(t->t.getRoleType().getName().equalsIgnoreCase(RoleType.ADMIN.name()))){
-           userRepository.delete(deleteUser);
-       }else if(businessUser.getUserRole().stream().anyMatch(t->t.getRoleName().equalsIgnoreCase(RoleType.MANAGER.name()))){
-            try{
-                methodHelper.checkRoles(deleteUser,RoleType.CUSTOMER);
-                userRepository.delete(deleteUser);
-            }
-            catch (BadRequestException e){
-                throw new BadRequestException(ErrorMessages.LOW_ROLE_USERS_CAN_NOT_DELETE_HIGH_ROLE_USERS);
-            }
+        if (businessUser.getUserRole().stream().anyMatch(t -> t.getRoleType().getName().equalsIgnoreCase(RoleType.ADMIN.name()))) {
+            userRepository.delete(deleteUser);
+        } else if (businessUser.getUserRole().stream().anyMatch(t -> t.getRoleName().equalsIgnoreCase(RoleType.MANAGER.name()))) {
+            methodHelper.checkRoles(deleteUser, RoleType.CUSTOMER);
+            userRepository.delete(deleteUser);
 
+        }
+
+        return userMapper.userToUserResponse(deleteUser);
+
+
+    }
+
+
+    public String forgotPassword(ForgetPasswordRequest request) {
+
+       try{
+           User user =methodHelper.findByUserByEmail(request.getEmail());
+           String resetCode =UUID.randomUUID().toString();
+           user.setResetPasswordCode(resetCode);
+           userRepository.save(user);
+            emailService.sendEmail(user.getEmail(),"Reset email","Your reset email code is:"+resetCode);
+
+       }catch (BadRequestException e){
+           return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
        }
 
-       return userMapper.userToUserResponse(deleteUser);
+        return SuccesMessages.RESET_PASSWORD_CODE_HAS_BEEN_SENT_TO_YOUR_EMAIL_ADRESS;
 
+    }
+
+    public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
+       User user =userRepository.resetPasswordWithCode(request.getResetPasswordCode()).orElseThrow(
+               ()-> new BadRequestException(ErrorMessages.RESET_PASSWORD_CODE_DID_NOT_MATCH));
+
+
+        methodHelper.UpdatePasswordControl(request.getPassword(),request.getReWritePassword());
+        String requestPassword = passwordEncoder.encode(request.getPassword());
+        user.setPasswordHash(requestPassword);
+        userRepository.save(user);
+        return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY,HttpStatus.OK);
 
     }
 }
