@@ -29,4 +29,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
                        @Param(value = "email") String email,
                        @Param(value = "phone") String phone,
                        Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE u.resetPasswordCode=:resetPasswordCode")
+    Optional<User>resetPasswordWithCode(@Param(value ="resetPasswordCode" ) String resetPasswordCode);
 }
