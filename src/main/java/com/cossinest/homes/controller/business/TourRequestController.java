@@ -28,12 +28,16 @@ public class TourRequestController {
     @GetMapping("/auth") // http://localhost:8080/tour-requests/auth?page=0&size=7&sort=tour_date&type=asc  + GET
     public ResponseMessage<Page<TourRequestResponse>> getAllTourRequestByPageAuth(
             HttpServletRequest httpServletRequest,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sort") String sort,
-            @RequestParam("type") String type){
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "size",defaultValue = "10") int size,
+            @RequestParam(value = "sort",defaultValue = "tourDate") String sort,
+            @RequestParam(value = "type",defaultValue = "asc") String type,
+            @RequestParam(value = "createAt",required = false) String createAt,
+            @RequestParam(value = "tourTime",required = false) String tourTime,
+            @RequestParam(value = "status",required = false) String status,
+            @RequestParam(value = "tourDate",required = false) String tourDate){
 
-        return tourRequestService.getAllTourRequestByPageAuth(httpServletRequest,page, size,sort,type);
+        return tourRequestService.getAllTourRequestByPageAuth(httpServletRequest,page, size,sort,type,createAt,tourTime,status,tourDate);
     }
 
     @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=tour_date&type=asc + GET
@@ -51,6 +55,7 @@ public class TourRequestController {
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(@PathVariable Long id,
                                                                       HttpServletRequest httpServletRequest){
         return tourRequestService.getTourRequestByIdAuth(id,httpServletRequest);
+
     }
 
     @GetMapping("/{id}/admin") // http://localhost:8080/tour-requests/2/admin + GET

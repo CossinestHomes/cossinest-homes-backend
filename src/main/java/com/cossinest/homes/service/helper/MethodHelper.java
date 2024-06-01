@@ -1,6 +1,7 @@
 package com.cossinest.homes.service.helper;
 
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;

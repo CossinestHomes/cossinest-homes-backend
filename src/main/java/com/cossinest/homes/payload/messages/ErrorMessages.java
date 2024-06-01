@@ -4,6 +4,7 @@ public class ErrorMessages {
 
 
     public static final String USER_IS_NOT_FOUND ="The user with %s id is not found" ;
+    public static final String NOT_HAVE_AUTHORITY = "You don't have authority";
 
     private ErrorMessages() {
     }
@@ -21,6 +22,6 @@ public class ErrorMessages {
     public static final String BUILT_IN_USER_CAN_NOT_BE_DELETED ="BuiltIn user can not be deleted" ;
 
     public static final String ROLE_NOT_FOUND = "There is no role like that, check the database";
-    public static final String CONFLICT_TOUR_TIME = "Required tour time is already booked";
+    public static final String CONFLICT_TOUR_TIME = "Required tour time is already booked. Try to book it with time 30 minutes late";
 }
 
