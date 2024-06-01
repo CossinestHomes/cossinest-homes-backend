@@ -1,6 +1,7 @@
 package com.cossinest.homes.payload.mappers;
 
 import com.cossinest.homes.domain.concretes.business.TourRequest;
+import com.cossinest.homes.payload.request.business.TourRequestRequest;
 import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import lombok.Builder;
 import lombok.Data;
@@ -23,17 +24,11 @@ public class TourRequestMapper {
                 .build();
     }
 
-    public TourRequest tourRequestResponseToTourRequest(TourRequestResponse tourRequestResponse){
+    public TourRequest tourRequestRequestToTourRequest(TourRequestRequest tourRequestRequest){
         return TourRequest.builder()
-                .tourDate(tourRequestResponse.getTourDate())
-                .tourTime(tourRequestResponse.getTourTime())
-                .status(tourRequestResponse.getStatus())
-                .createAt(tourRequestResponse.getCreateAt())
-                .guestUserId(tourRequestResponse.getGuestUserId())
-                .ownerUserId(tourRequestResponse.getOwnerUserId())
-                .updateAt(tourRequestResponse.getUpdateAt())
-                .advertId(tourRequestResponse.getAdvertId())
-                .id(tourRequestResponse.getId())
+                .tourDate(tourRequestRequest.getTourDate())
+                .tourTime(tourRequestRequest.getTourTime())
+                .advertId(tourRequestRequest.getAdvertId())
                 .build();
     }
 }
