@@ -10,15 +10,14 @@ import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.repository.user.UserRepository;
+import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -26,6 +25,7 @@ import java.util.Set;
 public class MethodHelper {
 
     private final UserRepository userRepository;
+    private final UserRoleService userRoleService;
 
 
 
@@ -110,15 +110,27 @@ public void checkDuplicate  (String email,String phone){
        user.getUserRole().stream().map(item-> roles.add(item.getRoleType()));
 
        for (RoleType role:roleTypes){
-
            if(roles.contains(role)){
                found=true;
            }
        }
-
         if(!found) throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
 
+    }
+
+    public void controlRoles(User user,RoleType... roleTypes){
+
+        Set<RoleType> roles=new HashSet<>();
+        Collections.addAll(roles,roleTypes);
+        Set<UserRole> rolesUserRole = roles.stream().map(userRoleService::getUserRole).collect(Collectors.toSet());
+
+        for (UserRole role : user.getUserRole()){
+            if(!(rolesUserRole.contains(role))){
+                throw new BadRequestException(ErrorMessages.NOT_HAVE_AUTHORITY);
+            }
+        }
 
     }
+
 
 }

@@ -56,7 +56,7 @@ public class DateTimeValidator {
         }
     }
 
-    public long calculateMinutesBetweenTime(TourRequest tourRequest,TourRequestRequest tourRequestRequest){
+    private long calculateMinutesBetweenTime(TourRequest tourRequest,TourRequestRequest tourRequestRequest){
 
         LocalTime tourTimeFromRepo = tourRequest.getTourTime();
 

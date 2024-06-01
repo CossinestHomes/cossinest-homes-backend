@@ -5,6 +5,8 @@ public class ErrorMessages {
 
     public static final String USER_IS_NOT_FOUND ="The user with %s id is not found" ;
     public static final String NOT_HAVE_AUTHORITY = "You don't have authority";
+    public static final String NOT_FOUND_TOUR_REQUEST = "%s id'li Tour request is not found";
+    public static final String TOUR_REQUEST_CAN_NOT_BE_CHANGED = "Tour reuest is already approved. It can not be changed";;
 
     private ErrorMessages() {
     }
