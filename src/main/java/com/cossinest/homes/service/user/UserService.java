@@ -19,12 +19,15 @@ import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +78,7 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.THE_PASSWORDS_ARE_NOT_MATCHED);
         }
 
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setPasswordHash(password);
         userRepository.save(user);
 
 
@@ -102,7 +105,7 @@ public class UserService {
     }
 
 
-    public ResponseMessage<Page<UserPageableResponse>> getAllAdminAndManagerByPage(
+    public ResponseMessage<Page<UserPageableResponse>> getAllAdminAndManagerQueriesByPage(
             HttpServletRequest request, String name, String surname, String email, String phone, int page, int size, String sort, String type) {
 
         User user = methodHelper.getUserByHttpRequest(request);
@@ -201,5 +204,17 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY,HttpStatus.OK);
 
+    }
+
+    public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request,String q, int page, int size, String sort, String type) {
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
+        Pageable pageable= pageableHelper.getPageableWithProperties(page,size,sort,"asc");
+        String query= q!=null? "%"+q.toLowerCase()+"%":null;
+        Page<User>users=userRepository.findAll(query,pageable);
+
+        Page<UserPageableResponse> responsePage = users.map(userMapper::usersToUserPageableResponse);
+
+        return new ResponseEntity<>(responsePage,HttpStatus.OK);
     }
 }

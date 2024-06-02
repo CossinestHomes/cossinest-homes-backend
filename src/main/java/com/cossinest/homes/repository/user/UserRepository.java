@@ -32,4 +32,12 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query("SELECT u FROM User u WHERE u.resetPasswordCode=:resetPasswordCode")
     Optional<User>resetPasswordWithCode(@Param(value ="resetPasswordCode" ) String resetPasswordCode);
+
+    @Query("SELECT u FROM User u WHERE " +
+            "(:query IS NULL OR LOWER(u.firstName) LIKE LOWER(:query) OR " +
+            "LOWER(u.lastName) LIKE LOWER(:query) OR " +
+            "LOWER(u.email) LIKE LOWER(:query) OR " +
+            "LOWER(u.phone) LIKE LOWER(:query))")
+
+    Page<User> findAll(@Param("query") String query, Pageable pageable);
 }
