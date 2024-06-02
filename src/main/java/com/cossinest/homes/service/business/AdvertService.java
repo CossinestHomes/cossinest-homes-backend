@@ -26,4 +26,15 @@ public class AdvertService {
         return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,status,location,pageable).map(advertMapper::mapAdvertToAdvertResponse);
 
     }
+
+
+    /*
+    ADVERT KAYDEDİLİRKEN BU KISIM KULLANILACAK
+    @Transactional
+    public Advert saveAdvert(Advert advert) {
+        advert = advertRepository.save(advert);
+        advert.generateSlug();
+        return advertRepository.save(advert);
+    }
+     */
 }
