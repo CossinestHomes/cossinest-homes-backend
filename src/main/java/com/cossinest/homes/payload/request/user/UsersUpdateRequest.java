@@ -1,5 +1,9 @@
 package com.cossinest.homes.payload.request.user;
 
+import com.cossinest.homes.domain.enums.RoleType;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,8 +15,8 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
-public class AuthenticatedUsersRequest {
+@Builder
+public class UsersUpdateRequest {
 
     @NotNull(message = "First name can not be a null")
     @Size(min = 2, max = 30, message = "First name '${validatedValue}' must be between {min} and {max}")
@@ -27,6 +31,5 @@ public class AuthenticatedUsersRequest {
     private String phone;
 
 
-
-
+    private Set<String> roles;
 }

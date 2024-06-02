@@ -1,6 +1,10 @@
 package com.cossinest.homes.payload.response.user;
 
+import com.cossinest.homes.domain.concretes.user.UserRole;
+import com.cossinest.homes.domain.enums.RoleType;
 import lombok.*;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,6 +18,8 @@ public class UserPageableResponse {
     private String lastName;
     private String email;
     private String phone;
+
+    private Set<String> userRole;
 
 
 }
