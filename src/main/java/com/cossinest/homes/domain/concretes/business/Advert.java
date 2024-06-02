@@ -3,13 +3,14 @@ package com.cossinest.homes.domain.concretes.business;
 
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.Status;
+import com.cossinest.homes.service.helper.SlugUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "adverts")
@@ -23,6 +24,7 @@ public class Advert {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
 
@@ -90,7 +92,41 @@ public class Advert {
     @JoinColumn(name="user_id")
     private User user;
 
-    //TODO: advertType, country, city, district, category
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "category_id")
+    private Categories category;
+
+
+    //generate unique slug
+    @PostPersist
+    public void generateSlug() {
+        if (this.slug == null) {
+            this.slug = SlugUtils.toSlug(this.title) + "-" + this.id;
+        }
+    }
+
+    //TODO: advertType, country, district,images
+
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<Favorites> favoritesList;
+
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<TourRequest> tourRequestList;
+
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<CategoryPropertyValues> categoryPropertyValuesList;
+
+    //TODO: logs
+
+
 
 
 

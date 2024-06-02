@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.response.business;
 
+import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,9 +35,25 @@ public class AdvertResponse {
 
     private String location;
 
+    private int advertTypeId;
+
+    private int countryId;
+
+    private int cityId;
+
+    private int districtId;
+
+    private int userId;
+
+    private int categoryId;
+
     private LocalDateTime createAt;
 
     private LocalDateTime updateAt;
 
-    //TODO: advertType, country, city, district, user, category
+
+
+    //TODO: favourites,images
+
+    //kullanıcıya dto response classlarını döndürmek lazım
 }
