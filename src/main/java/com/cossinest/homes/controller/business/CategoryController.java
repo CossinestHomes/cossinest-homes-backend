@@ -54,6 +54,7 @@ public class CategoryController {
 
 
     // C 02     Tum kategorileri Pageable yapida cagirma :
+
     @GetMapping("/admin")
     public ResponseEntity<Page<Category>> getAllCategoriesWithPage(
 
@@ -96,6 +97,10 @@ public class CategoryController {
 
 
     // C 05 id ile UPDATE etme :
+
+
+    @PutMapping("{id}")
+    public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody )
 
 
 
