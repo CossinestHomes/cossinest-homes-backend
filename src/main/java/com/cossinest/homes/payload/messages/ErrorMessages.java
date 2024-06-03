@@ -31,5 +31,10 @@ public class ErrorMessages {
 
     public static final String ROLE_NOT_FOUND = "There is no role like that, check the database";
     public static final String CONFLICT_TOUR_TIME = "Required tour time is already booked. Try to book it with time 30 minutes late";
+
+    //Advert
+    public static final String ADVERT_NOT_FOUND="Advert not found";
+
+
 }
 
