@@ -107,11 +107,11 @@ public class CategoryController {
     // C 05 id ile UPDATE etme :
 
 
-    @PutMapping("{id}")
+    @PutMapping("{id}")         // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
     public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequest categoryRequest){
 
         categoryService.updateCategory(id, categoryRequest);
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();          //map OBJECT'ini NEW'leyerek  olusturduk (Sadece METOD icinde kullanilacak)
 
         map.put("message", "Category is updated successfuly" );
         map.put("status", "true");
@@ -120,13 +120,6 @@ public class CategoryController {
     }
 
 
-    @PutMapping("{id}")
-    public SuccesMessages updateCategoryWithId(@Valid @RequestBody CategoryRequest categoryRequest,
-                                                                 @PathVariable("id") Long id){
-
-        // status must be pending
-        return categoryService.updateCategory(id, categoryRequest);
-    }
 
 
 
