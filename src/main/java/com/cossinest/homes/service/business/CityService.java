@@ -23,6 +23,6 @@ public class CityService {
 
         List<City> cityList = cityRepository.findAll();
 
-        return cityList.stream().map(cityMapper::mapperCitiesToCityForAdvertsResponse).collect(Collectors.toList());
+        return cityList.stream().map(cityMapper::mapperCityToCityForAdvertsResponse).collect(Collectors.toList());
     }
 }

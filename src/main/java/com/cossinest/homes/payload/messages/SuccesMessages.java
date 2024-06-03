@@ -12,7 +12,10 @@ public class SuccesMessages {
 
     public static final String TOUR_REQUEST_CREATED_SUCCESSFULLY = "Tour request is created successfully";
 
-    
+    //ADVERT
+    public static final String RETURNED_ALL_CATEGORIES_AND_AMOUNT= "All categories returned with amounts";
+    public static final String RETURNED_ALL_CITIES_AND_AMOUNT= "All cities returned with amounts";
+    public static final String RETURNED_POPULAR_ADVERTS= "Popular adverts returned for value";
 
     private SuccesMessages(){
 

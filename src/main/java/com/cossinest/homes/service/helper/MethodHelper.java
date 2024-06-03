@@ -125,4 +125,9 @@ public class MethodHelper {
             throw new BadRequestException(ErrorMessages.PASSWORDS_DID_NOT_MATCH);
         }
     }
+
+    //Advert
+    public int calculatePopularityPoint(int advertTourRequestListSize,int advertViewCount){
+        return (3*advertTourRequestListSize)+advertViewCount;
+    }
 }
