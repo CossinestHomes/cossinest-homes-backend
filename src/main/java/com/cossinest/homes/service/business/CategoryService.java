@@ -63,9 +63,23 @@ public class CategoryService {
     }
 
 
-    public SuccesMessages updateCategory(Long id, CategoryRequest categoryRequest) {
+    public void updateCategory(Long id, CategoryRequest categoryRequest) {
 
-        return categoryRepository.
+        boolean existTitle = categoryRepository.existsByTitle(categoryRequest.getTitle());
+
+        Category category = findCategory(id);
+
+        if (existTitle && !categoryRequest.getTitle().equals(category.getTitle())){
+
+            throw new ConflictException("Title is already exist ");
+        }
+        category.setTitle(categoryRequest.getTitle());
+        category.setIcon(categoryRequest.getIcon());
+        category.setSeq(categoryRequest.getSeq());
+        category.setSlug(categoryRequest.getSlug());
+        category.setIsActive(categoryRequest.isIsActive());
+        category.setUpdatedAt(categoryRequest.getUpdatedAt());
+        categoryRepository.save(category);
 
     }
 }

@@ -81,9 +81,6 @@ public class Category {
     private LocalDateTime createdAt;
 
 
-
-
-    @Setter(AccessLevel.NONE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(nullable = true, name="update_at")
     private LocalDateTime updatedAt;
