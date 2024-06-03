@@ -4,6 +4,7 @@ import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
@@ -46,10 +47,10 @@ public abstract class BaseUserResponse {
 
     private Set<Advert> advert;
 
-    private Set<TourRequest> tourRequests;
+    private Set<TourRequestResponse> tourRequestsResponse;
 
 
     //TODO: Favorities ve Logs
-    //Role donulur mu
+
 
 }

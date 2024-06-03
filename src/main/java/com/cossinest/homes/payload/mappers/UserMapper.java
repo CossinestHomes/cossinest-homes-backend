@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     private final MethodHelper methodHelper;
+    private final TourRequestMapper tourRequestMapper;
 
     public CustomerResponse customerToCustomerResponse(User user) {
         return CustomerResponse.builder()
@@ -30,7 +31,7 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
-                .tourRequests(user.getTourRequests())
+                .tourRequestsResponse(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -44,7 +45,7 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
-                .tourRequests(user.getTourRequests())
+                .tourRequestsResponse(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
                 .built_in(user.getBuilt_in())
                 .build();
     }
@@ -59,7 +60,7 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                .built_in(user.getBuilt_in())
                .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
-               .tourRequests(user.getTourRequests())
+               .tourRequestsResponse(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
                .advert(user.getAdvert())
                 .build();
     }

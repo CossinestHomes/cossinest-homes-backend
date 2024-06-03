@@ -60,9 +60,9 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin")
+    @GetMapping("/admin/qr")
     //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
-    public ResponseMessage<Page<UserPageableResponse>> getAllUsersByPage(
+    public ResponseMessage<Page<UserPageableResponse>> getAllUsersByPageQueries(
             HttpServletRequest request,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "surname", required = false) String surname,
@@ -73,9 +73,24 @@ public class UserController {
             @RequestParam(value = "sort", defaultValue = "name") String sort,
             @RequestParam(value = "type", defaultValue = "desc") String type
     ) {
-        return userService.getAllAdminAndManagerByPage(request, name, surname, email, phone, page, size, sort, type);
+        return userService.getAllAdminAndManagerQueriesByPage(request, name, surname, email, phone, page, size, sort, type);
 
     }
+
+
+    @GetMapping("/admin")
+    //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    public ResponseEntity<Page<UserPageableResponse>>getAllUsersByPage(
+            HttpServletRequest request,
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "0") int size,
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "type", defaultValue = "desc") String type
+    ){
+        return userService.getAllUsersByPage(request,q,page,size,sort,type);
+    }
+
 
     @GetMapping("/{id}/admin")
     //@PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")

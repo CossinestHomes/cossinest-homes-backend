@@ -41,7 +41,7 @@ public class CategoryPropertyKey {
 
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
     @ManyToOne
-    @JoinColumn(name="category_id") // Bu anotasyon ile CategoryPropertyKeys table'ina ismi "category_id" olan bir Sutun ekliyoruz
+    @JoinColumn(name="category_id") // Bu anotasyon ile CategoryPropertyKeys table'ina ismi "category_id" olan bir Sutun ( FK ???) ekliyoruz
     private Category category;
 
     @OneToMany(mappedBy = "categoryPropertyKeys")
