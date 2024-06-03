@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class Cities {
+public class City {
 
     @Setter(AccessLevel.NONE)
     @Id
@@ -34,7 +34,7 @@ public class Cities {
     @JoinColumn(name = "country_id")
     private Countries countries;
 
-    @OneToMany (mappedBy = "advertList")
+    @OneToMany (mappedBy = "city",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Advert> advertList = new ArrayList<>();
 
