@@ -102,6 +102,8 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
 
+
+
     @OneToMany(mappedBy = "category")
     private List<Advert> adverts = new ArrayList<>();
 

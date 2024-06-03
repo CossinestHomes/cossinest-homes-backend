@@ -19,7 +19,8 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
     boolean existsByTitle(String title);
 
-    @Query("SELECT c from Category c WHERE c.isActive =true")
+    @Query("SELECT c from Category c WHERE c.isActive = true")
+
     Page<Category> findAllActiveCategories(Pageable pageable);
 
 

@@ -2,7 +2,14 @@ package com.cossinest.homes.controller.business;
 
 
 import com.cossinest.homes.domain.concretes.business.Category;
+import com.cossinest.homes.payload.messages.SuccesMessages;
+import com.cossinest.homes.payload.request.business.CategoryRequest;
+import com.cossinest.homes.payload.request.business.TourRequestRequest;
+import com.cossinest.homes.payload.response.ResponseMessage;
+import com.cossinest.homes.payload.response.business.CategoryResponse;
+import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import com.cossinest.homes.service.business.CategoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
+
 
 
 
@@ -100,7 +108,25 @@ public class CategoryController {
 
 
     @PutMapping("{id}")
-    public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody )
+    public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequest categoryRequest){
+
+        categoryService.updateCategory(id, categoryRequest);
+        Map<String, String> map = new HashMap<>();
+
+        map.put("message", "Category is updated successfuly" );
+        map.put("status", "true");
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+
+    @PutMapping("{id}")
+    public SuccesMessages updateCategoryWithId(@Valid @RequestBody CategoryRequest categoryRequest,
+                                                                 @PathVariable("id") Long id){
+
+        // status must be pending
+        return categoryService.updateCategory(id, categoryRequest);
+    }
 
 
 

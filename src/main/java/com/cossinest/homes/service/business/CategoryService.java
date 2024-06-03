@@ -3,6 +3,10 @@ package com.cossinest.homes.service.business;
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
+import com.cossinest.homes.payload.messages.SuccesMessages;
+import com.cossinest.homes.payload.request.business.CategoryRequest;
+import com.cossinest.homes.payload.response.ResponseMessage;
+import com.cossinest.homes.payload.response.business.CategoryResponse;
 import com.cossinest.homes.repository.business.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +52,7 @@ public class CategoryService {
                 ()-> new ResourceNotFoundException("Category not found with id :" + id));
     }
 
+
     public void createCategory(Category category) {
 
         if(categoryRepository.existsByTitle(category.getTitle())) {
@@ -58,5 +63,9 @@ public class CategoryService {
     }
 
 
+    public SuccesMessages updateCategory(Long id, CategoryRequest categoryRequest) {
 
+        return categoryRepository.
+
+    }
 }
