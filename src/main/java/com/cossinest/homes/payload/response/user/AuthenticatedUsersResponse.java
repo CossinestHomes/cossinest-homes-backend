@@ -4,6 +4,7 @@ import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -38,8 +39,7 @@ public class AuthenticatedUsersResponse {
 
     private Set<Advert> advert;
 
-
-    private Set<TourRequest>tourRequests;
+    private Set<TourRequestResponse>tourRequestsResponse;
 
 
 
