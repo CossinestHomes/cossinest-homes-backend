@@ -99,7 +99,7 @@ public class Advert {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")
-    private Categories category;
+    private Category category;
 
 
     //generate unique slug
