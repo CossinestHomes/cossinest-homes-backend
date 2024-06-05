@@ -43,13 +43,15 @@ public class AdvertMapper {
                 .viewCount(advertRequest.getViewCount())
                 .location(advertRequest.getLocation())
                 .isActive(advertRequest.getIsActive())
+                //.category(advertRequest.getCategoryId())
+                //.categoryPropertyValuesList(advertRequest.getProperties().entrySet())
                 .build();
     }
 
     //Category POJO==>DTO
     public CategoryForAdvertResponse mapperCategoryToCategoryForAdvertResponse(Category category){
         return CategoryForAdvertResponse.builder()
-                .category(category.getIcon())
+                .category(category.getTitle())
                 .amount(category.getAdverts().size())
                 .build();
     }
