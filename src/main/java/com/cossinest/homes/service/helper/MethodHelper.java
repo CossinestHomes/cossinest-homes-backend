@@ -121,7 +121,7 @@ public class MethodHelper {
     }
 
 
-    }
+
 
     public void controlRoles(User user,RoleType... roleTypes){
 
