@@ -28,6 +28,7 @@ public class MethodHelper {
     private final UserRepository userRepository;
     private final UserRoleService userRoleService;
 
+
     public User findByUserByEmail(String email) {
 
         return userRepository.findByEmail(email).orElseThrow(() ->
@@ -120,14 +121,30 @@ public class MethodHelper {
     }
 
 
+    }
+
+    public void controlRoles(User user,RoleType... roleTypes){
+
+        Set<RoleType> roles=new HashSet<>();
+        Collections.addAll(roles,roleTypes);
+        Set<UserRole> rolesUserRole = roles.stream().map(userRoleService::getUserRole).collect(Collectors.toSet());
+
+        for (UserRole role : user.getUserRole()){
+            if(!(rolesUserRole.contains(role))){
+                throw new BadRequestException(ErrorMessages.NOT_HAVE_AUTHORITY);
+            }
+        }
+
     public void UpdatePasswordControl(String password, String reWritePassword) {
         if(!Objects.equals(password,reWritePassword)){
             throw new BadRequestException(ErrorMessages.PASSWORDS_DID_NOT_MATCH);
         }
     }
 
+
     //Advert
     public int calculatePopularityPoint(int advertTourRequestListSize,int advertViewCount){
         return (3*advertTourRequestListSize)+advertViewCount;
     }
+
 }

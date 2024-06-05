@@ -46,9 +46,13 @@ public class TourRequestController {
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("sort") String sort,
-            @RequestParam("type") String type)
+            @RequestParam("type") String type,
+            @RequestParam(value = "createAt",required = false) String createAt,
+            @RequestParam(value = "tourTime",required = false) String tourTime,
+            @RequestParam(value = "status",required = false) String status,
+            @RequestParam(value = "tourDate",required = false) String tourDate)
     {
-        return tourRequestService.getAllTourRequestByPageAdmin(httpServletRequest,page, size,sort,type);
+        return tourRequestService.getAllTourRequestByPageAdmin(httpServletRequest,page, size,sort,type,createAt,tourTime,status,tourDate);
     }
 
     @GetMapping("/{id}/auth") // http://localhost:8080/tour-requests/3/auth + GET
@@ -59,7 +63,7 @@ public class TourRequestController {
     }
 
     @GetMapping("/{id}/admin") // http://localhost:8080/tour-requests/2/admin + GET
-    public ResponseEntity<TourRequestResponse> getTourRequestByIdAdmin(@PathVariable Long id,
+    public ResponseMessage<TourRequestResponse> getTourRequestByIdAdmin(@PathVariable Long id,
                                                                        HttpServletRequest httpServletRequest){
         return tourRequestService.getTourRequestByIdAdmin(id,httpServletRequest);
     }
@@ -74,21 +78,19 @@ public class TourRequestController {
     }
 
     @PatchMapping("/{id}/cancel") // http://localhost:8080/tour-requests/2/cancel + PATCH + JSON
-    public ResponseMessage<TourRequestResponse> updateTourRequestCancel(@Valid @RequestBody TourRequestRequest tourRequestRequest,
-                                                                      @PathVariable("id") Long id,
+    public ResponseMessage<TourRequestResponse> updateTourRequestCancel(@PathVariable("id") Long id,
                                                                       HttpServletRequest httpServletRequest){
 
         // status must be pending
-        return tourRequestService.updateTourRequestCancel(tourRequestRequest,id,httpServletRequest);
+        return tourRequestService.updateTourRequestCancel(id,httpServletRequest);
     }
 
     @PatchMapping("/{id}/approve") // http://localhost:8080/tour-requests/2/approve + PATCH + JSON
-    public ResponseMessage<TourRequestResponse> updateTourRequestApprove(@Valid @RequestBody TourRequestRequest tourRequestRequest,
-                                                                        @PathVariable("id") Long id,
+    public ResponseMessage<TourRequestResponse> updateTourRequestApprove(@PathVariable("id") Long id,
                                                                         HttpServletRequest httpServletRequest){
 
         // status must be pending
-        return tourRequestService.updateTourRequestApprove(tourRequestRequest,id,httpServletRequest);
+        return tourRequestService.updateTourRequestApprove(id,httpServletRequest);
     }
 
     @PatchMapping("/{id}/decline") // http://localhost:8080/tour-requests/2/decline + PATCH + JSON

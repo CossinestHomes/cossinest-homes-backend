@@ -1,9 +1,9 @@
 package com.cossinest.homes.payload.mappers;
 
 import com.cossinest.homes.domain.concretes.business.TourRequest;
+import com.cossinest.homes.domain.enums.StatusType;
 import com.cossinest.homes.payload.request.business.TourRequestRequest;
 import com.cossinest.homes.payload.response.business.TourRequestResponse;
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -31,4 +31,5 @@ public class TourRequestMapper {
                 .advertId(tourRequestRequest.getAdvertId())
                 .build();
     }
+
 }
