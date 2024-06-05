@@ -1,5 +1,6 @@
 package com.cossinest.homes.service.business;
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.RoleType;
@@ -46,6 +47,7 @@ public class TourRequestService {
     private final MethodHelper methodHelper;
     private final UserRoleService userRoleService;
     private final PageableHelper pageableHelper;
+    private  final AdvertService advertService;
 
 
 
@@ -63,11 +65,13 @@ public class TourRequestService {
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(userGuest,tourRequestRequest);
 
         //UserOwner için çakışma kontrolü
-        Long ownerId = tourRequestRequest.getAdvertId().getUser().getId();
+        Advert advert = advertService.getAdvertForFaavorites(tourRequestRequest.getAdvertId());
+        Long ownerId = advert.getId();
         User ownerUser = methodHelper.findUserWithId(ownerId);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForOwner(ownerUser,tourRequestRequest);
 
-        TourRequest mappedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest);
+
+        TourRequest mappedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest,advert);
         mappedTourRequest.setStatus(StatusType.PENDING);
         mappedTourRequest.setOwnerUserId(ownerUser);
         mappedTourRequest.setGuestUserId(userGuest);
@@ -104,7 +108,7 @@ public class TourRequestService {
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQuery(pageable,userByEmail.getId(),createAt,tourTime,status,tourDate);
+        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQueryAuth(pageable,userByEmail.getId(),createAt,tourTime,status,tourDate);
 
         return ResponseMessage.<Page<TourRequestResponse>>builder()
                 .object(tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse))
@@ -181,11 +185,12 @@ public class TourRequestService {
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(guestUser,tourRequestRequest);
 
         //request to entity
-        TourRequest updatedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest);
+        Advert advert = advertService.getAdvertForFaavorites(tourRequestRequest.getAdvertId());
+        TourRequest updatedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest,advert);
         updatedTourRequest.setId(id);
         updatedTourRequest.setStatus(StatusType.PENDING);
         updatedTourRequest.setGuestUserId(guestUser);
-        updatedTourRequest.setOwnerUserId(tourRequestRequest.getAdvertId().getUser());
+        updatedTourRequest.setOwnerUserId(advert.getUser());
 
 
 
@@ -239,7 +244,7 @@ public class TourRequestService {
 
     }
 
-    public ResponseMessage<TourRequestResponse> updateTourRequestDecline(TourRequestRequest tourRequestRequest, Long id, HttpServletRequest httpServletRequest) {
+    public ResponseMessage<TourRequestResponse> updateTourRequestDecline(Long id, HttpServletRequest httpServletRequest) {
 
         //Owner talebi red ediyor
 
@@ -280,28 +285,6 @@ public class TourRequestService {
                 .message(SuccesMessages.TOUR_REQUEST_DELETED_SUCCESSFULLY)
                 .build();
 
-        //Role kontrolü
-        Set<RoleType> roles=new HashSet<>();
-        roles.add(RoleType.CUSTOMER);
-
-        for (UserRole role:userByEmail.getUserRole()) {
-            if(!(roles.contains(role))){
-                throw new BadRequestException(ErrorMessages.NOT_HAVE_AUTHORITY);
-            }
-        }
-
-
-        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
-        if (type.equals("desc")){
-            pageable = PageRequest.of(page,size, Sort.by(sort).descending());
-        }
-
-        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQuery(pageable,createAt,tourTime,status,tourDate);
-
-        return ResponseMessage.<Page<TourRequestResponse>>builder()
-                .object(tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse))
-                .status(HttpStatus.OK)
-                .build();
     }
 
     

@@ -48,15 +48,6 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId=?1 OR  t.ownerUserId=?1) AND t.id=?2")
     TourRequest findByIdByCustomer(Long userId, Long tourRequestId);
 
-    @Query("SELECT t FROM TourRequest t WHERE (:createAt NULL OR t.createAt=:createAt) AND " +
-            "(:tourTime NULL OR t.tourTime=:tourTime) AND" +
-            "(:status NULL OR t.status=:status) AND" +
-            "(:tourDate NULL OR t.tourDate=:tourDate)")
-    Page<TourRequest> findAllByQuery(Pageable pageable,
-                                     @Param("createAt") String createAt,
-                                     @Param("tourTime") String tourTime,
-                                     @Param("status") String status,
-                                     @Param("tourDate") String tourDate);
 
 
 }

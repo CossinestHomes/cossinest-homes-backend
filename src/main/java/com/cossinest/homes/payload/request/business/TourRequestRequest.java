@@ -30,7 +30,7 @@ public class TourRequestRequest {
     private LocalTime tourTime;
 
     @NotNull(message = "Advert can not be empty")
-    private Advert advertId; // Adverts datatype
+    private Long advertId; // Adverts datatype
 
 
 
