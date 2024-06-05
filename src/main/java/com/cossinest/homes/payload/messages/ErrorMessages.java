@@ -1,6 +1,7 @@
 package com.cossinest.homes.payload.messages;
 
 public class ErrorMessages {
+
     private ErrorMessages() {
     }
     public static final String RESET_PASSWORD_CODE_DID_NOT_MATCH = "The reset password code didn`t match";
@@ -34,6 +35,7 @@ public class ErrorMessages {
 
     //Advert
     public static final String ADVERT_NOT_FOUND="Advert not found";
+
 
 
 }
