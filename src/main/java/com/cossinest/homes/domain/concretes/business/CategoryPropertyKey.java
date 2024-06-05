@@ -21,8 +21,6 @@ public class CategoryPropertyKey {
 
 
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)

@@ -3,17 +3,29 @@ package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Category;
+import com.cossinest.homes.domain.concretes.business.City;
+import com.cossinest.homes.domain.concretes.business.Country;
+import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
+import com.cossinest.homes.payload.messages.SuccesMessages;
+import com.cossinest.homes.payload.request.business.AdvertRequest;
+import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
+import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +45,10 @@ public class AdvertService {
 
     private final MethodHelper methodHelper;
 
+    private final CityService cityService;
+
+    private final CountryService countryService;
+
 
 
     public List<Advert> getAllAdverts(){
@@ -44,11 +60,15 @@ public class AdvertService {
     }
 
 
-    public Page<AdvertResponse> getAllAdvertsByPage(Long categoryId, int advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPage(String query,Long categoryId, int advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,status,location,pageable).map(advertMapper::mapAdvertToAdvertResponse);
+        if(methodHelper.priceControl(priceStart,priceEnd)){
+            throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
+        }
+
+        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,status,location,query,pageable).map(advertMapper::mapAdvertToAdvertResponse);
 
     }
 
@@ -66,11 +86,70 @@ public class AdvertService {
 
         List<Advert> advertList = getAllAdverts();
 
+
         return   advertList.stream()
                 .filter(t-> methodHelper.calculatePopularityPoint(t.getTourRequestList().size(),t.getViewCount())>=value)
                 .map(advertMapper::mapAdvertToAdvertResponse)
                 .collect(Collectors.toList());
     }
+
+    public Page<AdvertResponse> getAllAdvertForAuthUser(HttpServletRequest request, int page, int size, String sort, String type) {
+
+        Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
+
+        User user= methodHelper.getUserByHttpRequest(request);
+
+        return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
+    }
+
+    public Page<AdvertResponse> getAllAdvertsByPageForAdmin(HttpServletRequest request,String query ,Long categoryId, int advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
+        Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
+
+        if(methodHelper.priceControl(priceStart,priceEnd)){
+            throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
+        }
+        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,status,location,query,pageable).map(advertMapper::mapAdvertToAdvertResponse);
+    }
+
+    public AdvertResponse getAdvertBySlug(String slug) {
+        Advert advert = advertRepository.findBySlug(slug).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
+
+        return advertMapper.mapAdvertToAdvertResponse(advert);
+    }
+
+    public ResponseEntity<AdvertResponse> getAdvertByIdForCustomer(Long id, HttpServletRequest request) {
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user,RoleType.CUSTOMER);
+
+        Advert advert=advertRepository.findByIdAndUser(id,user.getId()).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
+
+        return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(advert));
+    }
+
+    public ResponseEntity<AdvertResponse> getAdvertByIdForAdmin(Long id, HttpServletRequest request) {
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user,RoleType.ADMIN);
+
+        Advert advert=advertRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
+
+        return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(advert));
+    }
+
+    public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest) {
+        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
+        City city=cityService.getCityById(advertRequest.getCityId());
+        User user=methodHelper.getUserByHttpRequest(httpServletRequest);
+        Country country= countryService.getCountryById(advertRequest.getCountryId());
+
+        //category üzerinden propertykeyleri cağır ve value ları setle
+        //advert_type
+        //images
+        return null;
+    }
+
+
 
 
     /*

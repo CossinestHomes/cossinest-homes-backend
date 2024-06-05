@@ -34,7 +34,11 @@ public class ErrorMessages {
 
     //Advert
     public static final String ADVERT_NOT_FOUND="Advert not found";
+    public static final String START_PRICE_AND_END_PRICE_INVALID="Start price must be less than end price";
 
+    public static final String CATEGORY_NOT_FOUND= "Categoty not found";
+    public static final String CITY_NOT_FOUND= "City not found";
+    public static final String COUNTRY_NOT_FOUND= "Country not found";
 
 }
 

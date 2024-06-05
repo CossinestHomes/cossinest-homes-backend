@@ -32,7 +32,7 @@ public class City {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "country_id")
-    private Countries countries;
+    private Country countries;
 
     @OneToMany (mappedBy = "city",cascade = CascadeType.ALL)
     @JsonIgnore

@@ -1,5 +1,7 @@
 package com.cossinest.homes.service.helper;
 
+import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
+import com.cossinest.homes.domain.concretes.business.CategoryPropertyValue;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
+import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,7 +29,10 @@ import java.util.stream.Collectors;
 public class MethodHelper {
 
     private final UserRepository userRepository;
+
     private final UserRoleService userRoleService;
+
+
 
     public User findByUserByEmail(String email) {
 
@@ -130,4 +136,12 @@ public class MethodHelper {
     public int calculatePopularityPoint(int advertTourRequestListSize,int advertViewCount){
         return (3*advertTourRequestListSize)+advertViewCount;
     }
+
+    public boolean priceControl(Double startPrice,Double endPrice){
+        if(startPrice<0 || endPrice<startPrice || endPrice<0){
+            return true;
+        }else return false;
+    }
+
+
 }

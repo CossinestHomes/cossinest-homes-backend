@@ -1,13 +1,13 @@
 package com.cossinest.homes.payload.response.business;
 
-public class CountriesResponse {
+public class CountryResponse {
     private Long id;
     private String name;
 
     // Constructors
-    public CountriesResponse() {}
+    public CountryResponse() {}
 
-    public CountriesResponse(Long id, String name) {
+    public CountryResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }

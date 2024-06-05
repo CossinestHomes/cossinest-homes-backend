@@ -3,19 +3,19 @@ package com.cossinest.homes.payload.request.business;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class CountriesRequest {
+public class CountryRequest {
 
     @NotNull
     @Size(max = 30)
     private String name;
 
     // Constructors
-    public CountriesRequest() {
+    public CountryRequest() {
 
     }
 
 
-    public CountriesRequest(String name) {
+    public CountryRequest(String name) {
         this.name = name;
     }
 

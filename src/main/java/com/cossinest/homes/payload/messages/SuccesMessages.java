@@ -16,6 +16,9 @@ public class SuccesMessages {
     public static final String RETURNED_ALL_CATEGORIES_AND_AMOUNT= "All categories returned with amounts";
     public static final String RETURNED_ALL_CITIES_AND_AMOUNT= "All cities returned with amounts";
     public static final String RETURNED_POPULAR_ADVERTS= "Popular adverts returned for value";
+    public static final String RETURNED_ALL_ADVERTS_FOR_USER= "User's adverts returned";
+    public static final String RETURNED_ADVERT_BY_SLUG= "Advert returned successfully by slug";
+    public static final String ADVERT_CREATED_SUCCESS= "Advert created successfully";
 
     private SuccesMessages(){
 

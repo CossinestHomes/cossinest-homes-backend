@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 
-public class Countries {
+public class Country {
 
     @Id
     @Setter(AccessLevel.NONE)
@@ -23,9 +23,9 @@ public class Countries {
 
 
     // Constructors
-    public Countries() {}
+    public Country() {}
 
-    public Countries(String name) {
+    public Country(String name) {
         this.name = name;
     }
 
