@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class CitiesRequest {
+public class CityRequest {
 
 
     @NotNull(message = "City name can not be empty")

@@ -2,6 +2,7 @@ package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.Category;
 
+import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.SuccesMessages;
@@ -31,6 +32,10 @@ public class CategoryService {
     //advert için yardımcı method
     public List<Category> getAllCategory(){
         return categoryRepository.findAll();
+    }
+
+    public Category getCategoryById (Long id){
+        return categoryRepository.findById(id).orElseThrow(()->new RuntimeException(ErrorMessages.CATEGORY_NOT_FOUND));
     }
 
 
