@@ -1,7 +1,15 @@
 package com.cossinest.homes.domain.concretes.business;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 @Entity
 @Getter
@@ -22,28 +30,15 @@ public class Country {
     private String name;
 
 
-    // Constructors
-    public Country() {}
+    @OneToMany (mappedBy = "city",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<City> city= new HashSet<>();
 
-    public Country(String name) {
-        this.name = name;
-    }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    @OneToMany (mappedBy = "advertList",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Advert> advertList = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
 }

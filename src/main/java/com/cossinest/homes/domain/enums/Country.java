@@ -1,6 +1,6 @@
 package com.cossinest.homes.domain.enums;
 
-public enum Countries {
+public enum Country {
     ENGLAND("England"),
     TÜRKİYE("Türkiye"),
     DEUTSCHLAND("Deutschland");
@@ -8,7 +8,7 @@ public enum Countries {
 
     private final String name;
 
-    Countries(String name) {
+    Country(String name) {
         this.name = name;
     }
     public String getName() {
