@@ -70,7 +70,7 @@ public class Category {
     @NotNull(message = "is_active can not be null")
     @NotBlank(message = "is_active can not be white space")
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
 
     @NotNull(message = "create_at can not be null")

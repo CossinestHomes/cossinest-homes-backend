@@ -47,12 +47,9 @@ public class CategoryRequest {
     @NotNull(message = "is_active can not be null")
     @NotBlank(message = "is_active can not be white space")
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
-    @Setter(AccessLevel.NONE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
-    @Column(nullable = true, name="update_at")
-    private LocalDateTime updatedAt;
+
 
 
 
