@@ -3,6 +3,8 @@ package com.cossinest.homes.payload.response.user;
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.UserRole;
+import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -32,14 +34,14 @@ public class AuthenticatedUsersResponse {
 
     private Boolean built_in = false;
 
-
-    private Set<UserRole> userRole;
+    private Set<String> userRole;
 
 
     private Set<Advert> advert;
 
+    private Set<TourRequestResponse>tourRequestsResponse;
 
-    private Set<TourRequest>tourRequests;
+
 
     // todo:favori ve log eklenecek
 

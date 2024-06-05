@@ -18,7 +18,7 @@ public class DateTimeValidator {
     public void checkConflictTourRequestFromRepoByAdvert(List<TourRequest> tourRequestsFromRepo, TourRequestRequest tourRequestRequest) {
 
         for(TourRequest tourRequest: tourRequestsFromRepo ){
-            if((tourRequest.getAdvertId().getId().equals(tourRequestRequest.getAdvertId().getId())) &&
+            if((tourRequest.getAdvertId().getId().equals(tourRequestRequest.getAdvertId().getId())) &&  //neden id kontrolu var?
                     (tourRequest.getTourDate().equals(tourRequestRequest.getTourDate()))) {
 
                long betweenMinutesTime = calculateMinutesBetweenTime(tourRequest,tourRequestRequest);
@@ -32,6 +32,7 @@ public class DateTimeValidator {
         }
 
     public void checkConflictTourRequestFromRepoByUserForGuest(User userGuest, TourRequestRequest tourRequestRequest) {
+
         for(TourRequest tourRequest : userGuest.getTourRequests()){
            if(tourRequest.getTourDate().equals(tourRequestRequest.getTourDate())){
 

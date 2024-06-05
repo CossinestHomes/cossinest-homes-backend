@@ -1,12 +1,12 @@
 package com.cossinest.homes.service.business;
 
-
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.domain.enums.StatusType;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
+import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.payload.mappers.TourRequestMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
@@ -16,17 +16,24 @@ import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import com.cossinest.homes.repository.business.TourRequestRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
+import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.DateTimeValidator;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import javax.management.relation.Role;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +46,9 @@ public class TourRequestService {
     private final MethodHelper methodHelper;
     private final UserRoleService userRoleService;
     private final PageableHelper pageableHelper;
+
+
+
 
 //todo save methodu kontrol edilecek!
     public ResponseMessage<TourRequestResponse> saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
@@ -76,6 +86,7 @@ public class TourRequestService {
         return tourRequestRepository.findAll();
     }
 
+
     //getAll-Response
 
     public TourRequest findTourRequestById(Long id){
@@ -88,9 +99,7 @@ public class TourRequestService {
 
         String userEmail = (String) httpServletRequest.getAttribute("email");
         User userByEmail = methodHelper.findByUserByEmail(userEmail);
-
-
-        //Role kontrolü
+               //Role kontrolü
        methodHelper.controlRoles(userByEmail,RoleType.CUSTOMER);
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page,size,sort,type);
@@ -102,9 +111,8 @@ public class TourRequestService {
                 .status(HttpStatus.OK)
                 .build();
     }
-
-
-    public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
+    
+        public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
             HttpServletRequest httpServletRequest, int page, int size, String sort, String type,String createAt,String tourTime,String status,String tourDate) {
 
         String userEmail = (String) httpServletRequest.getAttribute("email");
@@ -118,6 +126,13 @@ public class TourRequestService {
 
         return ResponseEntity.ok(allTourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse));
     }
+
+
+
+ 
+
+
+
 
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(Long id, HttpServletRequest httpServletRequest) {
 
@@ -265,5 +280,29 @@ public class TourRequestService {
                 .message(SuccesMessages.TOUR_REQUEST_DELETED_SUCCESSFULLY)
                 .build();
 
+        //Role kontrolü
+        Set<RoleType> roles=new HashSet<>();
+        roles.add(RoleType.CUSTOMER);
+
+        for (UserRole role:userByEmail.getUserRole()) {
+            if(!(roles.contains(role))){
+                throw new BadRequestException(ErrorMessages.NOT_HAVE_AUTHORITY);
+            }
+        }
+
+
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+        if (type.equals("desc")){
+            pageable = PageRequest.of(page,size, Sort.by(sort).descending());
+        }
+
+        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQuery(pageable,createAt,tourTime,status,tourDate);
+
+        return ResponseMessage.<Page<TourRequestResponse>>builder()
+                .object(tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse))
+                .status(HttpStatus.OK)
+                .build();
     }
+
+    
 }

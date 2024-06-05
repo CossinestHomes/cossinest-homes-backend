@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,6 +25,8 @@ public class AuthenticatedUsersRequest {
     private String email;
     @NotNull(message = "Phone number can not be a null")
     private String phone;
+
+
 
 
 }
