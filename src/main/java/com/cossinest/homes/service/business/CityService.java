@@ -5,18 +5,21 @@ import com.cossinest.homes.payload.mappers.CityMapper;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
 import com.cossinest.homes.repository.business.CityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CityService {
 
-    private final CityRepository cityRepository;
-    private final CityMapper cityMapper;
+  @Autowired
+   private CityRepository cityRepository;
+
+    @Autowired
+    private  CityMapper cityMapper;
 
     //Advert için yazıldı
     public List<CityForAdvertsResponse> getAllCityForAdverts(){
@@ -24,5 +27,10 @@ public class CityService {
         List<City> cityList = cityRepository.findAll();
 
         return cityList.stream().map(cityMapper::mapperCityToCityForAdvertsResponse).collect(Collectors.toList());
+    }
+
+    public List<City> getAllCity() {
+       return cityRepository.findAll();
+
     }
 }

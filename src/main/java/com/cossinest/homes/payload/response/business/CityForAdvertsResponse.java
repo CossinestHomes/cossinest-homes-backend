@@ -13,4 +13,5 @@ public class CityForAdvertsResponse {
 
     private String cityName;
     private int amount;
+
 }
