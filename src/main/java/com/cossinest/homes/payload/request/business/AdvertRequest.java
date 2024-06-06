@@ -12,6 +12,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -45,7 +48,7 @@ public class AdvertRequest {
     private Status status;
 
     @NotNull(message = "Built in must not be empty")
-    private Boolean builtIn;
+    private Boolean builtIn=false;
 
     @NotNull(message = "Is active must not be empty")
     private Boolean isActive;
@@ -58,27 +61,30 @@ public class AdvertRequest {
 
     @NotNull(message = "Advert type ID is required")
     @Min(value = 1, message = "Advert type ID must be greater than or equal to 1")
-    private int advertTypeId;
+    private Long advertTypeId;
 
     @NotNull(message = "Country ID is required")
     @Min(value = 1, message = "Country ID must be greater than or equal to 1")
-    private int countryId;
+    private Long countryId;
 
     @NotNull(message = "City ID is required")
     @Min(value = 1, message = "City ID must be greater than or equal to 1")
-    private int cityId;
+    private Long cityId;
 
     @NotNull(message = "District ID is required")
     @Min(value = 1, message = "District ID must be greater than or equal to 1")
-    private int districtId;
+    private Long districtId;
 
     @NotNull(message = "User ID is required")
     @Min(value = 1, message = "User ID must be greater than or equal to 1")
-    private int userId;
+    private Long userId;
 
     @NotNull(message = "Category ID is required")
     @Min(value = 1, message = "Category ID must be greater than or equal to 1")
-    private int categoryId;
+    private Long categoryId;
+
+   @NotNull
+    private List<Map.Entry> properties;
 
 
     //TODO: favourites,images

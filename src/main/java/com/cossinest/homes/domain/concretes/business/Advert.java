@@ -11,6 +11,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "adverts")
@@ -122,7 +123,7 @@ public class Advert {
 
     @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
-    private List<CategoryPropertyValues> categoryPropertyValuesList;
+    private Set<CategoryPropertyValue> categoryPropertyValuesList;
 
     //TODO: logs
 

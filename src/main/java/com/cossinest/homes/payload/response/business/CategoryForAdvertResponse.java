@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class CitiesResponse {
-
-    private Long id;
-    private String name;
-    private Long country_id;
-
+public class CategoryForAdvertResponse {
+    private String category;
+    private int amount;
 }

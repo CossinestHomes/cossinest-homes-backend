@@ -10,7 +10,7 @@ public class CityMapper {
     //Adverts için method
     //Cities ==> CityForAdvertsResponse
 
-    public CityForAdvertsResponse mapperCitiesToCityForAdvertsResponse(City city){
+    public CityForAdvertsResponse mapperCityToCityForAdvertsResponse(City city){
 
         return CityForAdvertsResponse.builder()
                 .cityName(city.getCities().name)

@@ -1,8 +1,10 @@
 package com.cossinest.homes.payload.mappers;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,16 @@ public class AdvertMapper {
                 .viewCount(advertRequest.getViewCount())
                 .location(advertRequest.getLocation())
                 .isActive(advertRequest.getIsActive())
+                //.category(advertRequest.getCategoryId())
+                //.categoryPropertyValuesList(advertRequest.getProperties().entrySet())
+                .build();
+    }
+
+    //Category POJO==>DTO
+    public CategoryForAdvertResponse mapperCategoryToCategoryForAdvertResponse(Category category){
+        return CategoryForAdvertResponse.builder()
+                .category(category.getTitle())
+                .amount(category.getAdverts().size())
                 .build();
     }
 }
