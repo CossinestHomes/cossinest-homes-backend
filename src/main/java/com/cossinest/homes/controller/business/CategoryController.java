@@ -104,7 +104,7 @@ public class CategoryController {
     }
 
 
-    // C 05 id ile UPDATE etme :
+    // C 05 id ile category UPDATE etme (Path Variable ile) :
 
 
     @PutMapping("{id}")         // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
@@ -118,6 +118,27 @@ public class CategoryController {
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+
+    // C 06 id ile category DELETE (Path Variable ile) :
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteCategory(@PathVariable("id") Long id){
+
+        categoryService.deleteCategory(id);
+
+        Map<String,String> map = new HashMap<>();
+
+        map.put("message","Category is deleted successfuly");
+        map.put("status" ,"true");
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+
+    // C07 id ile bir category'nin property key'lerini getirme (Path Variable ile) :
+
+    @GetMapping()
 
 
 

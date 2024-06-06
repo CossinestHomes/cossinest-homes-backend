@@ -81,6 +81,7 @@ public class CategoryService {
 
         }
 
+        category.setTitle(categoryRequest.getTitle());
         category.setIcon(categoryRequest.getIcon());
         category.setSeq(categoryRequest.getSeq());
         category.setSlug(categoryRequest.getSlug());
@@ -94,4 +95,9 @@ public class CategoryService {
     }
 
 
+    public void deleteCategory(Long id) {
+
+        Category category = findCategory(id);
+        categoryRepository.delete(category);
+    }
 }
