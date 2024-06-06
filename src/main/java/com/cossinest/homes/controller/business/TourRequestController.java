@@ -94,12 +94,12 @@ public class TourRequestController {
     }
 
     @PatchMapping("/{id}/decline") // http://localhost:8080/tour-requests/2/decline + PATCH + JSON
-    public ResponseMessage<TourRequestResponse> updateTourRequestDecline(@Valid @RequestBody TourRequestRequest tourRequestRequest,
+    public ResponseMessage<TourRequestResponse> updateTourRequestDecline(
                                                                          @PathVariable("id") Long id,
                                                                          HttpServletRequest httpServletRequest){
 
         // status must be pending
-        return tourRequestService.updateTourRequestDecline(tourRequestRequest,id,httpServletRequest);
+        return tourRequestService.updateTourRequestDecline(id,httpServletRequest);
     }
 
     @DeleteMapping("/{id}") // http://localhost:8080/tour-requests/2 + DELETE

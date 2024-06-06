@@ -7,6 +7,7 @@ public class ErrorMessages {
 
     public static final String NOT_FOUND_TOUR_REQUEST = "%s id'li Tour request is not found";
     public static final String TOUR_REQUEST_CAN_NOT_BE_CHANGED = "Tour reuest is already approved. It can not be changed";;
+    public static final String NOT_FOUND_IMAGE = "%s image is not found";
 
 
     private ErrorMessages() {
