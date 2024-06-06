@@ -2,6 +2,7 @@ package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.Category;
 
+import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
@@ -91,6 +92,7 @@ public class CategoryService {
 
         }
 
+        category.setTitle(categoryRequest.getTitle());
         category.setIcon(categoryRequest.getIcon());
         category.setSeq(categoryRequest.getSeq());
         category.setSlug(categoryRequest.getSlug());
@@ -104,4 +106,17 @@ public class CategoryService {
     }
 
 
+    public void deleteCategory(Long id) {
+
+        Category category = findCategory(id);
+        categoryRepository.delete(category);
+    }
+
+    public List<CategoryPropertyKey> findCategoryProperties(Long id) {
+
+        Category category = findCategory(id);
+
+        List <CategoryPropertyKey> categoryProperties = category.getCategoryPropertyKeys();
+        return  categoryProperties;
+    }
 }
