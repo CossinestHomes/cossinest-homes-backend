@@ -24,4 +24,6 @@ public class ImagesController {
 
     @PostMapping("/")
 
+    //deneme
+
 }
