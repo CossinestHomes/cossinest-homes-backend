@@ -48,6 +48,7 @@ public class ErrorMessages {
     public static final String CATEGORY_NOT_FOUND= "Categoty not found";
     public static final String CITY_NOT_FOUND= "City not found";
     public static final String COUNTRY_NOT_FOUND= "Country not found";
+    public static final String PROPERTY_VALUE_NOT_FOUND= "Property value not found";
 
 
 }

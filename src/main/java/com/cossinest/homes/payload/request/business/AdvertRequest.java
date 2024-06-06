@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -84,7 +85,7 @@ public class AdvertRequest {
     private Long categoryId;
 
    @NotNull
-    private List<Map.Entry> properties;
+    private List<Map<String,Object>> properties;
 
 
     //TODO: favourites,images

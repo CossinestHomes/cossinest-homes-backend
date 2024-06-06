@@ -1,10 +1,7 @@
 package com.cossinest.homes.service.business;
 
 
-import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.domain.concretes.business.City;
-import com.cossinest.homes.domain.concretes.business.Country;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.ConflictException;
@@ -28,7 +25,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +47,8 @@ public class AdvertService {
     private final CityService cityService;
 
     private final CountryService countryService;
+
+    private final CategoryPropertyValueService categoryPropertyValueService;
 
 
 
@@ -138,12 +139,33 @@ public class AdvertService {
     }
 
     public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest) {
+        Advert advert =new Advert();
         Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
         City city=cityService.getCityById(advertRequest.getCityId());
         User user=methodHelper.getUserByHttpRequest(httpServletRequest);
         Country country= countryService.getCountryById(advertRequest.getCountryId());
 
-        //category üzerinden propertykeyleri cağır ve value ları setle
+
+        //adım:1==>Db den category e ait PropertyKeyleri getir
+        List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
+        //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
+        List<Long> cpkIds= categoryPropertyKeys.stream().map(t-> t.getId()).collect(Collectors.toList());
+        //adım:3==>requestten gelen properti ile map yapısı oluştur
+        List<Object> propertyKeys= advertRequest.getProperties().stream().map(t-> t.get("keyId")).collect(Collectors.toList());
+        List<Object> propertyValues= advertRequest.getProperties().stream().map(t-> t.get("value")).collect(Collectors.toList());
+        Map<Object,Object> propertyKeyAndPropertyValue= methodHelper.mapTwoListToOneMap(propertyKeys,propertyValues);
+        //adım:4==>yeni bir liste oluştur ve dbden kelen keylerin içerisinde requestten gelen key varsa mapten o objenin valuesunu yeni listeye koy
+        List<Object> propertyForAdvert=new ArrayList<>();
+        propertyKeys.stream().map(t->cpkIds.contains(t)?propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)):null);//value birden fazla gelebilir
+
+        //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =propertyForAdvert.stream()
+                .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
+
+        advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+
+
+
         //advert_type
         //images
         return null;
@@ -161,4 +183,6 @@ public class AdvertService {
         return advertRepository.save(advert);
     }
      */
+
+
 }

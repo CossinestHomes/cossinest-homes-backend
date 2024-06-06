@@ -123,7 +123,7 @@ public class Advert {
 
     @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
-    private Set<CategoryPropertyValue> categoryPropertyValuesList;
+    private List<CategoryPropertyValue> categoryPropertyValuesList;
 
     //TODO: logs
 

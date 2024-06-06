@@ -126,19 +126,20 @@ public class MethodHelper {
     }
 
 
-    }
 
-    public void controlRoles(User user,RoleType... roleTypes){
 
-        Set<RoleType> roles=new HashSet<>();
-        Collections.addAll(roles,roleTypes);
+    public void controlRoles(User user,RoleType... roleTypes) {
+
+        Set<RoleType> roles = new HashSet<>();
+        Collections.addAll(roles, roleTypes);
         Set<UserRole> rolesUserRole = roles.stream().map(userRoleService::getUserRole).collect(Collectors.toSet());
 
-        for (UserRole role : user.getUserRole()){
-            if(!(rolesUserRole.contains(role))){
+        for (UserRole role : user.getUserRole()) {
+            if (!(rolesUserRole.contains(role))) {
                 throw new BadRequestException(ErrorMessages.NOT_HAVE_AUTHORITY);
             }
         }
+    }
 
     public void UpdatePasswordControl(String password, String reWritePassword) {
         if(!Objects.equals(password,reWritePassword)){
@@ -159,5 +160,18 @@ public class MethodHelper {
         }else return false;
     }
 
+    public Map<Object,Object> mapTwoListToOneMap(List<Object> list1, List<Object> list2){
+        Map<Object,Object> resultMap= new LinkedHashMap<>();
+
+        for (int i = 0; i < Math.min(list1.size(), list2.size()) ; i++) {
+            resultMap.put(list1.get(i),list2.get(i));
+        }
+
+        return resultMap;
+    }
+
+
+
 
 }
+
