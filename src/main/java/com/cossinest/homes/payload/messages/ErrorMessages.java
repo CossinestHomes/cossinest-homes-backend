@@ -52,5 +52,9 @@ public class ErrorMessages {
     public static final String PROPERTY_VALUE_NOT_FOUND= "Property value not found";
 
 
+    //Advert Type
+    public static final String ADVERT_TYPE_NOT_FOUND_BY_ID="Advert Type is not found with this id";
+    public static final String ADVERT_TYPE_ALREADY_EXIST= "Advert Type already exists";
+
 }
 
