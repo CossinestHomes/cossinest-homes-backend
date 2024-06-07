@@ -11,6 +11,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "adverts")
@@ -97,6 +98,10 @@ public class Advert {
     private City city;
 
     @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
+
+    @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")
     private Category category;
@@ -110,7 +115,6 @@ public class Advert {
         }
     }
 
-    //TODO: advertType, country, district,images
 
     @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
@@ -124,7 +128,7 @@ public class Advert {
     @JsonIgnore
     private List<CategoryPropertyValue> categoryPropertyValuesList;
 
-    //TODO: logs
+    //TODO: logs,district,images,advertType
 
 
 

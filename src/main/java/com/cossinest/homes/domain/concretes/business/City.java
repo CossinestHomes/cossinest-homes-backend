@@ -34,6 +34,7 @@ public class City {
     @JoinColumn(name = "country_id")
     private Country country;
 
+
     @OneToMany (mappedBy = "city",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Advert> advertList = new ArrayList<>();

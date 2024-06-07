@@ -12,6 +12,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -20,20 +24,19 @@ import java.time.LocalDateTime;
 public class AdvertRequest {
 
 
-
     @NotNull(message = "Title must not be empty")
-    @Size(min=5, max= 150, message = "Title should be at least 5 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
+    @Size(min = 5, max = 150, message = "Title should be at least 5 chars")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = "Title must consist of the characters .")
     private String title;
 
     @NotNull(message = "Description must not be empty")
-    @Size(max= 300, message = "Description should be at max 300 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Description must consist of the characters .")
+    @Size(max = 300, message = "Description should be at max 300 chars")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = "Description must consist of the characters .")
     private String desc;
 
 
     @NotNull(message = "Slug must not be empty")
-    @Size(min=5, max= 200, message = "Slug url should be at least 5 chars")
+    @Size(min = 5, max = 200, message = "Slug url should be at least 5 chars")
     private String slug;
 
     @NotNull(message = "Price must not be empty")
@@ -45,7 +48,7 @@ public class AdvertRequest {
     private Status status;
 
     @NotNull(message = "Built in must not be empty")
-    private Boolean builtIn;
+    private Boolean builtIn = false;
 
     @NotNull(message = "Is active must not be empty")
     private Boolean isActive;
@@ -58,28 +61,31 @@ public class AdvertRequest {
 
     @NotNull(message = "Advert type ID is required")
     @Min(value = 1, message = "Advert type ID must be greater than or equal to 1")
-    private int advertTypeId;
+    private Long advertTypeId;
 
     @NotNull(message = "Country ID is required")
     @Min(value = 1, message = "Country ID must be greater than or equal to 1")
-    private int countryId;
+    private Long countryId;
 
     @NotNull(message = "City ID is required")
     @Min(value = 1, message = "City ID must be greater than or equal to 1")
-    private int cityId;
+    private Long cityId;
 
     @NotNull(message = "District ID is required")
     @Min(value = 1, message = "District ID must be greater than or equal to 1")
-    private int districtId;
+    private Long districtId;
 
     @NotNull(message = "User ID is required")
     @Min(value = 1, message = "User ID must be greater than or equal to 1")
-    private int userId;
+    private Long userId;
 
     @NotNull(message = "Category ID is required")
     @Min(value = 1, message = "Category ID must be greater than or equal to 1")
-    private int categoryId;
+    private Long categoryId;
+
+    @NotNull
+    private List<Map<String, Object>> properties;
 
 
-    //TODO: favourites,images
+    //TODO: favourites,images,district,adverttype
 }

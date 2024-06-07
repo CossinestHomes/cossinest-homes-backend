@@ -1,6 +1,15 @@
 package com.cossinest.homes.payload.messages;
 
 public class ErrorMessages {
+
+
+
+
+    public static final String NOT_FOUND_TOUR_REQUEST = "%s id'li Tour request is not found";
+    public static final String TOUR_REQUEST_CAN_NOT_BE_CHANGED = "Tour reuest is already approved. It can not be changed";;
+    public static final String NOT_FOUND_IMAGE = "%s image is not found";
+
+
     private ErrorMessages() {
     }
     public static final String RESET_PASSWORD_CODE_DID_NOT_MATCH = "The reset password code didn`t match";
@@ -32,9 +41,20 @@ public class ErrorMessages {
     public static final String ROLE_NOT_FOUND = "There is no role like that, check the database";
     public static final String CONFLICT_TOUR_TIME = "Required tour time is already booked. Try to book it with time 30 minutes late";
 
+
     //Advert
     public static final String ADVERT_NOT_FOUND="Advert not found";
+    public static final String START_PRICE_AND_END_PRICE_INVALID="Start price must be less than end price";
 
+    public static final String CATEGORY_NOT_FOUND= "Categoty not found";
+    public static final String CITY_NOT_FOUND= "City not found";
+    public static final String COUNTRY_NOT_FOUND= "Country not found";
+    public static final String PROPERTY_VALUE_NOT_FOUND= "Property value not found";
+
+
+    //Advert Type
+    public static final String ADVERT_TYPE_NOT_FOUND_BY_ID="Advert Type is not found with this id";
+    public static final String ADVERT_TYPE_ALREADY_EXIST= "Advert Type already exists";
 
 }
 

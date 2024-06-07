@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class CategoryResponse {
 
 
-    private Long id;
 
 
 
@@ -40,7 +39,7 @@ public class CategoryResponse {
 
 
 
-    private boolean isActive;
+    private boolean active;
 
 
 

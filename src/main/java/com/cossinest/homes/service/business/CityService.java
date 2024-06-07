@@ -1,7 +1,9 @@
 package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.City;
+import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.CityMapper;
+import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
 import com.cossinest.homes.repository.business.CityRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,13 @@ public class CityService {
         return cityList.stream().map(cityMapper::mapperCityToCityForAdvertsResponse).collect(Collectors.toList());
     }
 
+
     public List<City> getAllCity() {
        return cityRepository.findAll();
+
+
+    public City getCityById(Long id){
+        return cityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.CITY_NOT_FOUND));
 
     }
 }

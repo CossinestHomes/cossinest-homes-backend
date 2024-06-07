@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder(toBuilder = true)
-public class CitiesResponse {
+import java.util.List;
 
-    private Long id;
-    private String name;
-    private Long country_id;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class ImagesResponse {
+
+    List<Long> imagesId;
 
 }
