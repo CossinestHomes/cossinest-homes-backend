@@ -98,6 +98,10 @@ public class Advert {
     private City city;
 
     @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
+
+    @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")
     private Category category;
@@ -111,7 +115,6 @@ public class Advert {
         }
     }
 
-    //TODO: advertType, country, district,images
 
     @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
@@ -125,7 +128,7 @@ public class Advert {
     @JsonIgnore
     private List<CategoryPropertyValue> categoryPropertyValuesList;
 
-    //TODO: logs
+    //TODO: logs,district,images,advertType
 
 
 
