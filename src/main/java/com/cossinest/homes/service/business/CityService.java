@@ -33,8 +33,8 @@ public class CityService {
 
 
     public List<City> getAllCity() {
-       return cityRepository.findAll();
-
+        return cityRepository.findAll();
+    }
 
     public City getCityById(Long id){
         return cityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.CITY_NOT_FOUND));

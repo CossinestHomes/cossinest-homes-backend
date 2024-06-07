@@ -28,8 +28,7 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
 
     Optional<Advert> findBySlug(String slug);
 
-    @Query("SELECT a FROM Advert a WHERE a.id=?1 AND a.user.id=?2")
-    Optional<Advert> findByIdAndUser(Long id,Long userId);
+
 
     /*
         @Query("SELECT u FROM User u WHERE (:name IS NULL OR u.firstName=:name)AND" +

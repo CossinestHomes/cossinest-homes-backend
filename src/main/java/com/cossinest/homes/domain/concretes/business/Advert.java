@@ -40,22 +40,10 @@ public class Advert {
     @Column(nullable = false)
     private Double price= 0.0;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
-    private Status status=Status.PENDING; //TODO:Tekrar bakılacak
-    //kullanımı
-        /*/
-    public class Main {
-    public static void main(String[] args) {
-        Status status = Status.PENDING;
-        int value = status.getValue();
-        String description = status.getDescription();
+    private int status = Status.PENDING.getValue();
 
-        System.out.println("Value: " + value); // Output: Value: 0
-        System.out.println("Description: " + description); // Output: Description: Pending
-    }
-}
-     */
 
     @Column(name = "built_in")
     private Boolean builtIn;
@@ -127,6 +115,10 @@ public class Advert {
     @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<CategoryPropertyValue> categoryPropertyValuesList;
+
+    @ManyToOne
+    @JsonIgnore
+    private AdvertType advertType;
 
     //TODO: logs,district,images,advertType
 

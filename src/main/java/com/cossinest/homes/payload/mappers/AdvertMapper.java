@@ -1,20 +1,25 @@
 package com.cossinest.homes.payload.mappers;
 
-import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.domain.concretes.business.City;
-import com.cossinest.homes.domain.concretes.business.Country;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
+import com.cossinest.homes.service.business.CategoryPropertyValueService;
+import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Data
 @Component
+@RequiredArgsConstructor
 public class AdvertMapper {
 
+    private CategoryPropertyValueService categoryPropertyValueService;
+    private MethodHelper methodHelper;
 
     //Advert==>DTO
     public AdvertResponse mapAdvertToAdvertResponse (Advert advert){
@@ -32,9 +37,10 @@ public class AdvertMapper {
                 .viewCount(advert.getViewCount())
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
+                .properties(methodHelper.getAdvertResponseProperties(advert,categoryPropertyValueService))
                 //.district
                 //.images
-                //.advert_type
+                .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
                 .userId(advert.getUser().getId())
                 .build();
@@ -42,13 +48,13 @@ public class AdvertMapper {
 
 
     //DTO==>Advert
-    public Advert mapAdvertRequestToAdvert(AdvertRequest advertRequest, Category category, City city, User user, Country country){
+    public Advert mapAdvertRequestToAdvert(AdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType){
         return Advert.builder()
                 .title(advertRequest.getTitle())
                 .desc(advertRequest.getDesc())
                 .builtIn(advertRequest.getBuiltIn())
                 .price(advertRequest.getPrice())
-                .status(advertRequest.getStatus())
+                //.status dedault değeri ile kaydedilecek mi diye kontrol et
                 .viewCount(advertRequest.getViewCount())
                 .location(advertRequest.getLocation())
                 .isActive(advertRequest.getIsActive())
@@ -57,6 +63,24 @@ public class AdvertMapper {
                 .city(city)
                 .user(user)
                 .country(country)
+                .advertType(advertType)
+                .build();
+    }
+
+    public Advert mapAdvertRequestToUpdateAdvert(Long id,AdvertRequest advertRequest,Category category, City city, Country country, AdvertType advertType){
+        return Advert.builder()
+                .id(id)
+                .country(country)
+                .city(city)
+                .advertType(advertType)
+                .slug(advertRequest.getSlug())
+                .price(advertRequest.getPrice())
+                .title(advertRequest.getTitle())
+                .desc(advertRequest.getDesc())
+                .isActive(advertRequest.getIsActive())
+                .category(category)
+                .location(advertRequest.getLocation())
+                .viewCount(advertRequest.getViewCount())
                 .build();
     }
 
@@ -67,4 +91,8 @@ public class AdvertMapper {
                 .amount(category.getAdverts().size())
                 .build();
     }
+
+
+
+
 }
