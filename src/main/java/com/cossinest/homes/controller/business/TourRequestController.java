@@ -56,6 +56,7 @@ public class TourRequestController {
     }
 
     @GetMapping("/{id}/auth") // http://localhost:8080/tour-requests/3/auth + GET
+    //  @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(@PathVariable Long id,
                                                                       HttpServletRequest httpServletRequest){
         return tourRequestService.getTourRequestByIdAuth(id,httpServletRequest);
