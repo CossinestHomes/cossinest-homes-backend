@@ -35,17 +35,17 @@ public class AdvertResponse {
 
     private String location;
 
-    private int advertTypeId;
+    private Long advertTypeId;
 
-    private int countryId;
+    private Long countryId;
 
-    private int cityId;
+    private Long cityId;
 
-    private int districtId;
+    private Long districtId;
 
-    private int userId;
+    private Long userId;
 
-    private int categoryId;
+    private Long categoryId;
 
     private LocalDateTime createAt;
 
@@ -53,7 +53,7 @@ public class AdvertResponse {
 
 
 
-    //TODO: favourites,images
+    //TODO: favourites,images,district,adverttype
 
-    //kullanıcıya dto response classlarını döndürmek lazım
+
 }

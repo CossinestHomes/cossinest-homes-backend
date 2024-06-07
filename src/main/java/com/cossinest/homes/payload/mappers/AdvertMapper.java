@@ -2,6 +2,9 @@ package com.cossinest.homes.payload.mappers;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Category;
+import com.cossinest.homes.domain.concretes.business.City;
+import com.cossinest.homes.domain.concretes.business.Country;
+import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
@@ -27,24 +30,33 @@ public class AdvertMapper {
                 .location(advert.getLocation())
                 .isActive(advert.getIsActive())
                 .viewCount(advert.getViewCount())
+                .countryId(advert.getCountry().getId())
+                .cityId(advert.getCity().getId())
+                //.district
+                //.images
+                //.advert_type
+                .categoryId(advert.getCategory().getId())
+                .userId(advert.getUser().getId())
                 .build();
     }
 
 
     //DTO==>Advert
-    public Advert mapAdvertRequestToAdvert(AdvertRequest advertRequest){
+    public Advert mapAdvertRequestToAdvert(AdvertRequest advertRequest, Category category, City city, User user, Country country){
         return Advert.builder()
                 .title(advertRequest.getTitle())
                 .desc(advertRequest.getDesc())
                 .builtIn(advertRequest.getBuiltIn())
                 .price(advertRequest.getPrice())
-                .slug(advertRequest.getSlug())
                 .status(advertRequest.getStatus())
                 .viewCount(advertRequest.getViewCount())
                 .location(advertRequest.getLocation())
                 .isActive(advertRequest.getIsActive())
-                //.category(advertRequest.getCategoryId())
-                //.categoryPropertyValuesList(advertRequest.getProperties().entrySet())
+                .slug(advertRequest.getSlug())
+                .category(category)
+                .city(city)
+                .user(user)
+                .country(country)
                 .build();
     }
 

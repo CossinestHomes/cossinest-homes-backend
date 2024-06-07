@@ -24,20 +24,19 @@ import java.util.Objects;
 public class AdvertRequest {
 
 
-
     @NotNull(message = "Title must not be empty")
-    @Size(min=5, max= 150, message = "Title should be at least 5 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
+    @Size(min = 5, max = 150, message = "Title should be at least 5 chars")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = "Title must consist of the characters .")
     private String title;
 
     @NotNull(message = "Description must not be empty")
-    @Size(max= 300, message = "Description should be at max 300 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Description must consist of the characters .")
+    @Size(max = 300, message = "Description should be at max 300 chars")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = "Description must consist of the characters .")
     private String desc;
 
 
     @NotNull(message = "Slug must not be empty")
-    @Size(min=5, max= 200, message = "Slug url should be at least 5 chars")
+    @Size(min = 5, max = 200, message = "Slug url should be at least 5 chars")
     private String slug;
 
     @NotNull(message = "Price must not be empty")
@@ -49,7 +48,7 @@ public class AdvertRequest {
     private Status status;
 
     @NotNull(message = "Built in must not be empty")
-    private Boolean builtIn=false;
+    private Boolean builtIn = false;
 
     @NotNull(message = "Is active must not be empty")
     private Boolean isActive;
@@ -84,9 +83,9 @@ public class AdvertRequest {
     @Min(value = 1, message = "Category ID must be greater than or equal to 1")
     private Long categoryId;
 
-   @NotNull
-    private List<Map<String,Object>> properties;
+    @NotNull
+    private List<Map<String, Object>> properties;
 
 
-    //TODO: favourites,images
+    //TODO: favourites,images,district,adverttype
 }
