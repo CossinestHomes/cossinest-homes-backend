@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.request.business;
 
+import com.cossinest.homes.domain.concretes.business.AdvertType;
 import com.cossinest.homes.domain.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
@@ -44,8 +45,8 @@ public class AdvertRequest {
     private Double price;
 
 
-    @NotNull(message = "Status must not be empty")
-    private Status status;
+    /*@NotNull(message = "Status must not be empty")
+    private int status;*/
 
     @NotNull(message = "Built in must not be empty")
     private Boolean builtIn = false;
@@ -87,5 +88,7 @@ public class AdvertRequest {
     private List<Map<String, Object>> properties;
 
 
-    //TODO: favourites,images,district,adverttype
+
+
+    //TODO: favourites,images,district
 }

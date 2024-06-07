@@ -27,7 +27,7 @@ public class AdvertType {
 
     private Boolean builtIn;
 
-//    @OneToMany
-//    private List<Advert> advertList;
+    @OneToMany
+    private List<Advert> advertList;
 
 }

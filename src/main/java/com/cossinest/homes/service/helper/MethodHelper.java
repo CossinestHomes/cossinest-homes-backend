@@ -1,5 +1,6 @@
 package com.cossinest.homes.service.helper;
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyValue;
@@ -14,6 +15,7 @@ import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
+import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.validator.UserRoleService;
@@ -191,6 +193,26 @@ public class MethodHelper {
         //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
         return propertyForAdvert.stream()
                 .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
+    }
+
+    public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService,Map<String,String> propertyNameAndValue){
+       String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
+       String propertyValue=categoryPropertyValue.getValue();
+       propertyNameAndValue.put(propertyKeyName,propertyValue);
+     }
+
+    public Map<String,String> getAdvertResponseProperties(Advert advert,CategoryPropertyValueService categoryPropertyValueService){
+        Map<String,String > properties= new HashMap<>();
+        for (int i = 0; i < advert.getCategoryPropertyValuesList().size() ; i++) {
+           getPropertiesForAdvertResponse(advert.getCategoryPropertyValuesList().get(i),categoryPropertyValueService,properties);
+        }
+        return properties;
+    }
+
+    public User getUserAndCheckRoles(HttpServletRequest request , String name ){
+        User user = getUserByHttpRequest(request);
+        checkRoles(user,RoleType.valueOf(name));
+        return user;
     }
 }
 

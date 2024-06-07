@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class AdvertResponse {
 
     private Double price;
 
-    private Status status;
+    private int status;
 
     private Boolean builtIn;
 
@@ -51,9 +52,11 @@ public class AdvertResponse {
 
     private LocalDateTime updateAt;
 
+    private Map<String,String > properties;
 
 
-    //TODO: favourites,images,district,adverttype
+
+    //TODO: favourites,images
 
 
 }
