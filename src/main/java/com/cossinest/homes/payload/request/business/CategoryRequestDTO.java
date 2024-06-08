@@ -1,6 +1,5 @@
 package com.cossinest.homes.payload.request.business;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,14 +7,12 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryRequest {
+public class CategoryRequestDTO {
 
 
 
@@ -26,6 +23,13 @@ public class CategoryRequest {
     @Size(min=2, max=150, message = "title '${validatedValue}' must be between {min} and {max} long")
     @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
     private String title;
+
+
+    @NotNull(message = "title can not be null")
+    @NotBlank(message = "title can not be white space")
+    @Size(min=2, max=150, message = "title '${validatedValue}' must be between {min} and {max} long")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
+    private String Name;
 
     @NotNull(message = "icon can not be null")
     @NotBlank(message = "icon can not be white space")

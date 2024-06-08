@@ -92,4 +92,9 @@ public class AdvertTypesService {
                 .build();
 
     }
+
+    //Advert için yazıldı
+    public AdvertType getAdvertTypeByIdForAdvert(Long advertTypeId) {
+        return isAdvertTypeExists(advertTypeId);
+    }
 }

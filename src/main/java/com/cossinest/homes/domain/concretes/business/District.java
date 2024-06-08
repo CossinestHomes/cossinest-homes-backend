@@ -5,29 +5,28 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "advert_type")
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class AdvertType {
+public class District {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotNull
-    @Size(min = 2 , max = 30, message = "Min 2 chars and Max 30 chars")
-    private String title;
+    @NotNull(message = "Please enter district")
+    @Size(min = 2 ,max = 30 , message = "Min 2 chars and max 30 chars ")
+    private String name;
 
-    private Boolean builtIn;
-
-    @OneToMany
-    private List<Advert> advertList;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "city_id")
+    private City city;
 
 }

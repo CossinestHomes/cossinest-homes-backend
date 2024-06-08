@@ -39,6 +39,8 @@ public class City {
     @JsonIgnore
     private List<Advert> advertList = new ArrayList<>();
 
+
+
     //TODO:district
 
 }

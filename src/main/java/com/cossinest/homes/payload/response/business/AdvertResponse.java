@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class AdvertResponse {
 
     private Double price;
 
-    private Status status;
+    private int status;
 
     private Boolean builtIn;
 
@@ -35,25 +36,27 @@ public class AdvertResponse {
 
     private String location;
 
-    private int advertTypeId;
+    private Long advertTypeId;
 
-    private int countryId;
+    private Long countryId;
 
-    private int cityId;
+    private Long cityId;
 
-    private int districtId;
+    private Long districtId;
 
-    private int userId;
+    private Long userId;
 
-    private int categoryId;
+    private Long categoryId;
 
     private LocalDateTime createAt;
 
     private LocalDateTime updateAt;
 
+    private Map<String,String > properties;
+
 
 
     //TODO: favourites,images
 
-    //kullanıcıya dto response classlarını döndürmek lazım
+
 }

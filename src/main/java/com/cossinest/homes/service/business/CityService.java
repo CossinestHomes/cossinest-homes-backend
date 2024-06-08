@@ -7,18 +7,21 @@ import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
 import com.cossinest.homes.repository.business.CityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CityService {
 
-    private final CityRepository cityRepository;
-    private final CityMapper cityMapper;
+  @Autowired
+   private CityRepository cityRepository;
+
+    @Autowired
+    private  CityMapper cityMapper;
 
     //Advert için yazıldı
     public List<CityForAdvertsResponse> getAllCityForAdverts(){
@@ -28,7 +31,13 @@ public class CityService {
         return cityList.stream().map(cityMapper::mapperCityToCityForAdvertsResponse).collect(Collectors.toList());
     }
 
+
+    public List<City> getAllCity() {
+        return cityRepository.findAll();
+    }
+
     public City getCityById(Long id){
         return cityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.CITY_NOT_FOUND));
+
     }
 }

@@ -3,21 +3,13 @@ package com.cossinest.homes.controller.business;
 
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
-import com.cossinest.homes.payload.messages.SuccesMessages;
-import com.cossinest.homes.payload.request.business.CategoryRequest;
-import com.cossinest.homes.payload.request.business.TourRequestRequest;
-import com.cossinest.homes.payload.response.ResponseMessage;
-import com.cossinest.homes.payload.response.business.CategoryResponse;
-import com.cossinest.homes.payload.response.business.TourRequestResponse;
+import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.service.business.CategoryService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -109,9 +101,9 @@ public class CategoryController {
 
 
     @PutMapping("{id}")         // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
-    public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequest categoryRequest){
+    public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        categoryService.updateCategory(id, categoryRequest);
+        categoryService.updateCategory(id, categoryRequestDTO);
         Map<String, String> map = new HashMap<>();          //map OBJECT'ini NEW'leyerek  olusturduk (Sadece METOD icinde kullanilacak)
 
         map.put("message", "Category is updated successfuly" );
@@ -140,10 +132,37 @@ public class CategoryController {
     // C07 id ile bir category'nin property key'lerini getirme (Path Variable ile) :
 
     @GetMapping("/{id}/properties")
-    public ResponseEntity<List<CategoryPropertyKey>> getCategoryProperties(@PathVariable("id") Long id){
+    public ResponseEntity<List<CategoryPropertyKey>> getCategoryPropertyKeys(@PathVariable("id") Long id){
 
-        List<CategoryPropertyKey> categoryProps = categoryService.findCategoryProperties(id);
+        List<CategoryPropertyKey> categoryProps = categoryService.findCategoryPropertyKeys(id);
         return ResponseEntity.ok(categoryProps);
+    }
+
+
+    // C08 id ile bir category'nin property key'ini olusturma (Path Variable ile) :
+
+    @PostMapping("/{id}/properties")
+    public ResponseEntity<Map<String, String>> createPropertyKey(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO, String... keys){
+
+        categoryService.createPropertyKey(id,  keys);
+
+        Map<String, String> map = new HashMap<>();
+
+        map.put("message", "PropertyKey is created successfuly");
+        map.put("status", "true");
+
+        return new ResponseEntity<>(map, HttpStatus.CREATED);
+
+    }
+
+    // C09 id ile property key'ini UPDATE etme  (Path Variable ile) :
+
+    @PutMapping("/properties/{id}")
+    public ResponseEntity<CategoryPropertyKey> updatePropertyKey(@PathVariable("id") Long propertyKeyId, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
+
+        CategoryPropertyKey  categoryPropertyKey= categoryService.updatePropertyKey(propertyKeyId, categoryRequestDTO);
+
+        return ResponseEntity.ok(categoryPropertyKey);
     }
 
 
