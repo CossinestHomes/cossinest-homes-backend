@@ -1,7 +1,6 @@
 package com.cossinest.homes.domain.concretes.business;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -27,10 +26,10 @@ public class Images {
     private String type;
 
     @Column(nullable = false)
-    private Boolean featured=false;
+    private Boolean featured;
 
     @Column(nullable = false)
-    private Long Advert_id;
+    private Long advertId;
 
 
 

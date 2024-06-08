@@ -3,6 +3,7 @@ package com.cossinest.homes.controller.business;
 import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
+import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.response.business.ImagesResponse;
 import com.cossinest.homes.service.business.ImagesService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,12 +39,26 @@ public class ImagesController {
          return new ResponseEntity<>(image, httpHeaders,HttpStatus.OK);
     }
 
-    @PostMapping("{advertId}")
-    public ResponseEntity<ImagesResponse> uploadImages(@PathVariable("advertId") Long id, MultipartFile file) throws IOException {
-        return imagesService.uploadImages(id,file);
+
+    @PostMapping("/{advertId}") // http://localhost:8080/images/1
+    public ResponseEntity<List<Long>> uploadImages(@PathVariable("id") Long advertId, @RequestParam("files") MultipartFile[] files) {
+
+        return ResponseEntity.ok(imagesService.uploadImages(advertId,files));
+
     }
 
+    @DeleteMapping("/{image_ids}")
+    public ResponseEntity<String> deleteImages(@PathVariable("image_ids") List<Long> ids){
 
+        imagesService.deleteImages(ids);
 
+        return ResponseEntity.ok(SuccesMessages.IMAGE_DELETED_SUCCESSFULLY);
+    }
+
+    @PutMapping("/{imageId}")
+    public ResponseEntity<byte[]> updateFeaturedOfImage(@PathVariable("imageId") Long imageId){
+
+       return ResponseEntity.ok(imagesService.updateFeaturedOfImage(imageId)) ;
+    }
 
 }
