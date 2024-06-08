@@ -149,6 +149,38 @@ public class AdvertController {
                 .build();
     }
 
+    @PutMapping("/auth/{id}")
+    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    public ResponseMessage<AdvertResponse> updateUsersAdvertById(@RequestBody @Valid AdvertRequest advertRequest,@PathVariable Long id,HttpServletRequest httpServletRequest){
+        AdvertResponse advertResponse= advertService.updateUsersAdvert(advertRequest,id,httpServletRequest);
+        return ResponseMessage.<AdvertResponse>builder()
+                .message(SuccesMessages.ADVERT_UPDATED_SUCCESS)
+                .status(HttpStatus.OK)
+                .object(advertResponse)
+                .build();
+    }
+    @PutMapping("/admin/{id}")
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public ResponseMessage<AdvertResponse> updateAdvertById(@RequestBody @Valid AdvertRequest advertRequest,@PathVariable Long id,HttpServletRequest httpServletRequest){
+        AdvertResponse advertResponse= advertService.updateAdvert(advertRequest,id,httpServletRequest);
+        return ResponseMessage.<AdvertResponse>builder()
+                .message(SuccesMessages.ADVERT_UPDATED_SUCCESS)
+                .status(HttpStatus.OK)
+                .object(advertResponse)
+                .build();
+    }
+
+    @DeleteMapping("/admin/{id}")
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public ResponseMessage<AdvertResponse> updateAdvertById(@PathVariable Long id,HttpServletRequest httpServletRequest){
+        AdvertResponse advertResponse= advertService.deleteAdvert(id,httpServletRequest);
+        return ResponseMessage.<AdvertResponse>builder()
+                .message(SuccesMessages.ADVERT_DELETED_SUCCESS)
+                .status(HttpStatus.OK)
+                .object(advertResponse)
+                .build();
+    }
+
 
 
 

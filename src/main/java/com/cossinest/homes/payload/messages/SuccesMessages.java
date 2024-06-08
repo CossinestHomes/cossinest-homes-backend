@@ -28,7 +28,12 @@ public class SuccesMessages {
     public static final String RETURNED_ALL_ADVERTS_FOR_USER= "User's adverts returned";
     public static final String RETURNED_ADVERT_BY_SLUG= "Advert returned successfully by slug";
     public static final String ADVERT_CREATED_SUCCESS= "Advert created successfully";
+    public static final String ADVERT_UPDATED_SUCCESS= "Advert updated successfully";
+    public static final String ADVERT_DELETED_SUCCESS= "Advert deleted successfully";
 
+    //advert type
+    public static final String ADVERT_TYPE_SAVED= "Advert type is saved successfully";
+    public static final String ADVERT_TYPE_DELETED= "Advert type is deleted successfully";
 
     private SuccesMessages(){
 

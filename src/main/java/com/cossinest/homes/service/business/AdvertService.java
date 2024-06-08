@@ -1,10 +1,7 @@
 package com.cossinest.homes.service.business;
 
 
-import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.domain.concretes.business.City;
-import com.cossinest.homes.domain.concretes.business.Country;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.ConflictException;
@@ -21,6 +18,7 @@ import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +48,10 @@ public class AdvertService {
     private final CityService cityService;
 
     private final CountryService countryService;
+
+    private final CategoryPropertyValueService categoryPropertyValueService;
+
+    private final AdvertTypesService advertTypesService;
 
 
 
@@ -120,45 +124,121 @@ public class AdvertService {
     }
 
     public ResponseEntity<AdvertResponse> getAdvertByIdForCustomer(Long id, HttpServletRequest request) {
-        User user = methodHelper.getUserByHttpRequest(request);
-        methodHelper.checkRoles(user,RoleType.CUSTOMER);
 
-        Advert advert=advertRepository.findByIdAndUser(id,user.getId()).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
+        User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
+
+        Advert advert=isAdvertExistById(id);
+        if(advert.getUser().getId()!=user.getId()){
+            throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
+        }
 
         return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(advert));
     }
 
     public ResponseEntity<AdvertResponse> getAdvertByIdForAdmin(Long id, HttpServletRequest request) {
-        User user = methodHelper.getUserByHttpRequest(request);
-        methodHelper.checkRoles(user,RoleType.ADMIN);
+        User user = methodHelper.getUserAndCheckRoles(request,RoleType.ADMIN.name());
 
-        Advert advert=advertRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
-
+        Advert advert=isAdvertExistById(id);
         return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(advert));
     }
 
+    @Transactional
     public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest) {
+        Advert advert =new Advert();
         Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
         City city=cityService.getCityById(advertRequest.getCityId());
         User user=methodHelper.getUserByHttpRequest(httpServletRequest);
         Country country= countryService.getCountryById(advertRequest.getCountryId());
+        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
 
-        //category üzerinden propertykeyleri cağır ve value ları setle
-        //advert_type
-        //images
-        return null;
-    }
+        advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
+        advert=advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType);
 
-
-
-    /*
-    ADVERT KAYDEDİLİRKEN BU KISIM KULLANILACAK
-    @Transactional
-    public Advert saveAdvert(Advert advert) {
         advert = advertRepository.save(advert);
         advert.generateSlug();
-        return advertRepository.save(advert);
+        advertRepository.save(advert);
+
+        return advertMapper.mapAdvertToAdvertResponse(advert);
+
+        //district
+        //images
+
     }
-     */
+
+
+    public AdvertResponse updateUsersAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request) {
+        User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
+        Advert advert=isAdvertExistById(id);
+        if(advert.getUser().getId() != user.getId()){
+            throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
+        }
+
+        if(advert.getBuiltIn()){
+            throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
+        }
+        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
+        City city=cityService.getCityById(advertRequest.getCityId());
+        Country country= countryService.getCountryById(advertRequest.getCountryId());
+        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+
+
+
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType);
+        updateAdvert.setUser(user);
+        updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+
+        Advert returnedAdvert=advertRepository.save(updateAdvert);
+        returnedAdvert.generateSlug();
+        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+
+        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+    }
+
+    public AdvertResponse updateAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request) {
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
+        Advert advert=isAdvertExistById(id);
+
+        if(advert.getBuiltIn()){
+            throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
+        }
+        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
+        City city=cityService.getCityById(advertRequest.getCityId());
+        Country country= countryService.getCountryById(advertRequest.getCountryId());
+        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType);
+
+        updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+
+        Advert returnedAdvert=advertRepository.save(updateAdvert);
+        returnedAdvert.generateSlug();
+        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+
+        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+    }
+
+    public AdvertResponse deleteAdvert(Long id, HttpServletRequest request) {
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
+        Advert advert=isAdvertExistById(id);
+
+        if(advert.getBuiltIn()){
+            throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
+        }
+        advertRepository.deleteById(id);
+        return advertMapper.mapAdvertToAdvertResponse(advert);
+    }
+
+    public Advert isAdvertExistById(Long id){
+        return advertRepository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException(String.format(ErrorMessages.NOT_FOUND_ADVERT_WITH_ID_MESSAGE,id)));
+    }
+
+
+
 }

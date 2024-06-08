@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder(toBuilder = true)
-public class CityForAdvertsResponse {
+import java.util.List;
 
-    private String cityName;
-    private int amount;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class ImagesResponse {
+
+    List<Long> imagesId;
 
 }

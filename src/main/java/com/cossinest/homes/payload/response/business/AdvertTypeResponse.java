@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class CityForAdvertsResponse {
+public class AdvertTypeResponse {
 
-    private String cityName;
-    private int amount;
+    private Long id;
 
+    private String title;
 }

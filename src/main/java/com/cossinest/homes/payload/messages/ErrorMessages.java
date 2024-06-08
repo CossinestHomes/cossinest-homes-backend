@@ -7,6 +7,7 @@ public class ErrorMessages {
 
     public static final String NOT_FOUND_TOUR_REQUEST = "%s id'li Tour request is not found";
     public static final String TOUR_REQUEST_CAN_NOT_BE_CHANGED = "Tour reuest is already approved. It can not be changed";;
+    public static final String NOT_FOUND_IMAGE = "%s image is not found";
 
 
     private ErrorMessages() {
@@ -48,7 +49,20 @@ public class ErrorMessages {
     public static final String CATEGORY_NOT_FOUND= "Categoty not found";
     public static final String CITY_NOT_FOUND= "City not found";
     public static final String COUNTRY_NOT_FOUND= "Country not found";
+    public static final String PROPERTY_VALUE_NOT_FOUND= "Property value not found";
 
+    public static final String NOT_FOUND_ADVERT_WITH_ID_MESSAGE ="Error: Advert with id: %s not found";
+    public static final String ADVERT_IS_NOT_FOUND_FOR_USER ="Error: Advert is not found with user id: %s";
+    public static final String THIS_ADVERT_DOES_NOT_UPDATE ="Error: This advert is built in";
+
+
+
+
+
+
+    //Advert Type
+    public static final String ADVERT_TYPE_NOT_FOUND_BY_ID="Advert Type is not found with this id";
+    public static final String ADVERT_TYPE_ALREADY_EXIST= "Advert Type already exists";
 
 }
 
