@@ -6,12 +6,8 @@ import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
-import com.cossinest.homes.payload.messages.SuccesMessages;
-import com.cossinest.homes.payload.request.business.CategoryRequest;
-import com.cossinest.homes.payload.response.ResponseMessage;
-import com.cossinest.homes.payload.response.business.CategoryResponse;
+import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.repository.business.CategoryRepository;
-import jakarta.persistence.PrePersist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,13 +72,13 @@ public class CategoryService {
     }
 
 
-    public void updateCategory(Long id, CategoryRequest categoryRequest) {
+    public void updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
 
-        boolean existTitle = categoryRepository.existsByTitle(categoryRequest.getTitle());  // categoryRequest ile gelen Title DB'de VAR mi?
+        boolean existTitle = categoryRepository.existsByTitle(categoryRequestDTO.getTitle());  // categoryRequest ile gelen Title DB'de VAR mi?
 
         Category category = findCategory(id);
 
-        if (existTitle && !categoryRequest.getTitle().equals(category.getTitle())){
+        if (existTitle && !categoryRequestDTO.getTitle().equals(category.getTitle())){
 
             throw new ConflictException("Title is already exist");
 
@@ -92,11 +88,11 @@ public class CategoryService {
 
         }
 
-        category.setTitle(categoryRequest.getTitle());
-        category.setIcon(categoryRequest.getIcon());
-        category.setSeq(categoryRequest.getSeq());
-        category.setSlug(categoryRequest.getSlug());
-        category.setActive(categoryRequest.isActive());
+        category.setTitle(categoryRequestDTO.getTitle());
+        category.setIcon(categoryRequestDTO.getIcon());
+        category.setSeq(categoryRequestDTO.getSeq());
+        category.setSlug(categoryRequestDTO.getSlug());
+        category.setActive(categoryRequestDTO.isActive());
 
         LocalDateTime updatedOn = LocalDateTime.now();
         category.setUpdatedAt(updatedOn);
@@ -112,11 +108,56 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    public List<CategoryPropertyKey> findCategoryProperties(Long id) {
+
+    public List<CategoryPropertyKey> findCategoryPropertyKeys(Long id) {
 
         Category category = findCategory(id);
 
         List <CategoryPropertyKey> categoryProperties = category.getCategoryPropertyKeys();
         return  categoryProperties;
     }
+
+
+    public void createPropertyKey(Long id, String... keys) {
+
+
+        Category category = findCategory(id);
+
+        List <CategoryPropertyKey> categoryProperties = category.getCategoryPropertyKeys();
+        CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
+
+        for ( String key : keys){
+
+            categoryPropertyKey.setName(key);
+            categoryProperties.add(categoryPropertyKey);
+        }
+    }
+
+    public CategoryPropertyKey findPropertyKey(Long propertyKeyId){
+
+        return  categoryRepository.findByPropertyKeyId(propertyKeyId);
+
+    }
+
+
+    public CategoryPropertyKey updatePropertyKey(Long propertyKeyId, CategoryRequestDTO categoryRequestDTO) {
+
+        boolean existName = categoryRepository.existsByName(categoryRequestDTO.getName());
+
+        CategoryPropertyKey categoryPropertyKey = findPropertyKey(propertyKeyId);
+
+        if( existName && ! categoryRequestDTO.getName().equals(categoryPropertyKey.getName()) ) {
+
+            throw new ConflictException("Email is already exist ");
+        }
+        categoryPropertyKey.setName(categoryRequestDTO.getName());
+        categoryRepository.save(categoryPropertyKey);
+
+
+        return categoryPropertyKey;
+
+    }
+
+
 }
+
