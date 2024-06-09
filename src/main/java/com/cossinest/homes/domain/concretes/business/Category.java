@@ -93,9 +93,6 @@ public class Category {
 
 
 
-
-
-
     @OneToMany(mappedBy = "category")
     private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
 

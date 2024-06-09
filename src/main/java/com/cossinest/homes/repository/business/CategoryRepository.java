@@ -25,9 +25,8 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     Page<Category> findAllActiveCategories(Pageable pageable);
 
 
-    @Query("SELECT c from CategoryPropertyKey c WHERE c.propertyKeyId = pKeyId")
-    CategoryPropertyKey findByPropertyKeyId(@Param("pKeyId") Long propertyKeyId);
 
 
-    boolean existsByName(String name);
+
+
 }

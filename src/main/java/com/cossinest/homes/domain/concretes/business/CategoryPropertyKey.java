@@ -24,7 +24,7 @@ public class CategoryPropertyKey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long propertyKeyId;
+    private Long Id;
 
 
     @NotNull(message = "name can not be null")
