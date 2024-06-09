@@ -17,7 +17,6 @@ public class Images {
     private Long id;
 
     @Lob
-    @ManyToOne
     private byte[] data;
 
     @Column(nullable = false)
@@ -28,7 +27,8 @@ public class Images {
     @Column(nullable = false)
     private Boolean featured;
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "advert_id", nullable = false)
     private Long advertId;
 
 
