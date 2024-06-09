@@ -10,6 +10,7 @@ import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
+import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
@@ -53,6 +54,8 @@ public class AdvertService {
 
     private final AdvertTypesService advertTypesService;
 
+    private final DistrictService districtService;
+
 
 
     public List<Advert> getAllAdverts(){
@@ -64,7 +67,7 @@ public class AdvertService {
     }
 
 
-    public Page<AdvertResponse> getAllAdvertsByPage(String query,Long categoryId, int advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPage(String query,Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
@@ -106,7 +109,7 @@ public class AdvertService {
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
-    public Page<AdvertResponse> getAllAdvertsByPageForAdmin(HttpServletRequest request,String query ,Long categoryId, int advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPageForAdmin(HttpServletRequest request,String query ,Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
@@ -150,11 +153,13 @@ public class AdvertService {
         User user=methodHelper.getUserByHttpRequest(httpServletRequest);
         Country country= countryService.getCountryById(advertRequest.getCountryId());
         AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
         List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+
 
         advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
-        advert=advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType);
+        advert=advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType,district);
 
         advert = advertRepository.save(advert);
         advert.generateSlug();
@@ -162,12 +167,12 @@ public class AdvertService {
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
 
-        //district
-        //images
+
+        //TODO:images
 
     }
 
-
+    @Transactional
     public AdvertResponse updateUsersAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request) {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
         Advert advert=isAdvertExistById(id);
@@ -182,11 +187,12 @@ public class AdvertService {
         City city=cityService.getCityById(advertRequest.getCityId());
         Country country= countryService.getCountryById(advertRequest.getCountryId());
         AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
         List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
 
 
 
-        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType);
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType,district);
         updateAdvert.setUser(user);
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
@@ -197,7 +203,8 @@ public class AdvertService {
         return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
     }
 
-    public AdvertResponse updateAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request) {
+    @Transactional
+    public AdvertResponse updateAdvert(AdvertRequestForAdmin advertRequest, Long id, HttpServletRequest request) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Advert advert=isAdvertExistById(id);
@@ -209,9 +216,10 @@ public class AdvertService {
         City city=cityService.getCityById(advertRequest.getCityId());
         Country country= countryService.getCountryById(advertRequest.getCountryId());
         AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueListForAdmin(category,advertRequest,categoryPropertyValueService);
 
-        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType);
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvertForAdmin(id,advertRequest,category,city,country,advertType,district);
 
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 

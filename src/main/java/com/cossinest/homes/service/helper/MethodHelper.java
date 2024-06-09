@@ -12,6 +12,7 @@ import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
+import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
@@ -178,6 +179,24 @@ public class MethodHelper {
 
 
     public List<CategoryPropertyValue> getPropertyValueList(Category category, AdvertRequest advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
+        //adım:1==>Db den category e ait PropertyKeyleri getir
+        List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
+        //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
+        List<Long> cpkIds= categoryPropertyKeys.stream().map(t-> t.getId()).collect(Collectors.toList());
+        //adım:3==>requestten gelen properti ile map yapısı oluştur
+        List<Object> propertyKeys= advertRequest.getProperties().stream().map(t-> t.get("keyId")).collect(Collectors.toList());
+        List<Object> propertyValues= advertRequest.getProperties().stream().map(t-> t.get("value")).collect(Collectors.toList());
+        Map<Object,Object> propertyKeyAndPropertyValue= mapTwoListToOneMap(propertyKeys,propertyValues);
+        //adım:4==>yeni bir liste oluştur ve dbden kelen keylerin içerisinde requestten gelen key varsa mapten o objenin valuesunu yeni listeye koy
+        List<Object> propertyForAdvert=new ArrayList<>();
+        propertyKeys.stream().map(t->cpkIds.contains(t)?propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)):null);//value birden fazla gelebilir
+
+        //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
+        return propertyForAdvert.stream()
+                .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
+    }
+
+    public List<CategoryPropertyValue> getPropertyValueListForAdmin(Category category, AdvertRequestForAdmin advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
         //adım:1==>Db den category e ait PropertyKeyleri getir
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
