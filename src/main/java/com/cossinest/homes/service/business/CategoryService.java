@@ -133,30 +133,10 @@ public class CategoryService {
         }
     }
 
-    public CategoryPropertyKey findPropertyKey(Long propertyKeyId){
-
-        return  categoryRepository.findByPropertyKeyId(propertyKeyId);
-
-    }
 
 
-    public CategoryPropertyKey updatePropertyKey(Long propertyKeyId, CategoryRequestDTO categoryRequestDTO) {
-
-        boolean existName = categoryRepository.existsByName(categoryRequestDTO.getName());
-
-        CategoryPropertyKey categoryPropertyKey = findPropertyKey(propertyKeyId);
-
-        if( existName && ! categoryRequestDTO.getName().equals(categoryPropertyKey.getName()) ) {
-
-            throw new ConflictException("Email is already exist ");
-        }
-        categoryPropertyKey.setName(categoryRequestDTO.getName());
-        categoryRepository.save(categoryPropertyKey);
 
 
-        return categoryPropertyKey;
-
-    }
 
 
 }

@@ -4,6 +4,7 @@ package com.cossinest.homes.controller.business;
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+import com.cossinest.homes.service.business.CategoryPropertyKeyService;
 import com.cossinest.homes.service.business.CategoryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -33,6 +34,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryPropertyKeyService categoryPropertyKeyService;
 
 
 
@@ -155,19 +159,26 @@ public class CategoryController {
 
     }
 
-    // C09 id ile property key'ini UPDATE etme  (Path Variable ile) :
+    // C09 id ile property key'i UPDATE etme  (Path Variable ile) :
 
     @PutMapping("/properties/{id}")
-    public ResponseEntity<CategoryPropertyKey> updatePropertyKey(@PathVariable("id") Long propertyKeyId, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
+    public ResponseEntity<CategoryPropertyKey> updateCatPropertyKey(@PathVariable("id") Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        CategoryPropertyKey  categoryPropertyKey= categoryService.updatePropertyKey(propertyKeyId, categoryRequestDTO);
+        CategoryPropertyKey  upPropertyKey = categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
 
-        return ResponseEntity.ok(categoryPropertyKey);
+        return ResponseEntity.ok(upPropertyKey);
     }
 
 
+    // C10 id ile property key'i DELETE etme (Silme)  (Path Variable ile) :
 
+    @DeleteMapping("/properties/{id}")
+    public ResponseEntity<CategoryPropertyKey> deleteCatPropertyKey(@PathVariable("id") Long id ) {
 
+        CategoryPropertyKey delPropertyKey = categoryPropertyKeyService.deletePropertyKey(id);
+
+        return ResponseEntity.ok(delPropertyKey);
+    }
 
 
 
