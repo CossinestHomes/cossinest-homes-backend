@@ -22,9 +22,9 @@ public class FavoritesController {
 
     @GetMapping("/auth") //http:localhost:8080/favorites/auth
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseEntity<List<AdvertResponse>> getAuthenticatedUsersFavorites() {
+    public ResponseEntity<List<AdvertResponse>> getAuthenticatedUsersFavorites(HttpServletRequest request) {
 
-        List<AdvertResponse> favorites = FavoritesService.getAuthenticatedUsersFavorites();
+        List<AdvertResponse> favorites = FavoritesService.getAuthenticatedUsersFavorites(request);
 
         return ResponseEntity.ok(favorites);
     }
