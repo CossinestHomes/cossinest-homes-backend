@@ -2,7 +2,9 @@ package com.cossinest.homes.payload.mappers;
 
 import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.Status;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
+import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
@@ -10,8 +12,6 @@ import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Data
 @Component
@@ -29,7 +29,7 @@ public class AdvertMapper {
                 .slug(advert.getSlug())
                 .desc(advert.getDesc())
                 .title(advert.getTitle())
-                .status(advert.getStatus())
+                .status(getStatusName(advert.getStatus()))
                 .createAt(advert.getCreatedAt())
                 .updateAt(advert.getUpdatedAt())
                 .location(advert.getLocation())
@@ -38,27 +38,39 @@ public class AdvertMapper {
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
                 .properties(methodHelper.getAdvertResponseProperties(advert,categoryPropertyValueService))
-                //.district
+                .districtId(advert.getDistrict().getId())
                 //.images
+                //.favorites
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
                 .userId(advert.getUser().getId())
                 .build();
     }
+    //status response için yardımcı method
+    public String getStatusName(int statusNumber){
+        if(statusNumber==0){
+            return Status.PENDING.name();
+        }else if(statusNumber==1){
+            return Status.ACTIVATED.name();
+        } else if (statusNumber==2) {
+            return Status.REJECTED.name();
+        }else return null;
+    }
 
 
     //DTO==>Advert
-    public Advert mapAdvertRequestToAdvert(AdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType){
+    public Advert mapAdvertRequestToAdvert(AdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType, District district){
         return Advert.builder()
                 .title(advertRequest.getTitle())
                 .desc(advertRequest.getDesc())
-                .builtIn(advertRequest.getBuiltIn())
-                .price(advertRequest.getPrice())
-                //.status dedault değeri ile kaydedilecek mi diye kontrol et
-                .viewCount(advertRequest.getViewCount())
+                //.builtIn(false) //default olarak advert entity de setlendi olacak mı kontrol et
+                //.status(Status.PENDING.getValue())//default olarak advert entity de setlendi olacak mı kontrol et
+                //.viewCount(advertRequest.getViewCount())//default olarak advert entity de setlendi olacak mı kontrol et
+                //.isActive(advertRequest.getIsActive())//default olarak advert entity de setlendi olacak mı kontrol et
                 .location(advertRequest.getLocation())
-                .isActive(advertRequest.getIsActive())
+                .price(advertRequest.getPrice())
                 .slug(advertRequest.getSlug())
+                .district(district)
                 .category(category)
                 .city(city)
                 .user(user)
@@ -67,7 +79,7 @@ public class AdvertMapper {
                 .build();
     }
 
-    public Advert mapAdvertRequestToUpdateAdvert(Long id,AdvertRequest advertRequest,Category category, City city, Country country, AdvertType advertType){
+    public Advert mapAdvertRequestToUpdateAdvert(Long id,AdvertRequest advertRequest,Category category, City city, Country country, AdvertType advertType,District district){
         return Advert.builder()
                 .id(id)
                 .country(country)
@@ -77,6 +89,29 @@ public class AdvertMapper {
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
                 .desc(advertRequest.getDesc())
+                .district(district)
+                .status(Status.PENDING.getValue())//update de status u tekrardan pending e çek
+                .category(category)
+                .location(advertRequest.getLocation())
+                //.isActive(advertRequest.getIsActive())
+                //.viewCount(advertRequest.getViewCount())
+                //images
+                //favorites
+                .build();
+    }
+    public Advert mapAdvertRequestToUpdateAdvertForAdmin(Long id, AdvertRequestForAdmin advertRequest, Category category, City city, Country country, AdvertType advertType, District district){
+        return Advert.builder()
+                .id(id)
+                .country(country)
+                .city(city)
+                .advertType(advertType)
+                .slug(advertRequest.getSlug())
+                .price(advertRequest.getPrice())
+                .title(advertRequest.getTitle())
+                .desc(advertRequest.getDesc())
+                .builtIn(advertRequest.getBuiltIn())
+                .district(district)
+                .status(advertRequest.getStatus())
                 .isActive(advertRequest.getIsActive())
                 .category(category)
                 .location(advertRequest.getLocation())

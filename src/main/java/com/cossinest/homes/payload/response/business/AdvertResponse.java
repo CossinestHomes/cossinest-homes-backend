@@ -26,7 +26,7 @@ public class AdvertResponse {
 
     private Double price;
 
-    private int status;
+    private String status;
 
     private Boolean builtIn;
 

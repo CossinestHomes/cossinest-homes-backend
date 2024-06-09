@@ -64,5 +64,9 @@ public class ErrorMessages {
     public static final String ADVERT_TYPE_NOT_FOUND_BY_ID="Advert Type is not found with this id";
     public static final String ADVERT_TYPE_ALREADY_EXIST= "Advert Type already exists";
 
+
+    //District
+    public static final String DISTRICT_NOT_FOUND= "District not found";
+
 }
 
