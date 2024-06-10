@@ -33,8 +33,8 @@ public class CategoryPropertyKey {
     @Column(nullable = false, length = 80)
     private String name;
 
-
-    private boolean built_in;
+    @Column(name = "built_in")
+    private Boolean builtIn = false;
 
 
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi

@@ -233,5 +233,20 @@ public class MethodHelper {
         checkRoles(user,RoleType.valueOf(name));
         return user;
     }
+
+
+    // Category
+
+    public boolean builtIn(Category category) {
+
+        return category.getBuiltIn();
+    }
+
+    // CategoryPropertyKey
+
+    public boolean builtIn(CategoryPropertyKey categoryPropertyKey) {
+
+        return categoryPropertyKey.getBuiltIn();
+    }
 }
 

@@ -52,7 +52,7 @@ public class Category {
 
 
     @Column(name = "built_in")
-    private boolean built_in;
+    private Boolean builtIn = false;
 
 
     @NotNull(message = "seq can not be null")
