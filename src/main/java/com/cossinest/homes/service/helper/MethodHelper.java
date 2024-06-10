@@ -219,6 +219,7 @@ public class MethodHelper {
         return user;
     }
 
+
     public List<Images> getImagesForAdvert(MultipartFile[] files,List<Images> images){
         boolean isFirstImage = true;
         for (MultipartFile file:files) {
@@ -252,6 +253,22 @@ public class MethodHelper {
 
         imagesList.stream().map(t->imagesIdsList.add(t.getId())).collect(Collectors.toList());
         return imagesIdsList;
+    }
+
+
+    // Category
+
+    public boolean builtIn(Category category) {
+
+        return category.getBuiltIn();
+    }
+
+    // CategoryPropertyKey
+
+    public boolean builtIn(CategoryPropertyKey categoryPropertyKey) {
+
+        return categoryPropertyKey.getBuiltIn();
+
     }
 }
 
