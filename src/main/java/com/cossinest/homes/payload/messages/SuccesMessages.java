@@ -34,6 +34,7 @@ public class SuccesMessages {
     //advert type
     public static final String ADVERT_TYPE_SAVED= "Advert type is saved successfully";
     public static final String ADVERT_TYPE_DELETED= "Advert type is deleted successfully";
+    public static final String IMAGE_DELETED_SUCCESSFULLY = "Image is deleted successfully";
 
     private SuccesMessages(){
 

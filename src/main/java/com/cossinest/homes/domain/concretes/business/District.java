@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,5 +29,8 @@ public class District {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "city_id")
     private City city;
+
+    @OneToMany(mappedBy = "district",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Advert> advertList;
 
 }

@@ -1,17 +1,17 @@
 package com.cossinest.homes.service.helper;
 
-import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyValue;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;
+import com.cossinest.homes.exception.NotLoadingCompleted;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
+import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
+import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
@@ -21,10 +21,13 @@ import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.relation.Role;
 import javax.swing.text.html.parser.Entity;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -176,7 +179,7 @@ public class MethodHelper {
     }
 
 
-    public List<CategoryPropertyValue> getPropertyValueList(Category category, AdvertRequest advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
+    public List<CategoryPropertyValue> getPropertyValueList(Category category, AbstractAdvertRequest advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
         //adım:1==>Db den category e ait PropertyKeyleri getir
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
@@ -193,6 +196,7 @@ public class MethodHelper {
         return propertyForAdvert.stream()
                 .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
     }
+
 
     public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService,Map<String,String> propertyNameAndValue){
        String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
@@ -215,6 +219,42 @@ public class MethodHelper {
     }
 
 
+    public List<Images> getImagesForAdvert(MultipartFile[] files,List<Images> images){
+        boolean isFirstImage = true;
+        for (MultipartFile file:files) {
+
+            try{
+                Images image = new Images();
+
+                image.setData(file.getBytes());
+                image.setName(file.getOriginalFilename());
+                image.setType(file.getContentType());
+
+                if(isFirstImage){
+                    image.setFeatured(true);
+                    isFirstImage=false;
+                }else{
+                    image.setFeatured(false);
+                }
+
+                images.add(image);
+
+            }catch(IOException e){
+                throw  new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
+            }
+        }
+        return images;
+    }
+
+
+    public List<Long> getImagesIdsListForAdvert(List<Images> imagesList){
+        List<Long> imagesIdsList= new ArrayList<>();
+
+        imagesList.stream().map(t->imagesIdsList.add(t.getId())).collect(Collectors.toList());
+        return imagesIdsList;
+    }
+
+
     // Category
 
     public boolean builtIn(Category category) {
@@ -233,6 +273,7 @@ public class MethodHelper {
     public boolean builtIn(CategoryPropertyKey categoryPropertyKey) {
 
         return categoryPropertyKey.getBuiltIn();
+
     }
 
 

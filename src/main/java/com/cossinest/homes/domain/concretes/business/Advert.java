@@ -46,10 +46,10 @@ public class Advert {
 
 
     @Column(name = "built_in")
-    private Boolean builtIn;
+    private Boolean builtIn=false;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive=true;
 
     @Column(name = "view_count",nullable = false)
     private Integer viewCount;
@@ -118,9 +118,21 @@ public class Advert {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "advert_type_id")
     private AdvertType advertType;
 
-    //TODO: logs,district,images,advertType
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "district_id")
+    private District district;
+
+    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<Images> imagesList;
+
+
+
+    //TODO: logs,images
 
 
 
