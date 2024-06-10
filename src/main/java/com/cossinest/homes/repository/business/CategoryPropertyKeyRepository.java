@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface CategoryPropertyKeyRepository extends JpaRepository<CategoryPropertyKey, Long> {
 
 
+
     boolean existsByName(String name);
 }

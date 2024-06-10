@@ -21,6 +21,7 @@ import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
@@ -36,7 +37,6 @@ public class MethodHelper {
     private final UserRepository userRepository;
 
     private final UserRoleService userRoleService;
-
 
 
     public User findByUserByEmail(String email) {
@@ -223,11 +223,19 @@ public class MethodHelper {
         return category.getBuiltIn();
     }
 
+    public boolean isActive(Category category){
+
+        return category.getActive();
+    }
+
+
     // CategoryPropertyKey
 
     public boolean builtIn(CategoryPropertyKey categoryPropertyKey) {
 
         return categoryPropertyKey.getBuiltIn();
     }
+
+
 }
 

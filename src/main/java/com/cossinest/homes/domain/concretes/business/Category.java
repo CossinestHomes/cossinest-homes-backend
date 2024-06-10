@@ -57,7 +57,7 @@ public class Category {
 
     @NotNull(message = "seq can not be null")
     @NotBlank(message = "seq can not be white space")
-    private Integer seq;
+    private Integer seq = 0;
 
 
     @NotNull(message = "slug can not be null")
@@ -70,7 +70,7 @@ public class Category {
     @NotNull(message = "is_active can not be null")
     @NotBlank(message = "is_active can not be white space")
     @Column(name = "is_active")
-    private boolean active;
+    private Boolean active = true;
 
 
     @NotNull(message = "create_at can not be null")
