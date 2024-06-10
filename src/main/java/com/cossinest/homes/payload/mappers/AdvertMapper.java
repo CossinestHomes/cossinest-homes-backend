@@ -39,8 +39,7 @@ public class AdvertMapper {
                 .cityId(advert.getCity().getId())
                 .properties(methodHelper.getAdvertResponseProperties(advert,categoryPropertyValueService))
                 .districtId(advert.getDistrict().getId())
-                //.images
-                //.favorites
+                .imagesIdsList(methodHelper.getImagesIdsListForAdvert(advert.getImagesList()))//TODO:return image control
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
                 .userId(advert.getUser().getId())
@@ -95,8 +94,6 @@ public class AdvertMapper {
                 .location(advertRequest.getLocation())
                 //.isActive(advertRequest.getIsActive())
                 //.viewCount(advertRequest.getViewCount())
-                //images
-                //favorites
                 .build();
     }
     public Advert mapAdvertRequestToUpdateAdvertForAdmin(Long id, AdvertRequestForAdmin advertRequest, Category category, City city, Country country, AdvertType advertType, District district){
