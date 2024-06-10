@@ -21,7 +21,6 @@ import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
