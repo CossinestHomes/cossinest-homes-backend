@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -142,8 +143,8 @@ public class AdvertController {
 
     @PostMapping
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest){
-        AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest);
+    public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
+        AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_CREATED_SUCCESS)
                 .status(HttpStatus.OK)
