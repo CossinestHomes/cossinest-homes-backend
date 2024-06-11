@@ -1,19 +1,26 @@
 package com.cossinest.homes.service.business;
 
-import com.cossinest.homes.domain.concretes.business.Category;
+import com.cossinest.homes.domain.concretes.business.*;
 
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
+import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.payload.mappers.CategoryMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
+import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.repository.business.CategoryRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +32,11 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
+
+
 
     //advert için yardımcı method
     public List<Category> getAllCategory(){
@@ -68,8 +80,11 @@ public class CategoryService {
 
             throw new ConflictException("Category " +category.getTitle() +" is already exist " );
         }
-        categoryRepository.save(category);
+        Category createdCategory = categoryRepository.save(category);
+        createdCategory.generateSlug();
+        categoryRepository.save(createdCategory);
     }
+
 
 
     public void updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
@@ -134,10 +149,12 @@ public class CategoryService {
     }
 
 
+    public CategoryResponseDTO findCategoryBySlug(String slug) {
 
+        Category category = categoryRepository.findBySlug(slug).orElseThrow(
+                ()-> new ResourceNotFoundException("Category not found with Slug :" + slug));
 
-
-
-
+        return categoryMapper.mapCategoryToCategoryResponceDTO(category);
+    }
 }
 

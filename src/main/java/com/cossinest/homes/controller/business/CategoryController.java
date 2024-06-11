@@ -3,7 +3,11 @@ package com.cossinest.homes.controller.business;
 
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
+import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+import com.cossinest.homes.payload.response.ResponseMessage;
+import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.service.business.CategoryPropertyKeyService;
 import com.cossinest.homes.service.business.CategoryService;
 import jakarta.validation.Valid;
@@ -181,6 +185,15 @@ public class CategoryController {
     }
 
 
+    // C11 SLUG ile Category cagirma  (Path Variable ile) :
+
+    @GetMapping("/{slug}")
+    public ResponseEntity<CategoryResponseDTO> getCategoryBySlug(@PathVariable("slug") String slug){
+
+        CategoryResponseDTO categoryResponseDTO = categoryService.findCategoryBySlug(slug);
+
+        return  ResponseEntity.ok(categoryResponseDTO);
+    }
 
 
 
