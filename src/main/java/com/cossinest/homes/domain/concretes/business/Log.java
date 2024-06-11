@@ -33,6 +33,6 @@ public class Log {
     @Setter(AccessLevel.NONE)
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-mm HH:mm",timezone = "Turkey")
-    public LocalDateTime create_at;
+    public LocalDateTime create_at= LocalDateTime.now();
 
 }

@@ -3,6 +3,7 @@ package com.cossinest.homes.service.business;
 import com.cossinest.homes.domain.concretes.business.Category;
 
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
+import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
@@ -159,5 +160,11 @@ public class CategoryService {
     }
 
 
+    public List<Category> getCategoryByTitle(String category) {
+
+   return categoryRepository.findByTitle(category).orElseThrow(
+              ()-> new BadRequestException(ErrorMessages.CATEGORY_NOT_FOUND)
+      );
+    }
 }
 

@@ -6,10 +6,9 @@ import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
-import com.cossinest.homes.payload.response.user.UserPageableResponse;
-import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CityService;
+import com.cossinest.homes.service.business.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +26,7 @@ public class AdvertController {
 
     private final AdvertService advertService;
     private final CityService cityService;
+    private final ReportService logService;
 
     @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
                  //status=1;page=1&size=10&sort=date&type=asc
@@ -43,6 +43,7 @@ public class AdvertController {
             @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
             @RequestParam(value = "type",required = false,defaultValue = "asc") String type
     ){
+
            return advertService.getAllAdvertsByPage(query,categoryId,advertTypeId,priceStart,priceEnd,location,status,page,size,sort,type);
     }
 

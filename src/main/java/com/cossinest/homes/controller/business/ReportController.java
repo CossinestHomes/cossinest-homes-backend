@@ -1,0 +1,75 @@
+package com.cossinest.homes.controller.business;
+
+import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.TourRequest;
+import com.cossinest.homes.service.business.ReportService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/report")
+@RequiredArgsConstructor
+public class ReportController {
+
+    private final ReportService logService;
+
+
+    @GetMapping
+//@PreAuthorized(hasAnyAuthority('MANAGER','ADMIN')
+    public ResponseEntity<Map<String, Long>> getStaticts(HttpServletRequest request) {
+
+        return logService.getStaticts(request);
+
+    }
+
+
+    @GetMapping("/adverts")
+    //@PreAuthorized(hasAnyAuthority('MANAGER','ADMIN')
+    public ResponseEntity<byte[]> getAdverts(@RequestParam(value = "date1", required = false) String date1,
+                                             @RequestParam(value = "date2", required = false) String date2,
+                                             @RequestParam(value = "category", required = false) String category,
+                                             @RequestParam(value = "type", required = false) String type,
+                                             @RequestParam(value = "status", required = false) String status,
+                                             HttpServletRequest request) {
+
+        return logService.getAdverts(request,date1, date2, category, type, status);
+    }
+
+
+    @GetMapping("/most-popular-properties")
+    // @PreAthorized()
+    public ResponseEntity<byte[]> getPopulerAdverts(@RequestParam("amount") int amount, HttpServletRequest request) {
+
+        return logService.getPopulerAdverts(amount, request);
+
+    }
+
+
+    @GetMapping("/users")
+    // @PreAthorized()
+    public ResponseEntity<byte[]> getUsers(@RequestParam("rol") String rol, HttpServletRequest request) {
+
+        return logService.getUsersWithRol(rol, request);
+
+
+    }
+
+
+    @GetMapping("/tour-requests")
+    //@PreAuthorized(hasAnyAuthority('MANAGER','ADMIN')
+    public ResponseEntity<byte[]> getTourRequest(@RequestParam(value = "date1", required = false) String date1,
+                                                 @RequestParam(value = "date2", required = false) String date2,
+                                                 @RequestParam(value = "status", required = false) String status,
+                                                 HttpServletRequest request) {
+
+
+        return logService.getTourRequest(request,date1, date2, status);
+
+    }
+
+
+}

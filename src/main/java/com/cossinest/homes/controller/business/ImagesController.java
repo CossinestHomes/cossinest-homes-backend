@@ -6,8 +6,10 @@ import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.response.business.ImagesResponse;
 import com.cossinest.homes.service.business.ImagesService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +36,8 @@ public class ImagesController {
                  new ResourceNotFoundException(ErrorMessages.NOT_FOUND_IMAGE));
 
          return new ResponseEntity<>(image, httpHeaders,HttpStatus.OK);
+       //  return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
+
     }
 
     @PostMapping("{advertId}")

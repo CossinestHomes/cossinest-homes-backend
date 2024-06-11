@@ -1,11 +1,12 @@
 package com.cossinest.homes.repository.business;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.domain.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,6 +28,18 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     Page<Advert> findAdvertsForUser(Long id, Pageable pageable);
 
     Optional<Advert> findBySlug(String slug);
+
+    @Query("SELECT a FROM Advert a WHERE (:date1 IS NULL OR :date2 IS NULL OR  a.createdAt BETWEEN:date1 AND :date2) AND " +
+            "(:category IS NULL OR a.category.title =:category) AND (:type IS NULL OR a.advertType.title=:type) AND " +
+            "(:enumStatus IS NULL OR a.status=:enumStatus)")
+    Optional<List<Advert>> findByQuery(@Param(value = "date1") String date1,
+                                       @Param(value = "date2") String date2,
+                                       @Param(value = "category")String category,
+                                       @Param(value = "type") String type,
+                                       @Param(value = "enumStatus") Status enumStatus);
+
+    @Query("SELECT a FROM Advert a WHERE ORDER BY a.tourRequestList DESC")
+    Page<Advert> getMostPopulerAdverts(Pageable pageable);
 
 
 
