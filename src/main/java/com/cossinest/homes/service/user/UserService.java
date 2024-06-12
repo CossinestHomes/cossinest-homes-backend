@@ -141,7 +141,7 @@ public class UserService {
 
     }
 
-    //TODO add FAVORI AND LOG CustomerResponse
+    //TODO add FAVORI
     public ResponseEntity<UserResponse> getUserById(Long id, HttpServletRequest request) {
 
         User user = methodHelper.getUserByHttpRequest(request);

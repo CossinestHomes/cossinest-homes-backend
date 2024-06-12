@@ -72,7 +72,7 @@ public class TourRequestService {
 
         TourRequest savedTourRequest = tourRequestRepository.save(mappedTourRequest);
 
-        logService.createLogEvent(userGuest.getId(),savedTourRequest.getId(), LogEnum.TOUR_REQUEST_CREATED);
+        logService.createLogEvent(userGuest.getId(),savedTourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_CREATED);
 
 
         return ResponseMessage.<TourRequestResponse>builder()
