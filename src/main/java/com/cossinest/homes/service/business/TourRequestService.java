@@ -3,11 +3,11 @@ package com.cossinest.homes.service.business;
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.LogEnum;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.domain.enums.StatusType;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
-import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.payload.mappers.TourRequestMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
@@ -17,23 +17,17 @@ import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import com.cossinest.homes.repository.business.TourRequestRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
-import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.DateTimeValidator;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import javax.management.relation.Role;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -48,7 +42,7 @@ public class TourRequestService {
     private final UserRoleService userRoleService;
     private final PageableHelper pageableHelper;
     private  final AdvertService advertService;
-
+    private final LogService logService;
 
 
 
@@ -77,6 +71,9 @@ public class TourRequestService {
         mappedTourRequest.setGuestUserId(userGuest);
 
         TourRequest savedTourRequest = tourRequestRepository.save(mappedTourRequest);
+
+        logService.createLogEvent(userGuest.getId(),savedTourRequest.getId(), LogEnum.TOUR_REQUEST_CREATED);
+
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(savedTourRequest))
@@ -191,7 +188,7 @@ public class TourRequestService {
         updatedTourRequest.setGuestUserId(guestUser);
         updatedTourRequest.setOwnerUserId(advert.getUser());
 
-
+        logService.createLogEvent(guestUser.getId(),advert.getId(), LogEnum.TOUR_REQUEST_ACCEPTED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse( tourRequestRepository.save(updatedTourRequest)))
@@ -213,7 +210,7 @@ public class TourRequestService {
 
          tourRequest.setStatus(StatusType.CANCELED);
 
-
+        logService.createLogEvent(guestUser.getId(),tourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_CANCELED);
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
                 .status(HttpStatus.OK)
@@ -233,6 +230,7 @@ public class TourRequestService {
 
         tourRequest.setStatus(StatusType.APPROVED);
 
+        logService.createLogEvent(guestUser.getId(),tourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_ACCEPTED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
@@ -256,6 +254,8 @@ public class TourRequestService {
 
         tourRequest.setStatus(StatusType.DECLINED);
 
+        logService.createLogEvent(guestUser.getId(),tourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_DECLINED);
+
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
                 .status(HttpStatus.OK)
@@ -278,6 +278,8 @@ public class TourRequestService {
 
         tourRequestRepository.delete(tourRequest);
 
+
+
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequest))
                 .status(HttpStatus.OK)
@@ -286,5 +288,11 @@ public class TourRequestService {
 
     }
 
-    
+
+
+    public List<TourRequest> getTourRequest(String date1, String date2, StatusType statusType) {
+
+       return tourRequestRepository.getTourRequest(date1,date2,statusType);
+
+    }
 }

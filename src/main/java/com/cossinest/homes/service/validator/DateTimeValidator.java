@@ -2,12 +2,14 @@ package com.cossinest.homes.service.validator;
 
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.request.business.TourRequestRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -64,6 +66,14 @@ public class DateTimeValidator {
         LocalTime requestTime = tourRequestRequest.getTourTime();
 
         return Duration.between(tourTimeFromRepo,requestTime).toMinutes();
+
+    }
+
+    public void checkBeginTimeAndEndTime(LocalDate begin, LocalDate end) {
+
+        if(begin.isAfter(end)){
+            throw new BadRequestException(ErrorMessages.BEGIN_TIME_CAN_NOT_BE_AFTER_END_TIME);
+        }
 
     }
 }

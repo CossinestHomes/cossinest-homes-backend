@@ -30,5 +30,9 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
 
 
+    boolean existsByName(String name);
+
+    Optional<List<Category>> findByTitle(String title);
+
 
 }

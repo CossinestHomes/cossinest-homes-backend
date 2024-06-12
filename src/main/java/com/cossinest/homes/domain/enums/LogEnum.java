@@ -9,7 +9,10 @@ public enum LogEnum {
     TOUR_REQUEST_CREATED("Tour request is created"),
     TOUR_REQUEST_ACCEPTED("Tour request is accepted"),
     TOUR_REQUEST_DECLINED("Tour request is declined"),
-    TOUR_REQUEST_CANCELED("Tour request is canceled");
+    TOUR_REQUEST_CANCELED("Tour request is canceled"),
+    USER_CREATED("User created"),
+    USER_UPDATED("User updated"),
+    USER_DELETED("User deleted");
 
     public final String name;
 
@@ -17,7 +20,7 @@ public enum LogEnum {
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
-}
+    }
