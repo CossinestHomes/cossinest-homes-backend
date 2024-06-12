@@ -1,6 +1,7 @@
 package com.cossinest.homes.repository.business;
 
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
 
 
+    Optional<Category> findBySlug(String slug);
 
     boolean existsByTitle(String title);
 
@@ -25,11 +27,12 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     Page<Category> findAllActiveCategories(Pageable pageable);
 
 
-    @Query("SELECT c from CategoryPropertyKey c WHERE c.propertyKeyId = pKeyId")
-    CategoryPropertyKey findByPropertyKeyId(@Param("pKeyId") Long propertyKeyId);
+
 
 
     boolean existsByName(String name);
 
     Optional<List<Category>> findByTitle(String title);
+
+
 }

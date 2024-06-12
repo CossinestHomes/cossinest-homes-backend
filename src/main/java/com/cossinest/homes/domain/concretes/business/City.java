@@ -1,5 +1,6 @@
 package com.cossinest.homes.domain.concretes.business;
 
+import com.cossinest.homes.domain.enums.Cities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +28,7 @@ public class City {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private com.cossinest.homes.domain.enums.Cities cities;
+    private Cities cities;
 
     @ManyToOne
     @JsonIgnore

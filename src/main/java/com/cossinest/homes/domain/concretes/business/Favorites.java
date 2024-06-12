@@ -1,5 +1,6 @@
 package com.cossinest.homes.domain.concretes.business;
 
+import com.cossinest.homes.domain.concretes.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,5 +30,9 @@ public class Favorites {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd 'T' HH:mm:ssXXX", timezone = "US")
     @Column(nullable = false)
     private LocalDateTime create_at;
+
+    @Column(name = "user_id")
+    @ManyToOne
+    private User userId;
 }
 

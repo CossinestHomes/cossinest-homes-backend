@@ -1,7 +1,6 @@
 package com.cossinest.homes.domain.concretes.business;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -18,7 +17,6 @@ public class Images {
     private Long id;
 
     @Lob
-    @ManyToOne
     private byte[] data;
 
     @Column(nullable = false)
@@ -27,10 +25,11 @@ public class Images {
     private String type;
 
     @Column(nullable = false)
-    private Boolean featured=false;
+    private Boolean featured;
 
-    @Column(nullable = false)
-    private Long Advert_id;
+    @ManyToOne
+    @JoinColumn(name = "advert_id", nullable = false)
+    private Long advertId;
 
 
 
