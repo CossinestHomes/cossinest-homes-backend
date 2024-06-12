@@ -41,7 +41,6 @@ public class MethodHelper {
     private final UserRoleService userRoleService;
 
 
-
     public User findByUserByEmail(String email) {
 
         return userRepository.findByEmail(email).orElseThrow(() ->
@@ -263,6 +262,12 @@ public class MethodHelper {
         return category.getBuiltIn();
     }
 
+    public boolean isActive(Category category){
+
+        return category.getActive();
+    }
+
+
     // CategoryPropertyKey
 
     public boolean builtIn(CategoryPropertyKey categoryPropertyKey) {
@@ -270,5 +275,7 @@ public class MethodHelper {
         return categoryPropertyKey.getBuiltIn();
 
     }
+
+
 }
 

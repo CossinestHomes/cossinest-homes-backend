@@ -1,6 +1,7 @@
 package com.cossinest.homes.repository.business;
 
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
 
 
+    Optional<Category> findBySlug(String slug);
 
     boolean existsByTitle(String title);
 
