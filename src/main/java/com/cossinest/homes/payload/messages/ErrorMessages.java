@@ -8,9 +8,13 @@ public class ErrorMessages {
     public static final String NOT_FOUND_TOUR_REQUEST = "%s id'li Tour request is not found";
     public static final String TOUR_REQUEST_CAN_NOT_BE_CHANGED = "Tour reuest is already approved. It can not be changed";;
     public static final String NOT_FOUND_IMAGE = "%s image is not found";
+
     public static final String BEGIN_TIME_CAN_NOT_BE_AFTER_END_TIME ="Begin time can not be after end time" ;
     public static final String ADVERT_STATUS_NOT_FOUND ="Advert status not found";
     public static final String NOT_FOUND_ADVERT = "Not found advert";
+
+    public static final String UPLOADING_FAILED = "Images is not upload";
+
 
 
     private ErrorMessages() {
@@ -66,6 +70,10 @@ public class ErrorMessages {
     //Advert Type
     public static final String ADVERT_TYPE_NOT_FOUND_BY_ID="Advert Type is not found with this id";
     public static final String ADVERT_TYPE_ALREADY_EXIST= "Advert Type already exists";
+
+
+    //District
+    public static final String DISTRICT_NOT_FOUND= "District not found";
 
 }
 

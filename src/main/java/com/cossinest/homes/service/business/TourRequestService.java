@@ -136,7 +136,6 @@ public class TourRequestService {
 
 
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(Long id, HttpServletRequest httpServletRequest) {
-
         //Rol kontrolü
         User guestUser =methodHelper.getUserByHttpRequest(httpServletRequest);
         methodHelper.controlRoles(guestUser,RoleType.CUSTOMER);

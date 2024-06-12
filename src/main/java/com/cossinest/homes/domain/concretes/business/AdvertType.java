@@ -29,7 +29,7 @@ public class AdvertType {
 
     private Boolean builtIn;
 
-    @OneToMany
+    @OneToMany(mappedBy = "advertType",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Advert> advertList;
 
 }
