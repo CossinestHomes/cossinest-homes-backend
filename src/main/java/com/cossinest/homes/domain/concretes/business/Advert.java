@@ -132,7 +132,7 @@ public class Advert {
 
 
 
-    //TODO: logs,images
+    //TODO: logs
 
 
 
