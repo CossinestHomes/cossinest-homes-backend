@@ -7,6 +7,7 @@ import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.service.business.CategoryPropertyKeyService;
 import com.cossinest.homes.service.business.CategoryService;
@@ -48,16 +49,16 @@ public class CategoryController {
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
     @GetMapping
-    public ResponseEntity<Page<Category>> getActiveCategoriesWithPage(
+    public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
             @RequestParam("q") String query,
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("sort") String sort,
             @RequestParam("type") Sort.Direction type) {
 
-        Page<Category> categoryPage = categoryService.getActiveCategoriesWithPage( page,  size, sort,  type);
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getActiveCategoriesWithPage( page,  size, sort,  type);
 
-        return ResponseEntity.ok(categoryPage);
+        return ResponseEntity.ok(categoryResponseDTOPage);
     }
 
 
@@ -65,7 +66,7 @@ public class CategoryController {
     // C 02     Tum kategorileri Pageable yapida cagirma :
 
     @GetMapping("/admin")
-    public ResponseEntity<Page<Category>> getAllCategoriesWithPage(
+    public ResponseEntity<Page<CategoryResponseDTO>> getAllCategoriesWithPage(
 
             @RequestParam("q") String query,
             @RequestParam("page") int page,
@@ -73,35 +74,31 @@ public class CategoryController {
             @RequestParam("sort") String sort,
             @RequestParam("type") Sort.Direction type
     ){
-        Page<Category> categoryPage = categoryService.getAllCategoriesWithPage(page,  size, sort,  type);
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getAllCategoriesWithPage(page,  size, sort,  type);
 
-        return ResponseEntity.ok(categoryPage);
+        return ResponseEntity.ok(categoryResponseDTOPage);
     }
 
 
     // C 03     id ile bir category cagirma (Path Variable ile) :
 
     @GetMapping("{id}")
-    public ResponseEntity<Category> getCategoryWithId(@PathVariable("id") Long id){
+    public ResponseEntity<CategoryResponseDTO> getCategoryWithId(@PathVariable("id") Long id){
 
-        Category category = categoryService.findCategory(id);
-        return  ResponseEntity.ok(category);
+        CategoryResponseDTO categoryResponseDTO = categoryService.findCategoryWithId(id);
+
+        return  ResponseEntity.ok(categoryResponseDTO);
     }
 
 
     // C 04     Category Objesi olusturma :
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> createCategory(@Valid @RequestBody Category category){
+    public ResponseEntity<CategoryResponseDTO> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        categoryService.createCategory(category);
+        CategoryResponseDTO categoryResponseDTO = categoryService.createCategory(categoryRequestDTO);
 
-        Map <String, String> map = new HashMap<>();     //sadece bu METOD'un icinde kullanilacagi icin map OBJECT'ini NEW'leyerek olusturduk
-
-        map.put("message", "Category is created successfuly");
-        map.put("status", "true");
-
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
+        return ResponseEntity.ok(categoryResponseDTO);
     }
 
 
@@ -109,31 +106,22 @@ public class CategoryController {
 
 
     @PutMapping("{id}")         // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
-    public ResponseEntity<Map<String, String>> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO){
+    public ResponseEntity<CategoryResponseDTO> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        categoryService.updateCategory(id, categoryRequestDTO);
-        Map<String, String> map = new HashMap<>();          //map OBJECT'ini NEW'leyerek  olusturduk (Sadece METOD icinde kullanilacak)
+        CategoryResponseDTO categoryResponseDTO = categoryService.updateCategory(id, categoryRequestDTO);
 
-        map.put("message", "Category is updated successfuly" );
-        map.put("status", "true");
-
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
     }
 
 
-    // C 06 id ile category DELETE (Path Variable ile) :
+    // C 06 id ile category DELETE etme (Path Variable ile) :
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteCategory(@PathVariable("id") Long id){
+    public ResponseEntity<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id ){
 
-        categoryService.deleteCategory(id);
+        CategoryResponseDTO categoryResponseDTO = categoryService.deleteCategory(id);
 
-        Map<String,String> map = new HashMap<>();
-
-        map.put("message","Category is deleted successfuly");
-        map.put("status" ,"true");
-
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
     }
 
 
@@ -150,16 +138,11 @@ public class CategoryController {
     // C08 id ile bir category'nin property key'ini olusturma (Path Variable ile) :
 
     @PostMapping("/{id}/properties")
-    public ResponseEntity<Map<String, String>> createPropertyKey(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO, String... keys){
+    public ResponseEntity<CategoryPropKeyResponseDTO> createPropertyKey(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO, String... keys){
 
-        categoryService.createPropertyKey(id,  keys);
+        CategoryPropKeyResponseDTO categoryPropKeyResponseDTO = categoryService.createPropertyKey(id,  keys);
 
-        Map<String, String> map = new HashMap<>();
-
-        map.put("message", "PropertyKey is created successfuly");
-        map.put("status", "true");
-
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryPropKeyResponseDTO, HttpStatus.CREATED);
 
     }
 
@@ -168,9 +151,9 @@ public class CategoryController {
     @PutMapping("/properties/{id}")
     public ResponseEntity<CategoryPropertyKey> updateCatPropertyKey(@PathVariable("id") Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        CategoryPropertyKey  upPropertyKey = categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
+        CategoryPropertyKey  updatedPropertyKey = categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
 
-        return ResponseEntity.ok(upPropertyKey);
+        return ResponseEntity.ok(updatedPropertyKey);
     }
 
 
@@ -179,9 +162,9 @@ public class CategoryController {
     @DeleteMapping("/properties/{id}")
     public ResponseEntity<CategoryPropertyKey> deleteCatPropertyKey(@PathVariable("id") Long id ) {
 
-        CategoryPropertyKey delPropertyKey = categoryPropertyKeyService.deletePropertyKey(id);
+        CategoryPropertyKey deletedPropertyKey = categoryPropertyKeyService.deletePropertyKey(id);
 
-        return ResponseEntity.ok(delPropertyKey);
+        return ResponseEntity.ok(deletedPropertyKey);
     }
 
 

@@ -1,15 +1,13 @@
 package com.cossinest.homes.payload.response.business;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 
 
-
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
