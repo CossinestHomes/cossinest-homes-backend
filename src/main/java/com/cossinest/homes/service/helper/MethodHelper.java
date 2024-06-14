@@ -1,9 +1,6 @@
 package com.cossinest.homes.service.helper;
 
-import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyValue;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
@@ -17,6 +14,7 @@ import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
+import com.cossinest.homes.repository.business.FavoritesRepository;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.validator.UserRoleService;
@@ -37,7 +35,6 @@ public class MethodHelper {
     private final UserRepository userRepository;
 
     private final UserRoleService userRoleService;
-
 
 
     public User findByUserByEmail(String email) {
@@ -116,14 +113,13 @@ public class MethodHelper {
     public void checkRoles(User user, RoleType... roleTypes) {
 
         Set<RoleType> roles = new HashSet<>();
-        Collections.addAll(roles,roleTypes);
+        Collections.addAll(roles, roleTypes);
 
-       for (UserRole userRole:user.getUserRole()){
-           if (roles.contains(userRole.getRoleType())) return;
-       }
-       throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
+        for (UserRole userRole : user.getUserRole()) {
+            if (roles.contains(userRole.getRoleType())) return;
+        }
+        throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
     }
-
 
 
     public Set<UserRole> roleStringToUserRole(Set<String> request) {
@@ -132,10 +128,7 @@ public class MethodHelper {
     }
 
 
-
-
-
-    public void controlRoles(User user,RoleType... roleTypes) {
+    public void controlRoles(User user, RoleType... roleTypes) {
 
         Set<RoleType> roles = new HashSet<>();
         Collections.addAll(roles, roleTypes);
@@ -149,29 +142,29 @@ public class MethodHelper {
     }
 
     public void UpdatePasswordControl(String password, String reWritePassword) {
-        if(!Objects.equals(password,reWritePassword)){
+        if (!Objects.equals(password, reWritePassword)) {
             throw new BadRequestException(ErrorMessages.PASSWORDS_DID_NOT_MATCH);
         }
     }
 
 
     //Advert
-    public int calculatePopularityPoint(int advertTourRequestListSize,int advertViewCount){
-        return (3*advertTourRequestListSize)+advertViewCount;
+    public int calculatePopularityPoint(int advertTourRequestListSize, int advertViewCount) {
+        return (3 * advertTourRequestListSize) + advertViewCount;
     }
 
 
-    public boolean priceControl(Double startPrice,Double endPrice){
-        if(startPrice<0 || endPrice<startPrice || endPrice<0){
+    public boolean priceControl(Double startPrice, Double endPrice) {
+        if (startPrice < 0 || endPrice < startPrice || endPrice < 0) {
             return true;
-        }else return false;
+        } else return false;
     }
 
-    public Map<Object,Object> mapTwoListToOneMap(List<Object> list1, List<Object> list2){
-        Map<Object,Object> resultMap= new LinkedHashMap<>();
+    public Map<Object, Object> mapTwoListToOneMap(List<Object> list1, List<Object> list2) {
+        Map<Object, Object> resultMap = new LinkedHashMap<>();
 
-        for (int i = 0; i < Math.min(list1.size(), list2.size()) ; i++) {
-            resultMap.put(list1.get(i),list2.get(i));
+        for (int i = 0; i < Math.min(list1.size(), list2.size()); i++) {
+            resultMap.put(list1.get(i), list2.get(i));
         }
 
         return resultMap;
@@ -182,56 +175,82 @@ public class MethodHelper {
         //adım:1==>Db den category e ait PropertyKeyleri getir
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
-        List<Long> cpkIds= categoryPropertyKeys.stream().map(t-> t.getId()).collect(Collectors.toList());
+        List<Long> cpkIds = categoryPropertyKeys.stream().map(t -> t.getId()).collect(Collectors.toList());
         //adım:3==>requestten gelen properti ile map yapısı oluştur
-        List<Object> propertyKeys= advertRequest.getProperties().stream().map(t-> t.get("keyId")).collect(Collectors.toList());
-        List<Object> propertyValues= advertRequest.getProperties().stream().map(t-> t.get("value")).collect(Collectors.toList());
-        Map<Object,Object> propertyKeyAndPropertyValue= mapTwoListToOneMap(propertyKeys,propertyValues);
+        List<Object> propertyKeys = advertRequest.getProperties().stream().map(t -> t.get("keyId")).collect(Collectors.toList());
+        List<Object> propertyValues = advertRequest.getProperties().stream().map(t -> t.get("value")).collect(Collectors.toList());
+        Map<Object, Object> propertyKeyAndPropertyValue = mapTwoListToOneMap(propertyKeys, propertyValues);
         //adım:4==>yeni bir liste oluştur ve dbden kelen keylerin içerisinde requestten gelen key varsa mapten o objenin valuesunu yeni listeye koy
-        List<Object> propertyForAdvert=new ArrayList<>();
-        propertyKeys.stream().map(t->cpkIds.contains(t)?propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)):null);//value birden fazla gelebilir
+        List<Object> propertyForAdvert = new ArrayList<>();
+        propertyKeys.stream().map(t -> cpkIds.contains(t) ? propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)) : null);//value birden fazla gelebilir
 
         //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
         return propertyForAdvert.stream()
-                .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
+                .map(t -> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
     }
 
     public List<CategoryPropertyValue> getPropertyValueListForAdmin(Category category, AdvertRequestForAdmin advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
         //adım:1==>Db den category e ait PropertyKeyleri getir
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
-        List<Long> cpkIds= categoryPropertyKeys.stream().map(t-> t.getId()).collect(Collectors.toList());
+        List<Long> cpkIds = categoryPropertyKeys.stream().map(t -> t.getId()).collect(Collectors.toList());
         //adım:3==>requestten gelen properti ile map yapısı oluştur
-        List<Object> propertyKeys= advertRequest.getProperties().stream().map(t-> t.get("keyId")).collect(Collectors.toList());
-        List<Object> propertyValues= advertRequest.getProperties().stream().map(t-> t.get("value")).collect(Collectors.toList());
-        Map<Object,Object> propertyKeyAndPropertyValue= mapTwoListToOneMap(propertyKeys,propertyValues);
+        List<Object> propertyKeys = advertRequest.getProperties().stream().map(t -> t.get("keyId")).collect(Collectors.toList());
+        List<Object> propertyValues = advertRequest.getProperties().stream().map(t -> t.get("value")).collect(Collectors.toList());
+        Map<Object, Object> propertyKeyAndPropertyValue = mapTwoListToOneMap(propertyKeys, propertyValues);
         //adım:4==>yeni bir liste oluştur ve dbden kelen keylerin içerisinde requestten gelen key varsa mapten o objenin valuesunu yeni listeye koy
-        List<Object> propertyForAdvert=new ArrayList<>();
-        propertyKeys.stream().map(t->cpkIds.contains(t)?propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)):null);//value birden fazla gelebilir
+        List<Object> propertyForAdvert = new ArrayList<>();
+        propertyKeys.stream().map(t -> cpkIds.contains(t) ? propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)) : null);//value birden fazla gelebilir
 
         //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
         return propertyForAdvert.stream()
-                .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
+                .map(t -> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
     }
 
-    public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService,Map<String,String> propertyNameAndValue){
-       String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
-       String propertyValue=categoryPropertyValue.getValue();
-       propertyNameAndValue.put(propertyKeyName,propertyValue);
-     }
+    public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService, Map<String, String> propertyNameAndValue) {
+        String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
+        String propertyValue = categoryPropertyValue.getValue();
+        propertyNameAndValue.put(propertyKeyName, propertyValue);
+    }
 
-    public Map<String,String> getAdvertResponseProperties(Advert advert,CategoryPropertyValueService categoryPropertyValueService){
-        Map<String,String > properties= new HashMap<>();
-        for (int i = 0; i < advert.getCategoryPropertyValuesList().size() ; i++) {
-           getPropertiesForAdvertResponse(advert.getCategoryPropertyValuesList().get(i),categoryPropertyValueService,properties);
+    public Map<String, String> getAdvertResponseProperties(Advert advert, CategoryPropertyValueService categoryPropertyValueService) {
+        Map<String, String> properties = new HashMap<>();
+        for (int i = 0; i < advert.getCategoryPropertyValuesList().size(); i++) {
+            getPropertiesForAdvertResponse(advert.getCategoryPropertyValuesList().get(i), categoryPropertyValueService, properties);
         }
         return properties;
     }
 
-    public User getUserAndCheckRoles(HttpServletRequest request , String name ){
+    public User getUserAndCheckRoles(HttpServletRequest request, String name) {
         User user = getUserByHttpRequest(request);
-        checkRoles(user,RoleType.valueOf(name));
+        checkRoles(user, RoleType.valueOf(name));
         return user;
     }
+
+    public static Long getUserIdFromRequest(HttpServletRequest httpServletRequest, UserRepository userRepository) {
+
+        String email = (String) httpServletRequest.getAttribute("email");
+
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+
+        return userOptional.map(User::getId).orElse(null);
+    }
+
+    public static void addFavorite(User user, Advert advert, FavoritesRepository favoritesRepository) {
+        // Favori ilanın var olup olmadığını kontrol et
+        boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(user.getId(), advert.getId());
+
+        // Eğer ilgili favori zaten yoksa, favori ekle
+        if (!isFavorite) {
+            Favorites favorite = new Favorites();
+            favorite.setUser(user);
+            favorite.setAdvert(advert);
+            favoritesRepository.save(favorite);
+        }
+    }
 }
+
+
 
