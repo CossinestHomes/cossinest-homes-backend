@@ -100,6 +100,7 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
         }
         methodHelper.checkRoles(user, RoleType.CUSTOMER);
+        methodHelper.isRelatedToAdvertsOrTourRequest(user);
 
         String requestPassword = passwordEncoder.encode(request.getPassword());
         request.setPassword(requestPassword);
@@ -181,8 +182,10 @@ public class UserService {
         User businessUser = methodHelper.getUserByHttpRequest(auth);
         methodHelper.checkRoles(businessUser, RoleType.MANAGER, RoleType.ADMIN);
         User deleteUser = methodHelper.findUserWithId(id);
-        if (methodHelper.isBuiltIn(deleteUser))
+        if (methodHelper.isBuiltIn(deleteUser)){
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
+        }
+         methodHelper.isRelatedToAdvertsOrTourRequest(businessUser);
 
 
         for (Advert advert :deleteUser.getAdvert()) {

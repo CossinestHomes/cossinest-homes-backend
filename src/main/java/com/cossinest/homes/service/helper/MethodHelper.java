@@ -19,6 +19,7 @@ import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
+import com.cossinest.homes.service.business.TourRequestService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class MethodHelper {
 
     private final UserRoleService userRoleService;
     private final AdvertService advertService;
+    private final TourRequestService tourRequestService;
 
     public User findByUserByEmail(String email) {
 
@@ -396,7 +398,13 @@ public class MethodHelper {
     }
 
 
+    public void isRelatedToAdvertsOrTourRequest(User user) {
 
+        if(user.getTourRequests().size()>0 || user.getAdvert().size()>0) {
+            throw new BadRequestException(ErrorMessages.THE_USER_HAS_RELATED_RECORDS_WITH_ADVERTS_OR_TOUR_REQUESTS);
+        }
+
+    }
 }
 
 
