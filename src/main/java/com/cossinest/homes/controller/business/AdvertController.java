@@ -74,7 +74,8 @@ public class AdvertController {
                 .build();
     }
 
-    @GetMapping("/popular/{value}")  //TODO  default deger value icine atanamaz @ReqestParam olabilir
+    @GetMapping("/popular/{value}")  //TODO  default deger value icine atanamaz @ReqestParam olabilir, Service injekte edilebilir prop yerine
+                                    //TODO Propertiesi maplerken fazla getPropertiesForAdvertResponse --
     public ResponseMessage<List<AdvertResponse>> getPopularAdverts(@PathVariable(value = "10") int value){
       List<AdvertResponse> advertResponseList = advertService.getPopularAdverts(value);
 
@@ -107,7 +108,7 @@ public class AdvertController {
             @RequestParam(value = "price_start",required = false) Double priceStart,
             @RequestParam(value = "price_end",required = false) Double priceEnd,
             @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) int status,
+            @RequestParam(value = "status",required = false) int status, //TODO Integer olmali
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
             @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
@@ -116,7 +117,7 @@ public class AdvertController {
         return advertService.getAllAdvertsByPageForAdmin(request,query,categoryId,advertTypeId,priceStart,priceEnd,location,status,page,size,sort,type);
     }
 
-    @GetMapping("/{slug}") //TODO advert response property neden Map List degil
+    @GetMapping("/{slug}")
     public ResponseMessage<AdvertResponse> getAdvertBySlug(@PathVariable String slug){
         AdvertResponse advertResponse= advertService.getAdvertBySlug(slug);
 
@@ -144,7 +145,7 @@ public class AdvertController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    //@PreAuthorize("hasAnyAuthority('CUSTOMER')") //TODO Burasi yazilacak
     public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
         AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
