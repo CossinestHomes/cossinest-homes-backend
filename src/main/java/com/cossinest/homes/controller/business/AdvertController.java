@@ -33,7 +33,7 @@ public class AdvertController {
     @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
                  //status=1;page=1&size=10&sort=date&type=asc
 
-    //TODO Response Entity
+    //TODO Response Entity ---- categoryId,advertTypeId, int Integer olcak  default degeri yok
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q",required = false, defaultValue = "") String query,
             @RequestParam(value = "category_id") Long categoryId,

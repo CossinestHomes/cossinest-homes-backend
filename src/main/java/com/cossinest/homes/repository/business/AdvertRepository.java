@@ -20,11 +20,11 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     @Query("SELECT a FROM Advert a WHERE " +
             "a.category.id = ?1 AND " +
             "a.advertType.id = ?2 AND " +
-            "(a.price IS NULL OR a.price >= ?3) AND " +
-            "(a.price IS NULL OR a.price <= ?4) AND " +
-            "(a.status IS NULL OR a.status = ?5) AND " +
-            "(a.location IS NULL OR a.location=?6) AND" +
-            "(a.title IS NULL OR (a.title= ?7 AND a.desc=?7))")
+            "(?3 IS NULL OR a.price >= ?3) AND " +
+            "(?4 IS NULL OR a.price <= ?4) AND " +
+            "(?5 IS NULL OR a.status = ?5) AND " +
+            "(?6 IS NULL OR a.location=?6) AND" +
+            "(?7 IS NULL OR a.title= ?7) AND (?7 IS NULL OR a.desc=?7)")
     Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, int status,String location,String query,Pageable pageable);
 
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")
