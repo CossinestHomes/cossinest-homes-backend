@@ -49,15 +49,21 @@ public class FavoritesController {
 
     @DeleteMapping("/auth") // http://localhost:8080/favorites/auth + DELETE
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseMessage removeAllFavoritesofAuthenticatedUser() {
-        return favoritesService.removeAllFavoritesofAuthenticatedUser();
+    public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest) {
+        return favoritesService.removeAllFavoritesofAuthenticatedUser(httpServletRequest);
     }
+
+
 
     @DeleteMapping("/admin") // http://localhost:8080/favorites/admin + DELETE
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseMessage removeAllFavoritesOfAUser() {
         return favoritesService.removeAllFavoritesOfAUser();
     }
+
+
+
+
 
     @DeleteMapping("/{id}/admin") // http://localhost:8080/favorites/{id}/admin + DELETE
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")

@@ -97,6 +97,7 @@ public class Advert {
 
     //generate unique slug
     @PostPersist
+    @PostUpdate
     public void generateSlug() {
         if (this.slug == null) {
             this.slug = SlugUtils.toSlug(this.title) + "-" + this.id;
@@ -132,7 +133,7 @@ public class Advert {
 
 
 
-    //TODO: logs,images
+    //TODO: logs
 
 
 

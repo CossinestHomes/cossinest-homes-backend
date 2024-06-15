@@ -1,5 +1,6 @@
 package com.cossinest.homes.domain.concretes.business;
 
+import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.LogEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -20,12 +21,12 @@ public class Log {
     private Long id;
 
     @ManyToOne
-    @Column(name = "user_id")
-    private Long userId;
+    @JoinColumn(name = "user_id")
+    private User userId;
 
     @ManyToOne
-    @Column(name = "advert_id")
-    private Long advertId;
+    @JoinColumn(name = "advert_id")
+    private Advert advertId;
 
     @Enumerated(EnumType.STRING)
     private LogEnum log;
@@ -33,6 +34,6 @@ public class Log {
     @Setter(AccessLevel.NONE)
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-mm HH:mm",timezone = "Turkey")
-    public LocalDateTime create_at;
+    public LocalDateTime create_at= LocalDateTime.now();
 
 }

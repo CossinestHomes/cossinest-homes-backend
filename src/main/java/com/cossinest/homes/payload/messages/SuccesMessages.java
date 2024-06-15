@@ -35,6 +35,11 @@ public class SuccesMessages {
     public static final String ADVERT_TYPE_SAVED= "Advert type is saved successfully";
     public static final String ADVERT_TYPE_DELETED= "Advert type is deleted successfully";
     public static final String IMAGE_DELETED_SUCCESSFULLY = "Image is deleted successfully";
+    public static final String FAVORITES_DELETED_SUCCESSFULLY = "Favorites is deleted successfully";
+    public static final String FAVORITE_REMOVED_SUCCESSFULLY = "Favorites removed successfully";
+    public static final String FAVORITE_ADDED_SUCCESSFULLY = "Favorites added successfully";
+
+
 
     private SuccesMessages(){
 

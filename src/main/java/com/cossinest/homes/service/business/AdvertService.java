@@ -3,7 +3,10 @@ package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.LogEnum;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.domain.enums.Status;
+import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertMapper;
@@ -15,6 +18,7 @@ import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
+import com.cossinest.homes.service.validator.DateTimeValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +52,8 @@ public class AdvertService {
     private final CategoryPropertyValueService categoryPropertyValueService;
 
     private final AdvertTypesService advertTypesService;
+    private final DateTimeValidator dateTimeValidator;
+    private final LogService logService;
 
     private final DistrictService districtService;
 
@@ -66,6 +72,7 @@ public class AdvertService {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
+        //TODO daha kisa yazilabilir
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -78,7 +85,7 @@ public class AdvertService {
     public List<CategoryForAdvertResponse> getCategoryWithAmountForAdvert(){
 
        List<Category> categoryList = categoryService.getAllCategory();
-
+//TODO direk return yazilabilir
        List<CategoryForAdvertResponse> categoryForAdvertList= categoryList.stream().map(advertMapper::mapperCategoryToCategoryForAdvertResponse).toList();
 
        return categoryForAdvertList;
@@ -101,6 +108,8 @@ public class AdvertService {
 
         User user= methodHelper.getUserByHttpRequest(request);
 
+        //TODO kullanici customer mi diye bakilabilir
+
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
@@ -109,6 +118,7 @@ public class AdvertService {
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
+        //TODO dahada kisaltilabilir
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -126,7 +136,7 @@ public class AdvertService {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
 
         Advert advert=isAdvertExistById(id);
-        if(advert.getUser().getId()!=user.getId()){
+        if(advert.getUser().getId()!=user.getId()){ //TODO Objects.equals yazilabilir
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
 
@@ -158,9 +168,14 @@ public class AdvertService {
 
 
 
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.CREATED);
+
+
         Advert savedAdvert = advertRepository.save(advert);
         savedAdvert.generateSlug();
         advertRepository.save(savedAdvert);
+
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
 
@@ -190,11 +205,14 @@ public class AdvertService {
         updateAdvert.setUser(user);
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
-        Advert returnedAdvert=advertRepository.save(updateAdvert);
-        returnedAdvert.generateSlug();
-        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+        Advert returnedAdvert=advertRepository.save(updateAdvert); //TODO Entitye PostUpdate Anatasyon eklendi
+      //  returnedAdvert.generateSlug();
+      //  Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
-        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+
+        return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
     @Transactional
@@ -218,10 +236,12 @@ public class AdvertService {
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
         Advert returnedAdvert=advertRepository.save(updateAdvert);
-        returnedAdvert.generateSlug();
-        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+       // returnedAdvert.generateSlug();
+       // Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
-        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+
+        return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
     public AdvertResponse deleteAdvert(Long id, HttpServletRequest request) {
@@ -233,6 +253,9 @@ public class AdvertService {
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
         advertRepository.deleteById(id);
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.DELETED);
+
         return advertMapper.mapAdvertToAdvertResponse(advert);
     }
 
@@ -242,5 +265,31 @@ public class AdvertService {
     }
 
 
+    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
+       LocalDate begin =LocalDate.parse(date1);
+       LocalDate end =LocalDate.parse(date2);
+       dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
+
+       categoryService.getCategoryByTitle(category);
+
+        Status enumStatus;
+        try {
+            enumStatus= Status.valueOf(status);
+
+        }catch (BadRequestException e){
+            throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
+        }
+
+       return advertRepository.findByQuery(date1,date2,category,type,enumStatus ).orElseThrow(
+                ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
+        );
+
+    }
+
+    public Page<Advert> getPopulerAdverts(Pageable pageable) {
+
+     return advertRepository.getMostPopulerAdverts(pageable);
+
+    }
 }

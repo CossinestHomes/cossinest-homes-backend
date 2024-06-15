@@ -2,6 +2,9 @@ package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.*;
 
+
+import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
+import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.payload.mappers.CategoryMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
@@ -177,5 +180,15 @@ public class CategoryService {
 
         return categoryMapper.mapCategoryToCategoryResponseDTO(category);
     }
+
+
+
+    public List<Category> getCategoryByTitle(String category) {
+
+   return categoryRepository.findByTitle(category).orElseThrow(
+              ()-> new BadRequestException(ErrorMessages.CATEGORY_NOT_FOUND)
+      );
+    }
+
 }
 

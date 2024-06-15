@@ -16,17 +16,31 @@ import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
+import com.cossinest.homes.repository.business.FavoritesRepository;
 import com.cossinest.homes.repository.user.UserRepository;
+import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
+import com.cossinest.homes.service.business.TourRequestService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+
+import org.apache.poi.ss.formula.functions.T;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.management.relation.Role;
 import javax.swing.text.html.parser.Entity;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +53,9 @@ public class MethodHelper {
     private final UserRepository userRepository;
 
     private final UserRoleService userRoleService;
+
+    private final AdvertService advertService;
+    private final TourRequestService tourRequestService;
 
 
     public User findByUserByEmail(String email) {
@@ -117,14 +134,13 @@ public class MethodHelper {
     public void checkRoles(User user, RoleType... roleTypes) {
 
         Set<RoleType> roles = new HashSet<>();
-        Collections.addAll(roles,roleTypes);
+        Collections.addAll(roles, roleTypes);
 
-       for (UserRole userRole:user.getUserRole()){
-           if (roles.contains(userRole.getRoleType())) return;
-       }
-       throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
+        for (UserRole userRole : user.getUserRole()) {
+            if (roles.contains(userRole.getRoleType())) return;
+        }
+        throw new ResourceNotFoundException(ErrorMessages.ROLE_NOT_FOUND);
     }
-
 
 
     public Set<UserRole> roleStringToUserRole(Set<String> request) {
@@ -133,10 +149,7 @@ public class MethodHelper {
     }
 
 
-
-
-
-    public void controlRoles(User user,RoleType... roleTypes) {
+    public void controlRoles(User user, RoleType... roleTypes) {
 
         Set<RoleType> roles = new HashSet<>();
         Collections.addAll(roles, roleTypes);
@@ -150,29 +163,29 @@ public class MethodHelper {
     }
 
     public void UpdatePasswordControl(String password, String reWritePassword) {
-        if(!Objects.equals(password,reWritePassword)){
+        if (!Objects.equals(password, reWritePassword)) {
             throw new BadRequestException(ErrorMessages.PASSWORDS_DID_NOT_MATCH);
         }
     }
 
 
     //Advert
-    public int calculatePopularityPoint(int advertTourRequestListSize,int advertViewCount){
-        return (3*advertTourRequestListSize)+advertViewCount;
+    public int calculatePopularityPoint(int advertTourRequestListSize, int advertViewCount) {
+        return (3 * advertTourRequestListSize) + advertViewCount;
     }
 
 
-    public boolean priceControl(Double startPrice,Double endPrice){
-        if(startPrice<0 || endPrice<startPrice || endPrice<0){
+    public boolean priceControl(Double startPrice, Double endPrice) {
+        if (startPrice < 0 || endPrice < startPrice || endPrice < 0) {
             return true;
-        }else return false;
+        } else return false;
     }
 
-    public Map<Object,Object> mapTwoListToOneMap(List<Object> list1, List<Object> list2){
-        Map<Object,Object> resultMap= new LinkedHashMap<>();
+    public Map<Object, Object> mapTwoListToOneMap(List<Object> list1, List<Object> list2) {
+        Map<Object, Object> resultMap = new LinkedHashMap<>();
 
-        for (int i = 0; i < Math.min(list1.size(), list2.size()) ; i++) {
-            resultMap.put(list1.get(i),list2.get(i));
+        for (int i = 0; i < Math.min(list1.size(), list2.size()); i++) {
+            resultMap.put(list1.get(i), list2.get(i));
         }
 
         return resultMap;
@@ -183,39 +196,179 @@ public class MethodHelper {
         //adım:1==>Db den category e ait PropertyKeyleri getir
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
-        List<Long> cpkIds= categoryPropertyKeys.stream().map(t-> t.getId()).collect(Collectors.toList());
-        //adım:3==>requestten gelen properti ile map yapısı oluştur
-        List<Object> propertyKeys= advertRequest.getProperties().stream().map(t-> t.get("keyId")).collect(Collectors.toList());
-        List<Object> propertyValues= advertRequest.getProperties().stream().map(t-> t.get("value")).collect(Collectors.toList());
-        Map<Object,Object> propertyKeyAndPropertyValue= mapTwoListToOneMap(propertyKeys,propertyValues);
+        List<Long> cpkIds = categoryPropertyKeys.stream().map(CategoryPropertyKey::getId).toList();
+        //adım:3==>requestten gelen properti ile map yapısı oluştur //TODO key verdigimizde mape o valuesunu doner.
+        List<Object> propertyKeys = advertRequest.getProperties().stream().map(t -> t.get("keyId")).collect(Collectors.toList());
+        List<Object> propertyValues = advertRequest.getProperties().stream().map(t -> t.get("value")).collect(Collectors.toList());
+        Map<Object, Object> propertyKeyAndPropertyValue = mapTwoListToOneMap(propertyKeys, propertyValues);
         //adım:4==>yeni bir liste oluştur ve dbden kelen keylerin içerisinde requestten gelen key varsa mapten o objenin valuesunu yeni listeye koy
-        List<Object> propertyForAdvert=new ArrayList<>();
-        propertyKeys.stream().map(t->cpkIds.contains(t)?propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)):null);//value birden fazla gelebilir
+        List<Object> propertyForAdvert = new ArrayList<>();
+        propertyKeys.stream().map(t -> cpkIds.contains(t) ? propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)) : null);//value birden fazla gelebilir
 
         //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
         return propertyForAdvert.stream()
-                .map(t-> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
+                .map(t -> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
     }
 
 
-    public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService,Map<String,String> propertyNameAndValue){
-       String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
-       String propertyValue=categoryPropertyValue.getValue();
-       propertyNameAndValue.put(propertyKeyName,propertyValue);
-     }
+    public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService, Map<String, String> propertyNameAndValue) {
+        String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
+        String propertyValue = categoryPropertyValue.getValue();
+        propertyNameAndValue.put(propertyKeyName, propertyValue);
+      //  categoryPropertyValue.getCategoryPropertyKeys().getName();
+    }
 
-    public Map<String,String> getAdvertResponseProperties(Advert advert,CategoryPropertyValueService categoryPropertyValueService){
-        Map<String,String > properties= new HashMap<>();
-        for (int i = 0; i < advert.getCategoryPropertyValuesList().size() ; i++) {
-           getPropertiesForAdvertResponse(advert.getCategoryPropertyValuesList().get(i),categoryPropertyValueService,properties);
+
+
+    public Map<String, String> getAdvertResponseProperties(Advert advert, CategoryPropertyValueService categoryPropertyValueService) {
+        Map<String, String> properties = new HashMap<>();
+        for (int i = 0; i < advert.getCategoryPropertyValuesList().size(); i++) {
+            getPropertiesForAdvertResponse(advert.getCategoryPropertyValuesList().get(i), categoryPropertyValueService, properties);
         }
         return properties;
     }
 
-    public User getUserAndCheckRoles(HttpServletRequest request , String name ){
+    public User getUserAndCheckRoles(HttpServletRequest request, String name) {
         User user = getUserByHttpRequest(request);
-        checkRoles(user,RoleType.valueOf(name));
+        checkRoles(user, RoleType.valueOf(name));
         return user;
+    }
+
+
+    public static Long getUserIdFromRequest(HttpServletRequest httpServletRequest, UserRepository userRepository) {
+
+        String email = (String) httpServletRequest.getAttribute("email");
+
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+
+        return userOptional.map(User::getId).orElse(null);
+    }
+
+    public static void addFavorite(User user, Advert advert, FavoritesRepository favoritesRepository) {
+        // Favori ilanın var olup olmadığını kontrol et
+        boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(user.getId(), advert.getId());
+
+        // Eğer ilgili favori zaten yoksa, favori ekle
+        if (!isFavorite) {
+            Favorites favorite = new Favorites();
+            favorite.setUser(user);
+            favorite.setAdvert(advert);
+            favoritesRepository.save(favorite);
+        }
+    }
+}
+
+
+
+    public <T> ResponseEntity<byte[]> excelResponse(List<T> list) {
+
+        try {
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("AdvertReport");
+            int rowNum = 0;
+
+            if (!list.isEmpty() && list.get(0) instanceof User) {
+
+
+                for (User fetchedUser : (List<User>) list) {
+
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(fetchedUser.getId());
+                    row.createCell(1).setCellValue(fetchedUser.getFirstName());
+                    row.createCell(2).setCellValue(fetchedUser.getLastName());
+                }
+
+
+            } else if (!list.isEmpty() && list.get(0) instanceof TourRequest) {
+
+
+                for (TourRequest tourRequest : (List<TourRequest>) list) {
+
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(tourRequest.getId());
+                    row.createCell(1).setCellValue(tourRequest.getOwnerUserId().getFirstName());
+                    row.createCell(2).setCellValue(tourRequest.getAdvertId().getTitle());
+                }
+
+
+            } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
+                for (Advert advert : (List<Advert>) list) {
+
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(advert.getId());
+                    row.createCell(1).setCellValue(advert.getTitle());
+                    row.createCell(2).setCellValue(advert.getStatus());
+                    row.createCell(3).setCellValue(advert.getAdvertType().getTitle());
+                    row.createCell(4).setCellValue(advert.getCategory().getTitle());
+                }
+
+            }
+            else if (!list.isEmpty() && list.get(0) instanceof Advert) {
+                for (Advert advert : (Page<Advert>) list) {
+
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(advert.getId());
+                    row.createCell(1).setCellValue(advert.getTitle());
+                    row.createCell(2).setCellValue(advert.getStatus());
+                    row.createCell(3).setCellValue(advert.getAdvertType().getTitle());
+                    row.createCell(4).setCellValue(advert.getCategory().getTitle());
+                }
+
+            }
+
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            workbook.close();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", "report.xlsx");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+
+        } catch (IOException e) {
+           throw new BadRequestException("ERROR");
+        }
+    }
+
+
+    public <T> ResponseEntity<byte[]> excelResponse(Page<T> list) {
+
+        try {
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet=workbook.createSheet("AdvertReport");
+            int rowNum = 0;
+
+            for (Advert advert :(Page<Advert>) list) {
+
+                Row row=sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(advert.getId());
+                row.createCell(1).setCellValue(advert.getTitle());
+                row.createCell(2).setCellValue(advert.getStatus());
+                row.createCell(3).setCellValue(advert.getAdvertType().getTitle());
+                row.createCell(4).setCellValue(advert.getCategory().getTitle());
+            }
+
+            ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            workbook.close();
+
+            HttpHeaders headers=new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", "report.xlsx");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            return new ResponseEntity<>(outputStream.toByteArray(),headers, HttpStatus.OK);
+
+
+        } catch (BadRequestException | IOException err) {
+            throw new BadRequestException("ERR");
+        }
+
     }
 
 
@@ -277,5 +430,14 @@ public class MethodHelper {
     }
 
 
+    public void isRelatedToAdvertsOrTourRequest(User user) {
+
+        if(user.getTourRequests().size()>0 || user.getAdvert().size()>0) {
+            throw new BadRequestException(ErrorMessages.THE_USER_HAS_RELATED_RECORDS_WITH_ADVERTS_OR_TOUR_REQUESTS);
+        }
+
+    }
 }
+
+
 

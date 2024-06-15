@@ -2,8 +2,10 @@ package com.cossinest.homes.domain.concretes.user;
 
 
 import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +14,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -86,7 +90,10 @@ public class User {
     @OneToMany(mappedBy = "ownerUserId",cascade = CascadeType.ALL,orphanRemoval = true) //iliski ismine bak yaz
     private Set<TourRequest>tourRequests=new HashSet<>();
 
-    // todo:favori ve log eklenecek
+    // todo:  log eklenecek
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,orphanRemoval = true)
+    private List<Favorites>favoritesList=new ArrayList<>();
 
     @PrePersist
     private void onCreate() {

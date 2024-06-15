@@ -7,10 +7,9 @@ import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
-import com.cossinest.homes.payload.response.user.UserPageableResponse;
-import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CityService;
+import com.cossinest.homes.service.business.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +28,12 @@ public class AdvertController {
 
     private final AdvertService advertService;
     private final CityService cityService;
+    private final ReportService logService;
 
     @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
                  //status=1;page=1&size=10&sort=date&type=asc
 
+    //TODO Response Entity ---- categoryId,advertTypeId, int Integer olcak  default degeri yok
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q",required = false, defaultValue = "") String query,
             @RequestParam(value = "category_id") Long categoryId,
@@ -46,6 +47,7 @@ public class AdvertController {
             @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
             @RequestParam(value = "type",required = false,defaultValue = "asc") String type
     ){
+
            return advertService.getAllAdvertsByPage(query,categoryId,advertTypeId,priceStart,priceEnd,location,status,page,size,sort,type);
     }
 
@@ -72,7 +74,8 @@ public class AdvertController {
                 .build();
     }
 
-    @GetMapping("/popular/{value}")
+    @GetMapping("/popular/{value}")  //TODO  default deger value icine atanamaz @ReqestParam olabilir, Service injekte edilebilir prop yerine
+                                    //TODO Propertiesi maplerken fazla getPropertiesForAdvertResponse --
     public ResponseMessage<List<AdvertResponse>> getPopularAdverts(@PathVariable(value = "10") int value){
       List<AdvertResponse> advertResponseList = advertService.getPopularAdverts(value);
 
@@ -95,7 +98,7 @@ public class AdvertController {
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/admin") //TODO ResponseEntity,
     //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
             HttpServletRequest request,
@@ -105,7 +108,7 @@ public class AdvertController {
             @RequestParam(value = "price_start",required = false) Double priceStart,
             @RequestParam(value = "price_end",required = false) Double priceEnd,
             @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) int status,
+            @RequestParam(value = "status",required = false) int status, //TODO Integer olmali
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
             @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
@@ -142,7 +145,7 @@ public class AdvertController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    //@PreAuthorize("hasAnyAuthority('CUSTOMER')") //TODO Burasi yazilacak
     public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
         AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
