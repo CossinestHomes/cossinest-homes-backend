@@ -16,6 +16,7 @@ import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
+import com.cossinest.homes.repository.business.FavoritesRepository;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
@@ -51,7 +52,9 @@ public class MethodHelper {
     private final UserRepository userRepository;
 
     private final UserRoleService userRoleService;
+
     private final AdvertService advertService;
+
 
     public User findByUserByEmail(String email) {
 
@@ -205,11 +208,13 @@ public class MethodHelper {
                 .map(t -> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
     }
 
+
     public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService, Map<String, String> propertyNameAndValue) {
         String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
         String propertyValue = categoryPropertyValue.getValue();
         propertyNameAndValue.put(propertyKeyName, propertyValue);
     }
+
 
 
     public Map<String, String> getAdvertResponseProperties(Advert advert, CategoryPropertyValueService categoryPropertyValueService) {
@@ -225,6 +230,32 @@ public class MethodHelper {
         checkRoles(user, RoleType.valueOf(name));
         return user;
     }
+
+
+    public static Long getUserIdFromRequest(HttpServletRequest httpServletRequest, UserRepository userRepository) {
+
+        String email = (String) httpServletRequest.getAttribute("email");
+
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+
+        return userOptional.map(User::getId).orElse(null);
+    }
+
+    public static void addFavorite(User user, Advert advert, FavoritesRepository favoritesRepository) {
+        // Favori ilanın var olup olmadığını kontrol et
+        boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(user.getId(), advert.getId());
+
+        // Eğer ilgili favori zaten yoksa, favori ekle
+        if (!isFavorite) {
+            Favorites favorite = new Favorites();
+            favorite.setUser(user);
+            favorite.setAdvert(advert);
+            favoritesRepository.save(favorite);
+        }
+    }
+}
 
 
 
@@ -398,5 +429,6 @@ public class MethodHelper {
 
 
 }
+
 
 

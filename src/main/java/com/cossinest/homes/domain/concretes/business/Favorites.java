@@ -21,18 +21,16 @@ public class Favorites {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int user_id; // get by user
-
-    @Column(nullable = false)
-    private int advert_id; // get by advert
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd 'T' HH:mm:ssXXX", timezone = "US")
     @Column(nullable = false)
     private LocalDateTime create_at;
 
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     @ManyToOne
-    private User userId;
+    private User user;
+
+    @JoinColumn(name="advert_id")
+    @ManyToOne
+    private Advert advert;
 }
 
