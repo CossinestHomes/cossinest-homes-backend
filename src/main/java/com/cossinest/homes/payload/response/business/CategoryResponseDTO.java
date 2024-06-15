@@ -1,11 +1,22 @@
 package com.cossinest.homes.payload.response.business;
 
+import lombok.*;
+
 import java.time.LocalDateTime;
 
+
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder(toBuilder = true)
 public class CategoryResponseDTO {
 
 
 
+    private Long catId;
 
 
     private String title;
@@ -16,7 +27,7 @@ public class CategoryResponseDTO {
 
 
 
-    private boolean built_in;
+    private boolean builtIn;
 
 
 

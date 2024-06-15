@@ -1,7 +1,9 @@
 package com.cossinest.homes.service.user;
 
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.LogEnum;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.payload.mappers.UserMapper;
@@ -13,21 +15,20 @@ import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
+import com.cossinest.homes.service.business.LogService;
+import com.cossinest.homes.service.business.ReportService;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
+    private final LogService logService;
 
     public AuthenticatedUsersResponse getAuthenticatedUser(HttpServletRequest request) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -58,6 +60,12 @@ public class UserService {
         methodHelper.checkUniqueProperties(user, request);
         User updatedUser = userMapper.authenticatedUsersRequestToAutheticatedUser(user, request);
         userRepository.save(updatedUser);
+
+        for (Advert advert :updatedUser.getAdvert()) {
+
+            logService.createLogEvent(updatedUser.getId(),advert.getId(), LogEnum.USER_UPDATED);
+
+        }
 
         return ResponseEntity.ok(userMapper.authenticatedUsersResponse(updatedUser));
 
@@ -82,6 +90,7 @@ public class UserService {
         userRepository.save(user);
 
 
+
         return ResponseEntity.ok(SuccesMessages.PASSWORD_UPDATED_SUCCESSFULLY);
     }
 
@@ -98,6 +107,13 @@ public class UserService {
         methodHelper.checkEmailAndPassword(user, request);
 
         userRepository.delete(user);
+
+        for (Advert advert :user.getAdvert()) {
+
+            logService.createLogEvent(user.getId(),advert.getId(), LogEnum.USER_DELETED);
+
+        }
+
 
         return SuccesMessages.CUSTOMER_DELETED_SUCCESFULLY;
 
@@ -125,7 +141,7 @@ public class UserService {
 
     }
 
-    //TODO add FAVORI AND LOG CustomerResponse
+    //TODO add FAVORI
     public ResponseEntity<UserResponse> getUserById(Long id, HttpServletRequest request) {
 
         User user = methodHelper.getUserByHttpRequest(request);
@@ -146,6 +162,12 @@ public class UserService {
         User updatedUser = userMapper.usersUpdateRequestToUser(user, request);
 
 
+        for (Advert advert :user.getAdvert()) {
+
+            logService.createLogEvent(user.getId(),advert.getId(), LogEnum.USER_UPDATED);
+
+        }
+
         return ResponseMessage.<UserResponse>builder()
                 .message(SuccesMessages.USER_UPDATED_SUCCESSFULLY)
                 .status(HttpStatus.OK)
@@ -162,6 +184,13 @@ public class UserService {
         if (methodHelper.isBuiltIn(deleteUser))
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
 
+
+        for (Advert advert :deleteUser.getAdvert()) {
+
+            logService.createLogEvent(deleteUser.getId(),advert.getId(), LogEnum.USER_UPDATED);
+
+        }
+
         if (businessUser.getUserRole().stream().anyMatch(t -> t.getRoleType().getName().equalsIgnoreCase(RoleType.ADMIN.name()))) {
             userRepository.delete(deleteUser);
         } else if (businessUser.getUserRole().stream().anyMatch(t -> t.getRoleName().equalsIgnoreCase(RoleType.MANAGER.name()))) {
@@ -169,6 +198,9 @@ public class UserService {
             userRepository.delete(deleteUser);
 
         }
+
+
+
 
         return userMapper.userToUserResponse(deleteUser);
 
@@ -216,5 +248,11 @@ public class UserService {
         Page<UserPageableResponse> responsePage = users.map(userMapper::usersToUserPageableResponse);
 
         return new ResponseEntity<>(responsePage,HttpStatus.OK);
+    }
+
+    public List<User> getUsersByRoleType(RoleType roleType) {
+
+      return   userRepository.findByRoleType(roleType);
+
     }
 }

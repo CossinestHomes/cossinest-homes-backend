@@ -1,13 +1,16 @@
 package com.cossinest.homes.payload.response.business;
 
+import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -54,9 +57,11 @@ public class AdvertResponse {
 
     private Map<String,String > properties;
 
+    private List<Long> imagesIdsList;
 
 
-    //TODO: favourites,images
+
+    //TODO: favourites
 
 
 }

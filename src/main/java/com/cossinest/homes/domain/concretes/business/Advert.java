@@ -126,9 +126,13 @@ public class Advert {
     @JoinColumn(name = "district_id")
     private District district;
 
+    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<Images> imagesList;
 
 
-    //TODO: logs,images
+
+    //TODO: logs
 
 
 

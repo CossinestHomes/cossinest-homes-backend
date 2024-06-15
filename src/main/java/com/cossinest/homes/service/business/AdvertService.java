@@ -3,33 +3,32 @@ package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.LogEnum;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.domain.enums.Status;
+import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
-import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
-import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
-import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
+import com.cossinest.homes.service.validator.DateTimeValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import org.springframework.web.multipart.MultipartFile;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +52,8 @@ public class AdvertService {
     private final CategoryPropertyValueService categoryPropertyValueService;
 
     private final AdvertTypesService advertTypesService;
+    private final DateTimeValidator dateTimeValidator;
+    private final LogService logService;
 
     private final DistrictService districtService;
 
@@ -146,29 +147,33 @@ public class AdvertService {
     }
 
     @Transactional
-    public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest) {
-        Advert advert =new Advert();
+    public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest, MultipartFile[] files) {
+
         Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
         City city=cityService.getCityById(advertRequest.getCityId());
         User user=methodHelper.getUserByHttpRequest(httpServletRequest);
         Country country= countryService.getCountryById(advertRequest.getCountryId());
         AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
         District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
+
+        Advert advert =advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType,district);
+
         List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
-
-
         advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+        advert.setImagesList(methodHelper.getImagesForAdvert(files,advert.getImagesList()));//TODO:image setleme kontrol et
 
-        advert=advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType,district);
 
-        advert = advertRepository.save(advert);
-        advert.generateSlug();
-        advertRepository.save(advert);
+
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.CREATED);
+
+
+        Advert savedAdvert = advertRepository.save(advert);
+        savedAdvert.generateSlug();
+        advertRepository.save(savedAdvert);
+
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
-
-
-        //TODO:images
 
     }
 
@@ -200,6 +205,9 @@ public class AdvertService {
         returnedAdvert.generateSlug();
         Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+
         return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
     }
 
@@ -217,7 +225,7 @@ public class AdvertService {
         Country country= countryService.getCountryById(advertRequest.getCountryId());
         AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
         District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueListForAdmin(category,advertRequest,categoryPropertyValueService);
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
 
         Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvertForAdmin(id,advertRequest,category,city,country,advertType,district);
 
@@ -226,6 +234,8 @@ public class AdvertService {
         Advert returnedAdvert=advertRepository.save(updateAdvert);
         returnedAdvert.generateSlug();
         Advert updatedAdvert = advertRepository.save(returnedAdvert);
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
 
         return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
     }
@@ -239,6 +249,9 @@ public class AdvertService {
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
         advertRepository.deleteById(id);
+
+        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.DELETED);
+
         return advertMapper.mapAdvertToAdvertResponse(advert);
     }
 
@@ -248,5 +261,31 @@ public class AdvertService {
     }
 
 
+    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
+       LocalDate begin =LocalDate.parse(date1);
+       LocalDate end =LocalDate.parse(date2);
+       dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
+
+       categoryService.getCategoryByTitle(category);
+
+        Status enumStatus;
+        try {
+            enumStatus= Status.valueOf(status);
+
+        }catch (BadRequestException e){
+            throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
+        }
+
+       return advertRepository.findByQuery(date1,date2,category,type,enumStatus ).orElseThrow(
+                ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
+        );
+
+    }
+
+    public Page<Advert> getPopulerAdverts(Pageable pageable) {
+
+     return advertRepository.getMostPopulerAdverts(pageable);
+
+    }
 }

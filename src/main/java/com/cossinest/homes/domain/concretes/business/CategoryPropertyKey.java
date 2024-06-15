@@ -24,7 +24,7 @@ public class CategoryPropertyKey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long Id;
+    private Long id;
 
 
     @NotNull(message = "name can not be null")
@@ -33,8 +33,8 @@ public class CategoryPropertyKey {
     @Column(nullable = false, length = 80)
     private String name;
 
-
-    private boolean built_in;
+    @Column(name = "built_in")
+    private Boolean builtIn = false;
 
 
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
