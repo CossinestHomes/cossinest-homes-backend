@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -41,6 +42,7 @@ public class AuthenticatedUsersResponse {
 
     private Set<TourRequestResponse>tourRequestsResponse;
 
+    private List<Advert>advertList;
 
 
     // todo:favori ve log eklenecek
