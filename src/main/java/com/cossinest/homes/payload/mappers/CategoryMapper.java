@@ -2,7 +2,10 @@ package com.cossinest.homes.payload.mappers;
 
 
 import com.cossinest.homes.domain.concretes.business.Category;
+import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+
+import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.*;
@@ -23,7 +26,7 @@ public class CategoryMapper {
 
     // CategoryENTITY ====> DTO:
 
-    public CategoryResponseDTO mapCategoryToCategoryResponceDTO(Category category){
+    public CategoryResponseDTO mapCategoryToCategoryResponseDTO(Category category){
 
         return CategoryResponseDTO.builder()
                 .catId(category.getId())
@@ -49,6 +52,18 @@ public class CategoryMapper {
                 .seq(categoryRequestDTO.getSeq())
                 .slug(categoryRequestDTO.getSlug())
                 .active(categoryRequestDTO.isActive())
+                .build();
+    }
+
+
+    // CategoryPropertyKeyENTITY ====> DTO:
+
+    public CategoryPropKeyResponseDTO mapCategPropKeyToCategPropKeyResponseDTO(CategoryPropertyKey categoryPropertyKey){
+
+        return CategoryPropKeyResponseDTO.builder()
+                .id(categoryPropertyKey.getId())
+                .name(categoryPropertyKey.getName())
+                .builtIn(categoryPropertyKey.getBuiltIn())
                 .build();
     }
 
