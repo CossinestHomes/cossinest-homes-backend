@@ -136,7 +136,7 @@ public class AdvertService {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
 
         Advert advert=isAdvertExistById(id);
-        if(advert.getUser().getId()!=user.getId()){
+        if(advert.getUser().getId()!=user.getId()){ //TODO Objects.equals yazilabilir
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
 
@@ -205,14 +205,14 @@ public class AdvertService {
         updateAdvert.setUser(user);
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
-        Advert returnedAdvert=advertRepository.save(updateAdvert);
-        returnedAdvert.generateSlug();
-        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+        Advert returnedAdvert=advertRepository.save(updateAdvert); //TODO Entitye PostUpdate Anatasyon eklendi
+      //  returnedAdvert.generateSlug();
+      //  Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
 
         logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
 
-        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+        return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
     @Transactional
@@ -236,12 +236,12 @@ public class AdvertService {
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
         Advert returnedAdvert=advertRepository.save(updateAdvert);
-        returnedAdvert.generateSlug();
-        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+       // returnedAdvert.generateSlug();
+       // Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
         logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
 
-        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+        return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
     public AdvertResponse deleteAdvert(Long id, HttpServletRequest request) {

@@ -196,8 +196,8 @@ public class MethodHelper {
         //adım:1==>Db den category e ait PropertyKeyleri getir
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
-        List<Long> cpkIds = categoryPropertyKeys.stream().map(t -> t.getId()).collect(Collectors.toList());
-        //adım:3==>requestten gelen properti ile map yapısı oluştur
+        List<Long> cpkIds = categoryPropertyKeys.stream().map(CategoryPropertyKey::getId).toList();
+        //adım:3==>requestten gelen properti ile map yapısı oluştur //TODO key verdigimizde mape o valuesunu doner.
         List<Object> propertyKeys = advertRequest.getProperties().stream().map(t -> t.get("keyId")).collect(Collectors.toList());
         List<Object> propertyValues = advertRequest.getProperties().stream().map(t -> t.get("value")).collect(Collectors.toList());
         Map<Object, Object> propertyKeyAndPropertyValue = mapTwoListToOneMap(propertyKeys, propertyValues);
@@ -215,6 +215,7 @@ public class MethodHelper {
         String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
         String propertyValue = categoryPropertyValue.getValue();
         propertyNameAndValue.put(propertyKeyName, propertyValue);
+      //  categoryPropertyValue.getCategoryPropertyKeys().getName();
     }
 
 

@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface AdvertRepository extends JpaRepository<Advert,Long> {
 
     //Todo "(?7 IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT("%",?7,"%")) OR LOWER(a.desc) LIKE LOWER(CONCAT("%",?7,"%")))"
-    //Todo yada q 2 parametre olarak alinabilir belki
+    //Todo yada q 2 parametre olarak alinabilir belki, BETWEEN Ile yapilabilirdir
     @Query("SELECT a FROM Advert a WHERE " +
             "a.category.id = ?1 AND " +
             "a.advertType.id = ?2 AND " +
