@@ -61,9 +61,9 @@ public class UserService {
         User updatedUser = userMapper.authenticatedUsersRequestToAutheticatedUser(user, request);
         userRepository.save(updatedUser);
 
-        for (Advert advert :updatedUser.getAdvert()) {
+        for (Advert advert : updatedUser.getAdvert()) {
 
-            logService.createLogEvent(updatedUser.getId(),advert.getId(), LogEnum.USER_UPDATED);
+            logService.createLogEvent(updatedUser, advert, LogEnum.USER_UPDATED);
 
         }
 
@@ -90,7 +90,6 @@ public class UserService {
         userRepository.save(user);
 
 
-
         return ResponseEntity.ok(SuccesMessages.PASSWORD_UPDATED_SUCCESSFULLY);
     }
 
@@ -109,9 +108,9 @@ public class UserService {
 
         userRepository.delete(user);
 
-        for (Advert advert :user.getAdvert()) {
+        for (Advert advert : user.getAdvert()) {
 
-            logService.createLogEvent(user.getId(),advert.getId(), LogEnum.USER_DELETED);
+            logService.createLogEvent(user, advert, LogEnum.USER_DELETED);
 
         }
 
@@ -163,9 +162,9 @@ public class UserService {
         User updatedUser = userMapper.usersUpdateRequestToUser(user, request);
 
 
-        for (Advert advert :user.getAdvert()) {
+        for (Advert advert : user.getAdvert()) {
 
-            logService.createLogEvent(user.getId(),advert.getId(), LogEnum.USER_UPDATED);
+            logService.createLogEvent(user, advert, LogEnum.USER_UPDATED);
 
         }
 
@@ -182,28 +181,33 @@ public class UserService {
         User businessUser = methodHelper.getUserByHttpRequest(auth);
         methodHelper.checkRoles(businessUser, RoleType.MANAGER, RoleType.ADMIN);
         User deleteUser = methodHelper.findUserWithId(id);
-        if (methodHelper.isBuiltIn(deleteUser)){
+        if (methodHelper.isBuiltIn(deleteUser)) {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_DELETED);
         }
-         methodHelper.isRelatedToAdvertsOrTourRequest(businessUser);
+        methodHelper.isRelatedToAdvertsOrTourRequest(deleteUser);
 
 
-        for (Advert advert :deleteUser.getAdvert()) {
+        for (Advert advert : deleteUser.getAdvert()) {
 
-            logService.createLogEvent(deleteUser.getId(),advert.getId(), LogEnum.USER_UPDATED);
+            logService.createLogEvent(deleteUser, advert, LogEnum.USER_UPDATED);
 
         }
 
+
+        boolean control = false;
         if (businessUser.getUserRole().stream().anyMatch(t -> t.getRoleType().getName().equalsIgnoreCase(RoleType.ADMIN.name()))) {
-            userRepository.delete(deleteUser);
+            control = true;
         } else if (businessUser.getUserRole().stream().anyMatch(t -> t.getRoleName().equalsIgnoreCase(RoleType.MANAGER.name()))) {
             methodHelper.checkRoles(deleteUser, RoleType.CUSTOMER);
-            userRepository.delete(deleteUser);
-
+            control = true;
         }
 
 
-
+        if (control) {
+            userRepository.delete(deleteUser);
+        } else {
+            throw new BadRequestException(ErrorMessages.LOW_ROLE_USERS_CAN_NOT_DELETE_HIGH_ROLE_USERS);
+        }
 
         return userMapper.userToUserResponse(deleteUser);
 
@@ -213,49 +217,49 @@ public class UserService {
 
     public String forgotPassword(ForgetPasswordRequest request) {
 
-       try{
-           User user =methodHelper.findByUserByEmail(request.getEmail());
-           String resetCode =UUID.randomUUID().toString();
-           user.setResetPasswordCode(resetCode);
-           userRepository.save(user);
-            emailService.sendEmail(user.getEmail(),"Reset email","Your reset email code is:"+resetCode);
+        try {
+            User user = methodHelper.findByUserByEmail(request.getEmail());
+            String resetCode = UUID.randomUUID().toString();
+            user.setResetPasswordCode(resetCode);
+            userRepository.save(user);
+            emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
 
-       }catch (BadRequestException e){
-           return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
-       }
+        } catch (BadRequestException e) {
+            return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
+        }
 
         return SuccesMessages.RESET_PASSWORD_CODE_HAS_BEEN_SENT_TO_YOUR_EMAIL_ADRESS;
 
     }
 
     public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
-       User user =userRepository.resetPasswordWithCode(request.getResetPasswordCode()).orElseThrow(
-               ()-> new BadRequestException(ErrorMessages.RESET_PASSWORD_CODE_DID_NOT_MATCH));
+        User user = userRepository.resetPasswordWithCode(request.getResetPasswordCode()).orElseThrow(
+                () -> new BadRequestException(ErrorMessages.RESET_PASSWORD_CODE_DID_NOT_MATCH));
 
 
-        methodHelper.UpdatePasswordControl(request.getPassword(),request.getReWritePassword());
+        methodHelper.UpdatePasswordControl(request.getPassword(), request.getReWritePassword());
         String requestPassword = passwordEncoder.encode(request.getPassword());
         user.setPasswordHash(requestPassword);
         userRepository.save(user);
-        return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY,HttpStatus.OK);
+        return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY, HttpStatus.OK);
 
     }
 
-    public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request,String q, int page, int size, String sort, String type) {
+    public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
-        Pageable pageable= pageableHelper.getPageableWithProperties(page,size,sort,"asc");
-        String query= q!=null? "%"+q.toLowerCase()+"%":null;
-        Page<User>users=userRepository.findAll(query,pageable);
+        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, "asc");
+        String query = q != null ? "%" + q.toLowerCase() + "%" : null;
+        Page<User> users = userRepository.findAll(query, pageable);
 
         Page<UserPageableResponse> responsePage = users.map(userMapper::usersToUserPageableResponse);
 
-        return new ResponseEntity<>(responsePage,HttpStatus.OK);
+        return new ResponseEntity<>(responsePage, HttpStatus.OK);
     }
 
     public List<User> getUsersByRoleType(RoleType roleType) {
 
-      return   userRepository.findByRoleType(roleType);
+        return userRepository.findByRoleType(roleType);
 
     }
 }

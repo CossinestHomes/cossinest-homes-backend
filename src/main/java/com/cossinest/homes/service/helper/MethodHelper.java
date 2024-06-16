@@ -99,12 +99,12 @@ public class MethodHelper {
         String changedEmail = "";
         String changedPhone = "";
 
-        if (user.getEmail().equalsIgnoreCase(request.getEmail())) {
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail())) {
             changed = true;
             changedEmail = request.getEmail();
         }
 
-        if (user.getPhone().equalsIgnoreCase(request.getPhone())) {
+        if (!user.getPhone().equalsIgnoreCase(request.getPhone())) {
             changed = true;
             changedPhone = request.getEmail();
         }
@@ -197,7 +197,7 @@ public class MethodHelper {
         List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
         List<Long> cpkIds = categoryPropertyKeys.stream().map(CategoryPropertyKey::getId).toList();
-        //adım:3==>requestten gelen properti ile map yapısı oluştur //TODO key verdigimizde mape o valuesunu doner.
+        //adım:3==>requestten gelen properti ile map yapısı oluştur
         List<Object> propertyKeys = advertRequest.getProperties().stream().map(t -> t.get("keyId")).collect(Collectors.toList());
         List<Object> propertyValues = advertRequest.getProperties().stream().map(t -> t.get("value")).collect(Collectors.toList());
         Map<Object, Object> propertyKeyAndPropertyValue = mapTwoListToOneMap(propertyKeys, propertyValues);
@@ -258,7 +258,7 @@ public class MethodHelper {
             favoritesRepository.save(favorite);
         }
     }
-}
+
 
 
 
