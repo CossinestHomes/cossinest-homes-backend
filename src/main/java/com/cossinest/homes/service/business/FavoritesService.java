@@ -3,6 +3,7 @@ package com.cossinest.homes.service.business;
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
@@ -17,6 +18,7 @@ import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -70,71 +72,79 @@ public class FavoritesService {
 
         return favoriteAdverts.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
 
-//////////////////
-        public List<AdvertResponse> getUsersFavorites (Long id){
+    }
 
-            // Kullanıcı ID'sine göre favori ilanları al
-            List<Favorites> favoritesList = (List<Favorites>) methodHelper.findUserWithId(id);
+    public List<AdvertResponse> getUsersFavorites(Long id) {
 
-            List<Advert> favoriteAdvert = new ArrayList<>();
+        // Kullanıcı ID'sine göre favori ilanları al
+        List<Favorites> favoritesList = (List<Favorites>) methodHelper.findUserWithId(id);
 
-            for (Favorites favorite : favoriteList
-            ) {
-                favoriteAdvert.add(favorite.getAdvert());
+        //TODO Burası User döner
+           /* User user = methodHelper.findUserWithId(id);
+            List<Advert> favorites = user.getFavoritesList().stream().map(Favorites::getAdvert).toList();
+            return favorites.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList()); */
 
-            }
+        List<Advert> favoriteAdvert = new ArrayList<>();
 
-            // Favori ilanları AdvertResponse nesnelerine dönüştür ve döndür
-            return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
-
-        }
-
-
-
-///////////////////
-
-        public AdvertResponse addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest, AdvertRequest advertRequest)
-        {
-
-            Long userId = MethodHelper.getUserIdFromRequest(httpServletRequest, userRepository);
-            Long advertId = advertRequest.getAdvertId(); //id gelmiyor mehmet hocayla konusmalı. getAdvertIdType geliyor
-
-            // Favori ilanın var olup olmadığını kontrol et
-            boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(userId, advertId);
-
-
-            if (isFavorite) {
-                favoritesRepository.deleteFavoriteIfExists(userId, advertId);
-
-            } else { // Eğer favori yoksa, favori ekle
-                favoritesRepository.addFavoriteIfNotExists(userId, advertId);
-
-            }
-
-           List<Favorites> updatedFavorites = favoritesRepository.findFavoritesByUserId(userId);
-            /*AdvertResponse advertResponse = new AdvertResponse();
-            advertResponse.setFavoritesList(updatedFavorites); //mehmet hocada setFavori için method ?
-            return advertResponse; */
+        for (Favorites favorite : favoritesList
+        ) {
+            favoriteAdvert.add(favorite.getAdvert());
 
         }
 
-
-//////////////////////////////////
-
-
-
-
-
-
+        // Favori ilanları AdvertResponse nesnelerine dönüştür ve döndür
+        return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
 
     }
+
+
+
+        public AdvertResponse addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest,Long id) {
+
+            //TODO Repo göndermeye gerek yok, zaten orda da var
+            User user = methodHelper.getUserByHttpRequest(httpServletRequest);
+            
+            //TODO property olarak gelen id zaten direkt Advert id, onu kullanmalıyız
+            Advert advert = advertService.getAdvertForFaavorites(id);
+          Favorites favoriteByAdvert = favoritesRepository.isExistsFavByAdvert(advert.getId(),user.getId());
+            if(favoriteByAdvert!=null) {
+            user.getFavoritesList().remove(favoriteByAdvert);
+            }else {
+                user.getFavoritesList().add(favoriteByAdvert);
+            }
+
+            return advertMapper.mapAdvertToAdvertResponse(advert);
+
+        }
+
+
+
+
+
+
 
     public ResponseMessage removeAllFavoritesOfAUser(HttpServletRequest httpServletRequest) {
 
         Long userId = MethodHelper.getUserIdFromRequest(httpServletRequest, userRepository);
 
         favoritesRepository.deleteAllByUserId(userId);
+return null;
+    }
 
+    public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest) {
+        User user = methodHelper.getUserByHttpRequest(httpServletRequest);
+        methodHelper.controlRoles(user, RoleType.CUSTOMER);
+
+     if(user.getFavoritesList()!=null){
+
+         user.getFavoritesList().clear();
+
+         userRepository.save(user);
+     }
+     return ResponseMessage.<T>builder()
+             .status(HttpStatus.OK)
+             .message(SuccesMessages.FAVORITE_REMOVED_SUCCESSFULLY)
+             .build();
     }
 }
 
