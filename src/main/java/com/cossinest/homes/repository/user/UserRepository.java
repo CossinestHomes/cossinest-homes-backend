@@ -23,8 +23,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
 
-    @Query("SELECT u FROM User u WHERE (:name IS NULL OR u.firstName=:name)AND" +
-            "(:surname IS NULL OR u.lastName=:surname)AND" +
+    @Query("SELECT u FROM User u WHERE (:name IS NULL OR u.firstName=:name)OR" +
+            "(:surname IS NULL OR u.lastName=:surname)OR" +
             "(:email IS NULL OR u.email=:email)OR" +
             "(:phone IS NULL OR u.phone=:phone)")
     Page<User> findAll(@Param(value = "name") String name,
@@ -37,10 +37,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User>resetPasswordWithCode(@Param(value ="resetPasswordCode" ) String resetPasswordCode);
 
     @Query("SELECT u FROM User u WHERE " +
-            "(:query IS NULL OR LOWER(u.firstName) LIKE LOWER(:query) OR " +
-            "LOWER(u.lastName) LIKE LOWER(:query) OR " +
-            "LOWER(u.email) LIKE LOWER(:query) OR " +
-            "LOWER(u.phone) LIKE LOWER(:query))")
+            "(:query IS NULL OR LOWER(u.firstName) LIKE :query OR " +
+            "LOWER(u.lastName) LIKE :query OR " +
+            "LOWER(u.email) LIKE :query OR " +
+            "LOWER(u.phone) LIKE :query)")
 
     Page<User> findAll(@Param("query") String query, Pageable pageable);
 

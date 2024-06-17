@@ -69,7 +69,7 @@ public abstract class AbstractAdvertRequest {
     @Min(value = 1, message = "Category ID must be greater than or equal to 1")
     private Long categoryId;
 
-    @NotNull //TODO burda neden List kullanildi
+    @NotNull
     private List<Map<String, Object>> properties;
 
 

@@ -169,7 +169,7 @@ public class AdvertService {
 
 
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.CREATED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.CREATED);
 
 
         Advert savedAdvert = advertRepository.save(advert);
@@ -210,7 +210,7 @@ public class AdvertService {
       //  Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
 
         return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
@@ -239,7 +239,7 @@ public class AdvertService {
        // returnedAdvert.generateSlug();
        // Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
 
         return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
@@ -254,7 +254,7 @@ public class AdvertService {
         }
         advertRepository.deleteById(id);
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.DELETED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.DELETED);
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
     }

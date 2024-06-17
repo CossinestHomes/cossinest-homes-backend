@@ -72,7 +72,7 @@ public class TourRequestService {
 
         TourRequest savedTourRequest = tourRequestRepository.save(mappedTourRequest);
 
-        logService.createLogEvent(userGuest.getId(),savedTourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_CREATED);
+        logService.createLogEvent(userGuest,savedTourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_CREATED);
 
 
         return ResponseMessage.<TourRequestResponse>builder()
@@ -188,7 +188,7 @@ public class TourRequestService {
         updatedTourRequest.setGuestUserId(guestUser);
         updatedTourRequest.setOwnerUserId(advert.getUser());
 
-        logService.createLogEvent(guestUser.getId(),advert.getId(), LogEnum.TOUR_REQUEST_ACCEPTED);
+        logService.createLogEvent(guestUser,advert, LogEnum.TOUR_REQUEST_ACCEPTED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse( tourRequestRepository.save(updatedTourRequest)))
@@ -210,7 +210,7 @@ public class TourRequestService {
 
          tourRequest.setStatus(StatusType.CANCELED);
 
-        logService.createLogEvent(guestUser.getId(),tourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_CANCELED);
+        logService.createLogEvent(guestUser,tourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_CANCELED);
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
                 .status(HttpStatus.OK)
@@ -230,7 +230,7 @@ public class TourRequestService {
 
         tourRequest.setStatus(StatusType.APPROVED);
 
-        logService.createLogEvent(guestUser.getId(),tourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_ACCEPTED);
+        logService.createLogEvent(guestUser,tourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_ACCEPTED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
@@ -254,7 +254,7 @@ public class TourRequestService {
 
         tourRequest.setStatus(StatusType.DECLINED);
 
-        logService.createLogEvent(guestUser.getId(),tourRequest.getAdvertId().getId(), LogEnum.TOUR_REQUEST_DECLINED);
+        logService.createLogEvent(guestUser,tourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_DECLINED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
