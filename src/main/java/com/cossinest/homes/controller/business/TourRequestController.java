@@ -19,7 +19,7 @@ public class TourRequestController {
 
     private final TourRequestService tourRequestService;
 
-    @PostMapping // http://localhost:8080/tour-requests  + POST + JSON
+    @PostMapping // http://localhost:8080/tour-requests  + POST + JSON //TODO buraya bak
     public ResponseMessage<TourRequestResponse> save(@Valid @RequestBody TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest){
 
         return tourRequestService.saveTourRequest(tourRequestRequest,httpServletRequest);
@@ -40,7 +40,7 @@ public class TourRequestController {
         return tourRequestService.getAllTourRequestByPageAuth(httpServletRequest,page, size,sort,type,createAt,tourTime,status,tourDate);
     }
 
-    @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=tour_date&type=asc + GET
+    @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=tour_date&type=asc + GET //TODO defaultvaluler yazilmali ve query degisecekti
     public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
             HttpServletRequest httpServletRequest,
             @RequestParam("page") int page,
@@ -69,7 +69,7 @@ public class TourRequestController {
         return tourRequestService.getTourRequestByIdAdmin(id,httpServletRequest);
     }
 
-    @PutMapping("/{id}/auth") // http://localhost:8080/tour-requests/2/auth + PUT + JSON
+    @PutMapping("/{id}/auth") // http://localhost:8080/tour-requests/2/auth + PUT + JSON //TODO bazi veriler update olsada olur muydu
     public ResponseMessage<TourRequestResponse> updateTourRequestAuth(@Valid @RequestBody TourRequestRequest tourRequestRequest,
                                                                       @PathVariable("id") Long id,
                                                                       HttpServletRequest httpServletRequest){

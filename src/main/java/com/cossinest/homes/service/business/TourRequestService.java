@@ -46,8 +46,8 @@ public class TourRequestService {
 
 
 
-//todo save methodu kontrol edilecek!
-    public ResponseMessage<TourRequestResponse> saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
+
+    public ResponseMessage<TourRequestResponse>saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
 
         // Advertta Date-time cakismasi var mi?
        List<TourRequest> tourRequestsFromRepo = getAlTourRequestl();
@@ -58,7 +58,7 @@ public class TourRequestService {
         User userGuest = methodHelper.findByUserByEmail(userEmail);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(userGuest,tourRequestRequest);
 
-        //UserOwner için çakışma kontrolü
+        //UserOwner için çakışma kontrolü //TODO burayi anlayamadim. id zaten var ve advert id neden ownerId oldu
         Advert advert = advertService.getAdvertForFaavorites(tourRequestRequest.getAdvertId());
         Long ownerId = advert.getId();
         User ownerUser = methodHelper.findUserWithId(ownerId);
