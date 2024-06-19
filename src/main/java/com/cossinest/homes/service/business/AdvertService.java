@@ -28,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +74,7 @@ public class AdvertService {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-        //TODO daha kisa yazilabilir
+
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -267,8 +269,9 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-       LocalDate begin =LocalDate.parse(date1);
-       LocalDate end =LocalDate.parse(date2);
+        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
+       LocalDateTime begin =LocalDateTime.parse(date1+"T00:00:00",formatter);
+       LocalDateTime end =LocalDateTime.parse(date2+"T23:59:59",formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
@@ -281,7 +284,7 @@ public class AdvertService {
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
         }
 
-       return advertRepository.findByQuery(date1,date2,category,type,enumStatus ).orElseThrow(
+       return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 
