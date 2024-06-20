@@ -41,7 +41,7 @@ public class AdvertController {
             @RequestParam(value = "price_start",required = false) Double priceStart,
             @RequestParam(value = "price_end",required = false) Double priceEnd,
             @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) int status,
+            @RequestParam(value = "status",required = false) Integer status,
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
             @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
@@ -74,9 +74,12 @@ public class AdvertController {
                 .build();
     }
 
-    @GetMapping("/popular/{value}")  //TODO  default deger value icine atanamaz @ReqestParam olabilir, Service injekte edilebilir prop yerine
-                                    //TODO Propertiesi maplerken fazla getPropertiesForAdvertResponse --
-    public ResponseMessage<List<AdvertResponse>> getPopularAdverts(@PathVariable(value = "10") int value){
+
+    @GetMapping("/popular/{value}")
+    public ResponseMessage<List<AdvertResponse>> getPopularAdverts(@PathVariable(required = false) Integer value){
+
+        if (value==null) value=10;
+
       List<AdvertResponse> advertResponseList = advertService.getPopularAdverts(value);
 
       return ResponseMessage.<List<AdvertResponse>>builder()
