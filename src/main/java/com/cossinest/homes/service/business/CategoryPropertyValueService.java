@@ -33,4 +33,8 @@ public class CategoryPropertyValueService {
       return categoryPropertyValueRepository.findByValue(value).orElseThrow(()-> new BadRequestException(String.format(ErrorMessages.CATEGORY_VALUE_IS_NOT_FOUND,value)));
 
     }
+
+    public void resetCategoryPropertyValueTables() {
+        categoryPropertyValueRepository.deleteAll();
+    }
 }

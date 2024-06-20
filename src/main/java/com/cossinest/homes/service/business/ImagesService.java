@@ -112,4 +112,8 @@ public class ImagesService {
 
         return image.getData();
     }
+
+    public void resetImageTables() {
+        imagesRepository.deleteAll();
+    }
 }

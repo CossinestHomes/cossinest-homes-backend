@@ -27,4 +27,8 @@ public class UserRoleService {
     public List<UserRole> getAllUserRoles(){
         return userRoleRepository.findAll();
     }
+
+    public void resetUserRoleTables() {
+        userRoleRepository.deleteAll();
+    }
 }
