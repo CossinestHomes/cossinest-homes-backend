@@ -12,7 +12,9 @@ public class ErrorMessages {
     public static final String ADVERT_STATUS_NOT_FOUND ="Advert status not found";
     public static final String NOT_FOUND_ADVERT = "Not found advert";
     public static final String UPLOADING_FAILED = "Images is not upload";
-
+    public static final String THE_USER_HAS_RELATED_RECORDS_WITH_ADVERTS_OR_TOUR_REQUESTS = "The user has related records with Adverts or Tour requests tables";
+    public static final String EXCEL_COULD_NOT_BE_CREATED ="Excel could not be created" ;
+    public static final String EXCEL_COULD_NOT_BE_CREATED_TYPE_IS_NOT_ADVERT = "Excel could not be created because type is not Advert";
 
 
     private ErrorMessages() {

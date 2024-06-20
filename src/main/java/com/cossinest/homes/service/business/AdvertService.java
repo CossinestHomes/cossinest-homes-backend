@@ -28,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,7 @@ public class AdvertService {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
+
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -84,7 +87,7 @@ public class AdvertService {
     public List<CategoryForAdvertResponse> getCategoryWithAmountForAdvert(){
 
        List<Category> categoryList = categoryService.getAllCategory();
-
+//TODO direk return yazilabilir
        List<CategoryForAdvertResponse> categoryForAdvertList= categoryList.stream().map(advertMapper::mapperCategoryToCategoryForAdvertResponse).toList();
 
        return categoryForAdvertList;
@@ -107,6 +110,8 @@ public class AdvertService {
 
         User user= methodHelper.getUserByHttpRequest(request);
 
+        //TODO kullanici customer mi diye bakilabilir
+
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
@@ -115,6 +120,7 @@ public class AdvertService {
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
+        //TODO dahada kisaltilabilir
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -132,7 +138,7 @@ public class AdvertService {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
 
         Advert advert=isAdvertExistById(id);
-        if(advert.getUser().getId()!=user.getId()){
+        if(advert.getUser().getId()!=user.getId()){ //TODO Objects.equals yazilabilir
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
 
@@ -165,7 +171,7 @@ public class AdvertService {
 
 
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.CREATED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.CREATED);
 
 
         Advert savedAdvert = advertRepository.save(advert);
@@ -201,14 +207,14 @@ public class AdvertService {
         updateAdvert.setUser(user);
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
-        Advert returnedAdvert=advertRepository.save(updateAdvert);
-        returnedAdvert.generateSlug();
-        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+        Advert returnedAdvert=advertRepository.save(updateAdvert); //TODO Entitye PostUpdate Anatasyon eklendi
+      //  returnedAdvert.generateSlug();
+      //  Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
 
-        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+        return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
     @Transactional
@@ -232,12 +238,12 @@ public class AdvertService {
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
         Advert returnedAdvert=advertRepository.save(updateAdvert);
-        returnedAdvert.generateSlug();
-        Advert updatedAdvert = advertRepository.save(returnedAdvert);
+       // returnedAdvert.generateSlug();
+       // Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.UPDATED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
 
-        return advertMapper.mapAdvertToAdvertResponse(updatedAdvert);
+        return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
     public AdvertResponse deleteAdvert(Long id, HttpServletRequest request) {
@@ -250,7 +256,7 @@ public class AdvertService {
         }
         advertRepository.deleteById(id);
 
-        logService.createLogEvent(advert.getUser().getId(),advert.getId(), LogEnum.DELETED);
+        logService.createLogEvent(advert.getUser(),advert, LogEnum.DELETED);
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
     }
@@ -263,8 +269,9 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-       LocalDate begin =LocalDate.parse(date1);
-       LocalDate end =LocalDate.parse(date2);
+        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
+       LocalDateTime begin =LocalDateTime.parse(date1+"T00:00:00",formatter);
+       LocalDateTime end =LocalDateTime.parse(date2+"T23:59:59",formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
@@ -277,7 +284,7 @@ public class AdvertService {
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
         }
 
-       return advertRepository.findByQuery(date1,date2,category,type,enumStatus ).orElseThrow(
+       return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 

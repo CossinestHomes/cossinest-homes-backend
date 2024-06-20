@@ -25,6 +25,12 @@ public class CategoryRequestDTO {
     @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
     private String title;
 
+    @NotNull(message = "name can not be null")
+    @NotBlank(message = "name can not be white space")
+    @Size(min=2, max=80, message = "name '${validatedValue}' must be between {min} and {max} long")
+    @Column(nullable = false, length = 80)
+    private String name;
+
 
     @NotNull(message = "icon can not be null")
     @NotBlank(message = "icon can not be white space")

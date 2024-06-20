@@ -33,6 +33,7 @@ public class AdvertController {
     @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
                  //status=1;page=1&size=10&sort=date&type=asc
 
+
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q",required = false, defaultValue = "") String query,
             @RequestParam(value = "category_id") Long categoryId,
@@ -73,6 +74,7 @@ public class AdvertController {
                 .build();
     }
 
+
     @GetMapping("/popular/{value}")
     public ResponseMessage<List<AdvertResponse>> getPopularAdverts(@PathVariable(required = false) Integer value){
 
@@ -99,7 +101,7 @@ public class AdvertController {
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/admin") //TODO ResponseEntity,
     //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
             HttpServletRequest request,
@@ -146,7 +148,7 @@ public class AdvertController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    //@PreAuthorize("hasAnyAuthority('CUSTOMER')") //TODO Burasi yazilacak
     public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
         AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()

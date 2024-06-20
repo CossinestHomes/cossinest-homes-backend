@@ -1,9 +1,11 @@
 package com.cossinest.homes.payload.response.user;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -12,6 +14,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -37,12 +40,14 @@ public class AuthenticatedUsersResponse {
     private Set<String> userRole;
 
 
-    private Set<Advert> advert;
+    private Set<AdvertResponse> advert;
 
     private Set<TourRequestResponse>tourRequestsResponse;
 
 
+    private List<Long>favoritesList;
 
-    // todo:favori ve log eklenecek
+
+    // todo:log eklenecek
 
 }
