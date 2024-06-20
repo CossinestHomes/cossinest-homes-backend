@@ -13,6 +13,8 @@ import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
+import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
+import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +61,7 @@ public class AdvertService {
     private final LogService logService;
 
     private final DistrictService districtService;
+    private final ImagesService imagesService;
 
 
 
@@ -269,9 +273,9 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
-       LocalDateTime begin =LocalDateTime.parse(date1+"T00:00:00",formatter);
-       LocalDateTime end =LocalDateTime.parse(date2+"T23:59:59",formatter);
+        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+       LocalDateTime begin =LocalDateTime.parse(date1+" 00:00:00",formatter);
+       LocalDateTime end =LocalDateTime.parse(date2+" 23:59:59",formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
@@ -295,4 +299,44 @@ public class AdvertService {
      return advertRepository.getMostPopulerAdverts(pageable);
 
     }
+
+    @Transactional
+    public ResponseEntity<AdvertResponse> trySave(CreateAdvertRequest createRequest, HttpServletRequest request) {
+       methodHelper.getUserByHttpRequest(request);
+
+        Advert advert=advertSet(createRequest);
+
+         List<CategoryPropertyValue>advertValueList=new ArrayList<>();
+
+        for (CreateAdvertPropertyRequest request1 :createRequest.getAdvertPropertyRequest()) {
+
+          advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        }
+
+        advert.setCategoryPropertyValuesList(advertValueList);
+
+        Advert savedAdvert =advertRepository.save(advert);
+
+        imagesService.uploadImages(savedAdvert.getId(),createRequest.getFiles());
+
+        savedAdvert.generateSlug();
+
+        Advert updatedAdvert =advertRepository.save(savedAdvert);
+
+        return  ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(updatedAdvert));
+
+
+    }
+
+    public Advert advertSet(CreateAdvertRequest createRequest){
+
+        Category category= categoryService.getCategoryById(createRequest.getCategoryId());
+        City city=cityService.getCityById(createRequest.getCityId());
+        Country country= countryService.getCountryById(createRequest.getCountryId());
+        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(createRequest.getAdvertTypeId());
+        District district= districtService.getDistrictByIdForAdvert(createRequest.getDistrictId());
+        return advertMapper.mapCreateRequestToAdvert(category,createRequest,city,country,advertType,district);
+    }
+
+
 }

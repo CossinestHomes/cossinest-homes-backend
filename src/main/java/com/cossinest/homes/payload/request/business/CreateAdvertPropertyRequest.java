@@ -12,9 +12,9 @@ import lombok.*;
 
 public class CreateAdvertPropertyRequest {
 
-    @NotBlank(message = "key can not be blank")
-    private String key;
+    @NotNull(message = "key can not be blank")
+    private Long keyId;
 
     @NotNull(message = "value can not be null")
-    private Object value;
+    private String value;
 }

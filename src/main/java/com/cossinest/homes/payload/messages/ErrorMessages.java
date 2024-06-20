@@ -15,6 +15,7 @@ public class ErrorMessages {
     public static final String THE_USER_HAS_RELATED_RECORDS_WITH_ADVERTS_OR_TOUR_REQUESTS = "The user has related records with Adverts or Tour requests tables";
     public static final String EXCEL_COULD_NOT_BE_CREATED ="Excel could not be created" ;
     public static final String EXCEL_COULD_NOT_BE_CREATED_TYPE_IS_NOT_ADVERT = "Excel could not be created because type is not Advert";
+    public static final String CATEGORY_VALUE_IS_NOT_FOUND = "Category property value is not found : %s";
 
 
     private ErrorMessages() {
