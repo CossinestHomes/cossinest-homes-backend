@@ -67,6 +67,9 @@ public class ImagesService {
         }
         return imageIds;
     }
+
+
+
     public void deleteImages(List<Long> ids) {
 
 

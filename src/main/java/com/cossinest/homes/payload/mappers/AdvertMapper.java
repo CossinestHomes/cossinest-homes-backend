@@ -5,6 +5,7 @@ import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.Status;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
+import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
@@ -125,6 +126,18 @@ public class AdvertMapper {
     }
 
 
+    public Advert mapCreateRequestToAdvert(Category category, CreateAdvertRequest createRequest, City city, Country country, AdvertType advertType, District district) {
 
-
+        return Advert.builder()
+                .country(country)
+                .city(city)
+                .advertType(advertType)
+                .price(createRequest.getPrice())
+                .title(createRequest.getTitle())
+                .desc(createRequest.getDesc())
+                .district(district)
+                .category(category)
+                .location(createRequest.getLocation())
+                .build();
+    }
 }

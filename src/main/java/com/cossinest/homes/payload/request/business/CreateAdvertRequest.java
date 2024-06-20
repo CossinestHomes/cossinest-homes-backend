@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ private Double price;
 
 private String location;
 
-private Images images; //TODO burda ne alalim id mi image mi?
+private MultipartFile[] files;
 
 private List<CreateAdvertPropertyRequest> advertPropertyRequest;
 }

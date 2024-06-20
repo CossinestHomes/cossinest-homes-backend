@@ -3,6 +3,7 @@ package com.cossinest.homes.controller.business;
 import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
+import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
@@ -190,8 +191,12 @@ public class AdvertController {
 
 
 
+    @GetMapping("/trySave")
+    public ResponseEntity<AdvertResponse>trySave(@Valid @RequestBody CreateAdvertRequest createRequest, HttpServletRequest request){
 
+          return advertService.trySave(createRequest,request);
 
+    }
 
 
 
