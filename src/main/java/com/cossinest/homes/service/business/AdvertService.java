@@ -338,5 +338,8 @@ public class AdvertService {
         return advertMapper.mapCreateRequestToAdvert(category,createRequest,city,country,advertType,district);
     }
 
-
+    @Transactional
+    public void resetAdvertTables() {
+        advertRepository.deleteByBuiltIn(false);
+    }
 }

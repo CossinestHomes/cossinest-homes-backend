@@ -46,6 +46,8 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     @Query("SELECT a FROM Advert a WHERE ORDER BY a.tourRequestList DESC")
     Page<Advert> getMostPopulerAdverts(Pageable pageable);
 
+    void deleteByBuiltIn(boolean b);
+
 
 
     /*

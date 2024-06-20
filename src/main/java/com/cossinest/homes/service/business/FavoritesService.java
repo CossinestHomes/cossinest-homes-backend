@@ -136,6 +136,10 @@ public class FavoritesService {
         favoritesRepository.deleteAllByUserId(userId);
 
     }
+
+    public void resetFavoritesTables() {
+        favoritesRepository.deleteAll();
+    }
 }
 
 

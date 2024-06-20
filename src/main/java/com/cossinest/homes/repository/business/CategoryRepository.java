@@ -35,4 +35,5 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     Optional<List<Category>> findByTitle(String title);
 
 
+    void deleteByBuiltIn(boolean b);
 }

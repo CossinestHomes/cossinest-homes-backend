@@ -26,4 +26,8 @@ public class CountryService {
         return countryList;
 
     }
+
+    public void resetCountryTables() {
+        countryRepository.deleteAll();
+    }
 }
