@@ -33,7 +33,7 @@ public class AdvertController {
     @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
                  //status=1;page=1&size=10&sort=date&type=asc
 
-    //TODO Response Entity ---- categoryId,advertTypeId, int Integer olcak  default degeri yok
+
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q",required = false, defaultValue = "") String query,
             @RequestParam(value = "category_id") Long categoryId,
@@ -108,7 +108,7 @@ public class AdvertController {
             @RequestParam(value = "price_start",required = false) Double priceStart,
             @RequestParam(value = "price_end",required = false) Double priceEnd,
             @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) int status, //TODO Integer olmali
+            @RequestParam(value = "status",required = false) int status,
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
             @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
