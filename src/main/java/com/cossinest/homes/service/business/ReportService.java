@@ -128,6 +128,8 @@ public class ReportService {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
 
+
+
         List<Advert> adverts = advertService.getAdvertsReport(date1, date2, category, type.toLowerCase(), status);
 
         return methodHelper.excelResponse(adverts);
