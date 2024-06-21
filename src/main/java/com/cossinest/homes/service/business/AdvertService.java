@@ -114,7 +114,7 @@ public class AdvertService {
 
         User user= methodHelper.getUserByHttpRequest(request);
 
-        //TODO kullanici customer mi diye bakilabilir
+
 
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
@@ -124,7 +124,7 @@ public class AdvertService {
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-        //TODO dahada kisaltilabilir
+
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -142,7 +142,7 @@ public class AdvertService {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
 
         Advert advert=isAdvertExistById(id);
-        if(advert.getUser().getId()!=user.getId()){ //TODO Objects.equals yazilabilir
+        if(advert.getUser().getId()!=user.getId()){
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
 

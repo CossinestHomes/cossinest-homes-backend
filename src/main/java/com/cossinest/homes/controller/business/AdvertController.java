@@ -102,7 +102,7 @@ public class AdvertController {
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
     }
 
-    @GetMapping("/admin") //TODO ResponseEntity,
+    @GetMapping("/admin")
     //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
             HttpServletRequest request,
@@ -149,7 +149,7 @@ public class AdvertController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')") //TODO Burasi yazilacak
+    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
         AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()

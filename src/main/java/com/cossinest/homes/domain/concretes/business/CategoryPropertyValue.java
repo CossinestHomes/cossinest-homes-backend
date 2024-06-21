@@ -17,9 +17,6 @@ import java.util.List;
 public class CategoryPropertyValue {
 
 
-
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)

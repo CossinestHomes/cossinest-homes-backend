@@ -33,7 +33,7 @@ public class ImagesService {
     public List<Long> uploadImages(Long advertId, MultipartFile[] files){
 
         advertService.getAdvertForFaavorites(advertId);
-        List<Images> images = new ArrayList<>();
+
         List<Long> imageIds = new ArrayList<>();
         boolean isFirstImage = true;
 
@@ -53,17 +53,12 @@ public class ImagesService {
                     image.setFeatured(false);
                 }
 
-                images.add(image);
-
-                imagesRepository.save(image);
+               Images images =imagesRepository.save(image);
+                imageIds.add(images.getId());
 
             }catch(IOException e){
                 throw  new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
             }
-        }
-
-        for (Images image:images  ) {
-            imageIds.add(image.getId());
         }
         return imageIds;
     }
