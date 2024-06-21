@@ -77,5 +77,5 @@ public abstract class AbstractAdvertRequest {
 
 
 
-    //TODO: favourites
+    //TODO: favourites,image
 }
