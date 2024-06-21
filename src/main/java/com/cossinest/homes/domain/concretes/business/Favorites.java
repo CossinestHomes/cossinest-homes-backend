@@ -23,14 +23,21 @@ public class Favorites {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd 'T' HH:mm:ssXXX", timezone = "US")
     @Column(nullable = false)
-    private LocalDateTime create_at;
+    private LocalDateTime create_at = LocalDateTime.now();
 
     @JoinColumn(name = "user_id")
     @ManyToOne
     private User user;
 
-    @JoinColumn(name="advert_id")
+    @JoinColumn(name = "advert_id")
     @ManyToOne
     private Advert advert;
+
+    @PreRemove
+    private void preRemove() {
+        if (user != null) {
+            user.getFavoritesList().remove(this);
+        }
+    }
 }
 
