@@ -296,4 +296,8 @@ public class TourRequestService {
        return tourRequestRepository.getTourRequest(date1,date2,statusType);
 
     }
+
+    public void resetTourRequestTables() {
+        tourRequestRepository.deleteAll();
+    }
 }

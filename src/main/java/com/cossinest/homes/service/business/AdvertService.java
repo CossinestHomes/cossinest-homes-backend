@@ -345,6 +345,7 @@ public class AdvertService {
         return advertMapper.mapCreateRequestToAdvert(category,createRequest,city,country,advertType,district);
     }
 
+
     public Map<String, Object> getAdvertDetails(AbstractAdvertRequest advertRequest, HttpServletRequest httpServletRequest,Map<String, Object> detailsMap) {
 
         Category category = categoryService.getCategoryById(advertRequest.getCategoryId());
@@ -364,5 +365,11 @@ public class AdvertService {
         return detailsMap;
     }
 
+
+
+    @Transactional
+    public void resetAdvertTables() {
+        advertRepository.deleteByBuiltIn(false);
+    }
 
 }

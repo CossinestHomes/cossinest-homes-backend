@@ -7,6 +7,7 @@ import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
 import com.cossinest.homes.repository.business.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,10 @@ public class CategoryPropertyKeyService {
         categoryPropertyKeyRepository.delete(categoryPropertyKey);
 
         return categoryPropertyKey;
+    }
+
+    @Transactional
+    public void resetCategoryPropertyKeyTables() {
+        categoryPropertyKeyRepository.deleteByBuiltIn(false);
     }
 }

@@ -66,5 +66,9 @@ public class ContactMessageService {
                     }
                 return messages;
     }
+
+    public void resetContactMessageTables() {
+        contactMessageRepository.deleteAll();
+    }
 }
 
