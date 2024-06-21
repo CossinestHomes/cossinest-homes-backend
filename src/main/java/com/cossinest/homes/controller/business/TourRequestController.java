@@ -43,10 +43,10 @@ public class TourRequestController {
     @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=tour_date&type=asc + GET
     public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
             HttpServletRequest httpServletRequest,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sort") String sort,
-            @RequestParam("type") String type,
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "size",defaultValue = "10") int size,
+            @RequestParam(value = "sort",defaultValue = "tourDate") String sort,
+            @RequestParam(value = "type",defaultValue = "asc") String type,
             @RequestParam(value = "createAt",required = false) String createAt,
             @RequestParam(value = "tourTime",required = false) String tourTime,
             @RequestParam(value = "status",required = false) String status,
