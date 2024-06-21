@@ -21,10 +21,10 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     List<TourRequest> findAllByTourDate(LocalDate tourDate);
 
 
-    @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId=:userId OR t.ownerUserId=:userId) AND" +
-            "(:createAt IS NULL OR t.createAt=:createAt) AND " +
-            "(:tourTime IS NULL OR t.tourTime=:tourTime) AND" +
-            "(:status IS NULL OR t.status=:status) AND" +
+    @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId=:userId OR t.ownerUserId=:userId) OR" +
+            "(:createAt IS NULL OR t.createAt=:createAt) OR " +
+            "(:tourTime IS NULL OR t.tourTime=:tourTime) OR" +
+            "(:status IS NULL OR t.status=:status) OR" +
             "(:tourDate IS NULL OR t.tourDate=:tourDate)")
     Page<TourRequest> findAllByQueryAuth(Pageable pageable,
                                      @Param("userId") Long userId,
@@ -34,9 +34,9 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
                                      @Param("tourDate") String tourDate
                                     );
 
-    @Query("SELECT t FROM TourRequest t WHERE (:createAt IS NULL OR t.createAt=:createAt) AND " +
-            "(:tourTime IS NULL OR t.tourTime=:tourTime) AND" +
-            "(:status IS NULL OR t.status=:status) AND" +
+    @Query("SELECT t FROM TourRequest t WHERE (:createAt IS NULL OR t.createAt=:createAt) OR " +
+            "(:tourTime IS NULL OR t.tourTime=:tourTime) OR" +
+            "(:status IS NULL OR t.status=:status) OR" +
             "(:tourDate IS NULL OR t.tourDate=:tourDate)")
     Page<TourRequest> findAllByQueryAdmin(Pageable pageable,
                                      @Param("createAt") String createAt,

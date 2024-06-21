@@ -240,7 +240,7 @@ public class MethodHelper {
         String email = (String) httpServletRequest.getAttribute("email");
 
 
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmail(email); // TODO Optional yerine throw new olabilir
 
 
         return userOptional.map(User::getId).orElse(null);
