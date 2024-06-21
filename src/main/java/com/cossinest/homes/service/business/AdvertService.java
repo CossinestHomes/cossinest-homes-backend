@@ -11,6 +11,7 @@ import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
+import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
@@ -33,7 +34,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -159,21 +162,22 @@ public class AdvertService {
     @Transactional
     public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest, MultipartFile[] files) {
 
-        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
-        City city=cityService.getCityById(advertRequest.getCityId());
-        User user=methodHelper.getUserByHttpRequest(httpServletRequest);
-        Country country= countryService.getCountryById(advertRequest.getCountryId());
-        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
+        Map<String, Object> detailsMap = new HashMap<>();
+        getAdvertDetails(advertRequest,httpServletRequest,detailsMap);
 
-        Advert advert =advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType,district);
 
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+        Advert advert =advertMapper.mapAdvertRequestToAdvert(
+                advertRequest,
+                (Category) detailsMap.get("category"),
+                (City) detailsMap.get("city"),
+                (User) detailsMap.get("user"),
+                (Country) detailsMap.get("country"),
+                (AdvertType) detailsMap.get("advertType"),
+                (District) detailsMap.get("district"));
+
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
         advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
         advert.setImagesList(methodHelper.getImagesForAdvert(files,advert.getImagesList()));//TODO:image setleme kontrol et
-
-
-
 
         logService.createLogEvent(advert.getUser(),advert, LogEnum.CREATED);
 
@@ -194,20 +198,20 @@ public class AdvertService {
         if(advert.getUser().getId() != user.getId()){
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
-
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
-        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
-        City city=cityService.getCityById(advertRequest.getCityId());
-        Country country= countryService.getCountryById(advertRequest.getCountryId());
-        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+        Map<String, Object> detailsMap = new HashMap<>();
+        getAdvertDetails(advertRequest,request,detailsMap);
 
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
 
-
-        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType,district);
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,
+                (Category) detailsMap.get("category"),
+                (City) detailsMap.get("city"),
+                (Country) detailsMap.get("country"),
+                (AdvertType) detailsMap.get("advertType"),
+                (District) detailsMap.get("district"));
         updateAdvert.setUser(user);
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
@@ -230,14 +234,18 @@ public class AdvertService {
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
-        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
-        City city=cityService.getCityById(advertRequest.getCityId());
-        Country country= countryService.getCountryById(advertRequest.getCountryId());
-        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
 
-        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvertForAdmin(id,advertRequest,category,city,country,advertType,district);
+        Map<String, Object> detailsMap = new HashMap<>();
+        getAdvertDetails(advertRequest,request,detailsMap);
+
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
+
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,
+                (Category) detailsMap.get("category"),
+                (City) detailsMap.get("city"),
+                (Country) detailsMap.get("country"),
+                (AdvertType) detailsMap.get("advertType"),
+                (District) detailsMap.get("district"));
 
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
@@ -273,7 +281,7 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
        LocalDateTime begin =LocalDateTime.parse(date1+" 00:00:00",formatter);
        LocalDateTime end =LocalDateTime.parse(date2+" 23:59:59",formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
@@ -329,13 +337,31 @@ public class AdvertService {
     }
 
     public Advert advertSet(CreateAdvertRequest createRequest){
-
         Category category= categoryService.getCategoryById(createRequest.getCategoryId());
         City city=cityService.getCityById(createRequest.getCityId());
         Country country= countryService.getCountryById(createRequest.getCountryId());
         AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(createRequest.getAdvertTypeId());
         District district= districtService.getDistrictByIdForAdvert(createRequest.getDistrictId());
         return advertMapper.mapCreateRequestToAdvert(category,createRequest,city,country,advertType,district);
+    }
+
+    public Map<String, Object> getAdvertDetails(AbstractAdvertRequest advertRequest, HttpServletRequest httpServletRequest,Map<String, Object> detailsMap) {
+
+        Category category = categoryService.getCategoryById(advertRequest.getCategoryId());
+        City city = cityService.getCityById(advertRequest.getCityId());
+        User user = methodHelper.getUserByHttpRequest(httpServletRequest);
+        Country country = countryService.getCountryById(advertRequest.getCountryId());
+        AdvertType advertType = advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        District district = districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
+
+        detailsMap.put("category", category);
+        detailsMap.put("city", city);
+        detailsMap.put("user", user);
+        detailsMap.put("country", country);
+        detailsMap.put("advertType", advertType);
+        detailsMap.put("district", district);
+
+        return detailsMap;
     }
 
 
