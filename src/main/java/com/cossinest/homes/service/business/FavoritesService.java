@@ -76,13 +76,18 @@ public class FavoritesService {
     }
 
 
-    //////////////////
+
+    
+
 
 
     public List<AdvertResponse> getUsersFavorites(Long id) {
 
-        // Kullanıcı ID'sine göre favori ilanları al
-        List<Favorites> favoritesList = (List<Favorites>) methodHelper.findUserWithId(id);
+
+            for (Favorites favorite :userFavorites
+            ) {
+                favoriteAdvert.add(favorite.getAdvert());
+
 
 
         List<Advert> favoriteAdvert = new ArrayList<>();
@@ -93,54 +98,34 @@ public class FavoritesService {
 
         }
 
-        // Favori ilanları AdvertResponse nesnelerine dönüştür ve döndür
 
-        return favoriteAdvert.
-                stream().
-                map(advertMapper::mapAdvertToAdvertResponse).
-                collect(Collectors.toList());
+//BAKILACAK!!!! - DELETE KISMI(104)
 
-    }
+        public AdvertResponse addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest, Long advertId)
+        {
+            User user = methodHelper.getUserByHttpRequest(httpServletRequest);
+            Advert advert = advertService.getAdvertForFaavorites(advertId);
 
+            // Favori ilanın var olup olmadığını kontrol et
+            boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(user.getId(),advertId);
 
-///////////////////
+            if (isFavorite) {
+                Favorites favorite = favoritesRepository.getFavoriteByAdvertAndUser(user.getId(),advertId);
+                favoritesRepository.delete(favorite);
+          user.setFavoritesList(user.getFavoritesList().stream().filter(t->!t.getId().equals(favorite.getId())).toList());
 
+                //TODO direkt sql ile silinmemeli
+              //  favoritesRepository.deleteFavoriteIfExists(user.getId(), advertId);
 
-    public ResponseMessage<List<Favorites>> addAndRemoveAuthenticatedUserFavorites(HttpServletRequest
-                                                                         httpServletRequest, AdvertRequest advertRequest, Long id) {
+            } else {
+                Favorites favorites = new Favorites();
+                favorites.setUser(user);
+                favorites.setAdvert(advert);
+                favoritesRepository.save(favorites);
+            }
+  return advertMapper.mapAdvertToAdvertResponse(advert);
+}
 
-        Long userId = MethodHelper.getUserIdFromRequest(httpServletRequest, userRepository);
-        Long advertId = advertRequest.getAdvertId(); //id gelmiyor mehmet hocayla konusmalı. getAdvertIdType geliyor
-
-        return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
-
-    }
-
-
-        // Favori ilanın var olup olmadığını kontrol et
-        boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(userId, advertId);
-
-
-
-        if (isFavorite) {
-            favoritesRepository.deleteFavoriteIfExists(userId, advertId);
-
-        } else { // Eğer favori yoksa, favori ekle
-            favoritesRepository.addFavoriteIfNotExists(userId, advertId);
-
-        }
-
-        List<Favorites> updatedFavorites = favoritesRepository.findFavoritesByUserId(userId);
-            AdvertResponse advertResponse = new AdvertResponse();
-            advertResponse.setFavoritesList(updatedFavorites); //mehmet hocada setFavori için method ?
-
-
-        return ResponseMessage.<List<Favorites>>builder()
-                .object(updatedFavorites)
-                .message(SuccesMessages.FAVORITES_UPDATED_SUCCESFULLY)
-                .status(HttpStatus.OK)
-                .build();
-    }
 
 
 
@@ -164,73 +149,74 @@ public class FavoritesService {
                 .status(HttpStatus.OK)
                 .message(SuccesMessages.TOUR_REQUEST_DELETED_SUCCESSFULLY)
                 .build();
-
-
-        favoritesRepository.deleteAllByUserId(userId);
-return null;
     }
 
 
-
-
-
-    public ResponseMessage removeAllFavoritesOfAUser(Long id) {
-
-        try {
-            favoritesRepository.deleteAllByUserId(id);
-        } catch (Exception e){
-
-        }
-
-        return ResponseMessage.builder()
-                .message(SuccesMessages.ALL_FAVORITE_REMOVED_SUCCESSFULLY)
-                .build();
 
     public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest) {
+
         User user = methodHelper.getUserByHttpRequest(httpServletRequest);
-        methodHelper.controlRoles(user, RoleType.CUSTOMER);
-
-     if(user.getFavoritesList()!=null){
-
-         user.getFavoritesList().clear();
-
-         userRepository.save(user);
-     }
-     return ResponseMessage.<T>builder()
-             .status(HttpStatus.OK)
-             .message(SuccesMessages.FAVORITE_REMOVED_SUCCESSFULLY)
-             .build();
-    }
-
-    public void resetFavoritesTables() {
-        favoritesRepository.deleteAll();
-
-    }
 
 
-    /////////////////////
+        List<Favorites> favorites = user.getFavoritesList();
 
-
-
-    public ResponseMessage removeFavoriteByIdForAdmin(Long id) {
-
-        try {
-            favoritesRepository.deleteById(id);
-        }catch (Exception e){
-
+        if (favorites==null){
+            throw new ResourceNotFoundException(ErrorMessages.NOT_FOUND_FAVORITES);
+        }else {
+            favoritesRepository.deleteAll(favorites);
+            user.setFavoritesList(new ArrayList<>());
+            userRepository.save(user);
         }
+return ResponseMessage.builder()
+        .status(HttpStatus.OK)
+        .message(SuccesMessages.ALL_FAVORITES_DELETED)
+        .build();
+    }
+
+    
+
+
+    public ResponseMessage removeAllFavoritesOfAUser(HttpServletRequest request,Long userId) {
+
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user, RoleType.MANAGER,RoleType.ADMIN);
+
+        User userCustomer = methodHelper.findUserWithId(userId);
+
+        List<Favorites> favorites = userCustomer.getFavoritesList();
+
+        if (favorites==null){
+            throw new ResourceNotFoundException(ErrorMessages.NOT_FOUND_FAVORITES);
+        }else {
+            favoritesRepository.deleteAll(favorites);
+            userCustomer.setFavoritesList(new ArrayList<>());
+            userRepository.save(userCustomer);
+        }
+        return ResponseMessage.builder()
+                .status(HttpStatus.OK)
+                .message(SuccesMessages.ALL_FAVORITES_DELETED)
+                .build();
+    }
+
+    public ResponseMessage removeFavoriteByIdForAdmin(HttpServletRequest request, Long id) {
+
+        User user = methodHelper.getUserByHttpRequest(request);
+        methodHelper.checkRoles(user, RoleType.MANAGER,RoleType.ADMIN);
+
+        Favorites favorite = favoritesRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException(ErrorMessages.NOT_FOUND_FAVORITE));
+
+        favoritesRepository.delete(favorite);
 
         return ResponseMessage.builder()
-                .message(SuccesMessages.FAVORITE_DELETED_SUCCESSFULLY)
+                .status(HttpStatus.OK)
+                .message(SuccesMessages.FAVORITE_REMOVED_SUCCESSFULLY)
                 .build();
 
     }
-
 
 
 }
-
-
 
 
 

@@ -39,13 +39,13 @@ public class FavoritesController {
 
     }
 
-
     @PostMapping("/{id}/auth")
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseEntity<ResponseMessage<List<Favorites>>> addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest,
-                                                                                                   @RequestBody @Valid AdvertRequest advertRequest,
-                                                                                                   @PathVariable Long id) {
-        ResponseMessage<List<Favorites>> advertResponse = favoritesService.addAndRemoveAuthenticatedUserFavorites(httpServletRequest, advertRequest, id);
+
+    public ResponseEntity<AdvertResponse> addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest,
+                                                                                 @PathVariable Long id) {
+        //TODO advertRequeste gerek yok
+        AdvertResponse advertResponse = favoritesService.addAndRemoveAuthenticatedUserFavorites(httpServletRequest,id);
 
         return ResponseEntity.ok(advertResponse);
     }
@@ -62,8 +62,10 @@ public class FavoritesController {
 
     @DeleteMapping("/admin") // http://localhost:8080/favorites/admin + DELETE
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage removeAllFavoritesOfAUser(@PathVariable Long id) {
-        return favoritesService.removeAllFavoritesOfAUser(id);
+
+    public ResponseMessage removeAllFavoritesOfAUser(HttpServletRequest request,Long id) {
+        return favoritesService.removeAllFavoritesOfAUser(request,id);
+
     }
 
 
@@ -71,8 +73,8 @@ public class FavoritesController {
 
     @DeleteMapping("/{id}/admin") // http://localhost:8080/favorites/{id}/admin + DELETE
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage removeFavoriteByIdForAdmin(@PathVariable Long id) {
-        return favoritesService.removeFavoriteByIdForAdmin(id);
+    public ResponseMessage removeFavoriteByIdForAdmin(@PathVariable Long id,HttpServletRequest request) {
+        return favoritesService.removeFavoriteByIdForAdmin(request,id);
     }
 
 
