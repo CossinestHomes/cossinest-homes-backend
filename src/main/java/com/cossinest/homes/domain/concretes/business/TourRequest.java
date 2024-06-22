@@ -45,21 +45,18 @@ public class TourRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
     private LocalDateTime updateAt;
 
-    @Column(nullable = false)
-    @JoinColumn(name = "advert_id")
+    @JoinColumn(name = "advert_id",nullable = false)
     @ManyToOne
     @JsonIgnore  // Advert ile check et
     private Advert advertId;
 
     @ManyToOne
-    @Column(nullable = false)
-    @JoinColumn(name = "ownerUser_id")
+    @JoinColumn(name = "ownerUser_id",nullable = false)
     @JsonIgnore
     private User ownerUserId;
 
     @ManyToOne
-    @Column(nullable = false)
-    @JoinColumn(name = "guestUser_id")
+    @JoinColumn(name = "guestUser_id",nullable = false)
     @JsonIgnore
     private User guestUserId;
 

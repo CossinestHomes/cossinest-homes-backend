@@ -1,5 +1,6 @@
 package com.cossinest.homes.controller.business;
 
+import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
@@ -29,6 +30,7 @@ public class FavoritesController {
         return ResponseEntity.ok(favorites);
     }
 
+
     @GetMapping("/admin/{id}") //http://localhost:8080/favorites/admin/23
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<List<AdvertResponse>> getUsersFavorites(@PathVariable("id") Long id) {
@@ -39,27 +41,32 @@ public class FavoritesController {
 
     @PostMapping("/{id}/auth")
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+
     public ResponseEntity<AdvertResponse> addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest,
                                                                                  @PathVariable Long id) {
         //TODO advertRequeste gerek yok
         AdvertResponse advertResponse = favoritesService.addAndRemoveAuthenticatedUserFavorites(httpServletRequest,id);
+
         return ResponseEntity.ok(advertResponse);
     }
 
+
+
     @DeleteMapping("/auth") // http://localhost:8080/favorites/auth + DELETE
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest) {
-        return favoritesService.removeAllFavoritesofAuthenticatedUser(httpServletRequest);
+    public ResponseMessage removeAllFavoritesofAuthenticatedUser( HttpServletRequest httpServletRequest, @PathVariable Long id) {
+        return favoritesService.removeAllFavoritesofAuthenticatedUser(id);
     }
 
 
 
     @DeleteMapping("/admin") // http://localhost:8080/favorites/admin + DELETE
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+
     public ResponseMessage removeAllFavoritesOfAUser(HttpServletRequest request,Long id) {
         return favoritesService.removeAllFavoritesOfAUser(request,id);
-    }
 
+    }
 
 
 

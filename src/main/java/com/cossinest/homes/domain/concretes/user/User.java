@@ -95,6 +95,7 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,orphanRemoval = true)
     private List<Favorites>favoritesList=new ArrayList<>();
 
+
     @PrePersist
     private void onCreate() {
         createdAt = LocalDateTime.now();

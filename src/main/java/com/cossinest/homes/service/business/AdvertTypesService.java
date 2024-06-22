@@ -10,6 +10,7 @@ import com.cossinest.homes.payload.request.business.AdvertTypeRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertTypeResponse;
 import com.cossinest.homes.repository.business.AdvertTypesRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -96,5 +97,10 @@ public class AdvertTypesService {
     //Advert için yazıldı
     public AdvertType getAdvertTypeByIdForAdvert(Long advertTypeId) {
         return isAdvertTypeExists(advertTypeId);
+    }
+
+    @Transactional
+    public void resetAdvertTypesTables() {
+        advertTypesRepository.deleteByBuiltIn(false);
     }
 }

@@ -9,23 +9,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface AdvertRepository extends JpaRepository<Advert,Long> {
 
-    //Todo "(?7 IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT("%",?7,"%")) OR LOWER(a.desc) LIKE LOWER(CONCAT("%",?7,"%")))"
-    //Todo yada q 2 parametre olarak alinabilir belki, BETWEEN Ile yapilabilirdir
     @Query("SELECT a FROM Advert a WHERE " +
             "a.category.id = ?1 AND " +
             "a.advertType.id = ?2 AND " +
-            "(?3 IS NULL OR a.price >= ?3) AND " +
-            "(?4 IS NULL OR a.price <= ?4) AND " +
+            "(?3 IS NULL OR ?4 IS NULL OR a.price BETWEEN ?3 AND ?4) AND " +
             "(?5 IS NULL OR a.status = ?5) AND " +
-            "(?6 IS NULL OR a.location=?6) AND" +
-            "(?7 IS NULL OR a.title= ?7) AND (?7 IS NULL OR a.desc=?7)")
-    Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, int status,String location,String query,Pageable pageable);
+            "(?6 IS NULL OR a.location = ?6) AND " +
+            "(?7 IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', ?7, '%')) OR LOWER(a.desc) LIKE LOWER(CONCAT('%', ?7, '%')))")
+    Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, Integer status, String location, String query, Pageable pageable);
+
 
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")
     Page<Advert> findAdvertsForUser(Long id, Pageable pageable);
@@ -35,14 +35,16 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     @Query("SELECT a FROM Advert a WHERE (:date1 IS NULL OR :date2 IS NULL OR  a.createdAt BETWEEN:date1 AND :date2) AND " +
             "(:category IS NULL OR a.category.title =:category) AND (:type IS NULL OR a.advertType.title=:type) AND " +
             "(:enumStatus IS NULL OR a.status=:enumStatus)")
-    Optional<List<Advert>> findByQuery(@Param(value = "date1") String date1,
-                                       @Param(value = "date2") String date2,
+    Optional<List<Advert>> findByQuery(@Param(value = "date1") LocalDateTime date1,
+                                       @Param(value = "date2") LocalDateTime date2,
                                        @Param(value = "category")String category,
                                        @Param(value = "type") String type,
                                        @Param(value = "enumStatus") Status enumStatus);
 
     @Query("SELECT a FROM Advert a WHERE ORDER BY a.tourRequestList DESC")
     Page<Advert> getMostPopulerAdverts(Pageable pageable);
+
+    void deleteByBuiltIn(boolean b);
 
 
 

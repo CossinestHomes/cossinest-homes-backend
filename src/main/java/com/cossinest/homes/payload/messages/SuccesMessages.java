@@ -36,9 +36,20 @@ public class SuccesMessages {
     public static final String ADVERT_TYPE_DELETED= "Advert type is deleted successfully";
     public static final String IMAGE_DELETED_SUCCESSFULLY = "Image is deleted successfully";
     public static final String FAVORITES_DELETED_SUCCESSFULLY = "Favorites is deleted successfully";
+    public static final String FAVORITE_DELETED_SUCCESSFULLY = "Favorite is deleted successfully";
     public static final String FAVORITE_REMOVED_SUCCESSFULLY = "Favorites removed successfully";
     public static final String FAVORITE_ADDED_SUCCESSFULLY = "Favorites added successfully";
+
     public static final String ALL_FAVORITES_DELETED = "All Favorites are deleted";
+
+
+    public static final String FAVORITES_UPDATED_SUCCESFULLY = "Favorites updated successfully";
+    public static final String ALL_FAVORITE_REMOVED_SUCCESSFULLY = "All favorites removed successfully";
+
+
+    public static final String DB_HAS_SUCCESSFULLY_RESET = "Database has succesfully reset";
+
+
 
 
     private SuccesMessages(){

@@ -131,9 +131,14 @@ public class Advert {
     @JsonIgnore
     private List<Images> imagesList;
 
+    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<Log> logList;
 
 
-    //TODO: logs
+
+
+
 
 
 

@@ -11,22 +11,22 @@ import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
-import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
+import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import com.cossinest.homes.repository.business.FavoritesRepository;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class FavoritesService {
 
     private final AdvertService advertService;
     private final UserService userService;
-    private final FavoritesRepository favoritesRepository;
+    private  final FavoritesRepository favoritesRepository;
     private final UserRepository userRepository;
     private final MethodHelper methodHelper;
     private final AdvertRequest advertRequest;
@@ -69,27 +69,35 @@ public class FavoritesService {
 
         }
 
-        return favoriteAdverts.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
-
+        return favoriteAdverts
+                .stream().
+                map(advertMapper::mapAdvertToAdvertResponse).
+                collect(Collectors.toList());
     }
-        public List<AdvertResponse> getUsersFavorites (Long id){
 
-          //TODO user döner
-           User user =  methodHelper.findUserWithId(id);
-            List<Favorites> userFavorites = favoritesRepository.findFavoritesByUserId(user.getId());
 
-            List<Advert> favoriteAdvert = new ArrayList<>();
+
+    
+
+
+
+    public List<AdvertResponse> getUsersFavorites(Long id) {
+
 
             for (Favorites favorite :userFavorites
             ) {
                 favoriteAdvert.add(favorite.getAdvert());
 
-            }
 
-            // Favori ilanları AdvertResponse nesnelerine dönüştür ve döndür
-            return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
+
+        List<Advert> favoriteAdvert = new ArrayList<>();
+
+        for (Favorites favorite : favoritesList
+        ) {
+            favoriteAdvert.add(favorite.getAdvert());
 
         }
+
 
 //BAKILACAK!!!! - DELETE KISMI(104)
 
@@ -114,17 +122,41 @@ public class FavoritesService {
                 favorites.setUser(user);
                 favorites.setAdvert(advert);
                 favoritesRepository.save(favorites);
+            }
+  return advertMapper.mapAdvertToAdvertResponse(advert);
+}
+
+
+
+
+
+
+    public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest, Long id) {
+
+
+        List<Favorites> favoritesList = (List<Favorites>) methodHelper.findUserWithId(id);
+        // Favori listesi boş değilse, tüm favorileri sil
+         if (!favoritesList.isEmpty()) {
+            try {
+                favoritesRepository.deleteAll(favoritesList);
+
+
+            } catch (Exception e) {
 
             }
-
-            return advertMapper.mapAdvertToAdvertResponse(advert);
-
         }
+        return ResponseMessage.<TourRequestResponse>builder()
+                .status(HttpStatus.OK)
+                .message(SuccesMessages.TOUR_REQUEST_DELETED_SUCCESSFULLY)
+                .build();
+    }
+
 
 
     public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest) {
 
         User user = methodHelper.getUserByHttpRequest(httpServletRequest);
+
 
         List<Favorites> favorites = user.getFavoritesList();
 
@@ -140,6 +172,8 @@ return ResponseMessage.builder()
         .message(SuccesMessages.ALL_FAVORITES_DELETED)
         .build();
     }
+
+    
 
 
     public ResponseMessage removeAllFavoritesOfAUser(HttpServletRequest request,Long userId) {
@@ -180,8 +214,9 @@ return ResponseMessage.builder()
                 .build();
 
     }
-}
 
+
+}
 
 
 

@@ -14,4 +14,5 @@ public interface CategoryPropertyValueRepository extends JpaRepository<CategoryP
     @Query("SELECT v FROM CategoryPropertyValue v WHERE value=?1")
     Optional<CategoryPropertyValue> findValueByName(Object obje);
 
+   Optional<CategoryPropertyValue> findByValue(String value);
 }

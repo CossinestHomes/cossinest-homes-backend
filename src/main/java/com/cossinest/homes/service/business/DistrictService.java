@@ -29,4 +29,8 @@ public class DistrictService {
     public District getDistrictByIdForAdvert(Long districtId) {
        return districtRepository.findById(districtId).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.DISTRICT_NOT_FOUND));
     }
+
+    public void resetDistrictTables() {
+        districtRepository.deleteAll();
+    }
 }
