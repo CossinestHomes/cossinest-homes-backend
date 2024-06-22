@@ -59,7 +59,7 @@ public class CategoryService {
 
 
 
-    public Page<CategoryResponseDTO> getActiveCategoriesWithPage( int page, int size, String sort, Sort.Direction type) {
+    public Page<CategoryResponseDTO> getActiveCategoriesWithPage( String q, int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(type, sort));
 
@@ -67,7 +67,7 @@ public class CategoryService {
     }
 
 
-    public Page<CategoryResponseDTO> getAllCategoriesWithPage(int page, int size, String sort, Sort.Direction type) {
+    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String q, int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of( page, size, Sort.by (type, sort) );
 

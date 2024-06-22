@@ -44,19 +44,19 @@ public class CategoryController {
     private CategoryPropertyKeyService categoryPropertyKeyService;
 
 
-
+//@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
 
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
     @GetMapping
     public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
-            @RequestParam("q") String query,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sort") String sort,
-            @RequestParam("type") Sort.Direction type) {
+            @RequestParam("q") String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size" , defaultValue = "20") int size,
+            @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
+            @RequestParam(value = "type" , defaultValue = "ASC") String type) {
 
-        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getActiveCategoriesWithPage( page,  size, sort,  type);
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getActiveCategoriesWithPage( q, page,  size, sort,  type);
 
         return ResponseEntity.ok(categoryResponseDTOPage);
     }
@@ -68,13 +68,13 @@ public class CategoryController {
     @GetMapping("/admin")
     public ResponseEntity<Page<CategoryResponseDTO>> getAllCategoriesWithPage(
 
-            @RequestParam("q") String query,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sort") String sort,
-            @RequestParam("type") Sort.Direction type
-    ){
-        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getAllCategoriesWithPage(page,  size, sort,  type);
+            @RequestParam("q") String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size" , defaultValue = "20") int size,
+            @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
+            @RequestParam(value = "type" , defaultValue = "ASC") String type){
+
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getAllCategoriesWithPage(q, page,  size, sort,  type);
 
         return ResponseEntity.ok(categoryResponseDTOPage);
     }
