@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/favorites") // http://localhost:8080/favorites
 @RequiredArgsConstructor
 public class FavoritesController {
+    //updated
 
     private final FavoritesService favoritesService;
 
