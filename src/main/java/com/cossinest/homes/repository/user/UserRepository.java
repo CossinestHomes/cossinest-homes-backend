@@ -46,4 +46,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query("SELECT u FROM User u WHERE u.userRole.roleType=?1")
     List<User> findByRoleType(RoleType roleType);
+
+
+    void deleteByBuilt_in(boolean b);
 }

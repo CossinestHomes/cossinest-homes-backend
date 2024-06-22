@@ -25,7 +25,7 @@ public class FavoritesController {
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<List<AdvertResponse>> getAuthenticatedUsersFavorites(HttpServletRequest request) {
 
-        List<AdvertResponse> favorites = FavoritesService.getAuthenticatedUsersFavorites(request);
+        List<AdvertResponse> favorites = favoritesService.getAuthenticatedUsersFavorites(request);
 
         return ResponseEntity.ok(favorites);
     }
@@ -46,6 +46,7 @@ public class FavoritesController {
                                                                                                    @RequestBody @Valid AdvertRequest advertRequest,
                                                                                                    @PathVariable Long id) {
         ResponseMessage<List<Favorites>> advertResponse = favoritesService.addAndRemoveAuthenticatedUserFavorites(httpServletRequest, advertRequest, id);
+
         return ResponseEntity.ok(advertResponse);
     }
 
@@ -64,6 +65,7 @@ public class FavoritesController {
     public ResponseMessage removeAllFavoritesOfAUser(@PathVariable Long id) {
         return favoritesService.removeAllFavoritesOfAUser(id);
     }
+
 
 
 

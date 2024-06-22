@@ -24,4 +24,7 @@ public class LogService {
 
     }
 
+    public void resetLogTables() {
+        logRepository.deleteAll();
+    }
 }

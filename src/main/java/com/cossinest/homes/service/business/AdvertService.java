@@ -11,8 +11,11 @@ import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
+import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
+import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
+import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.repository.business.AdvertRepository;
@@ -28,7 +31,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +64,7 @@ public class AdvertService {
     private final LogService logService;
 
     private final DistrictService districtService;
+    private final ImagesService imagesService;
 
 
 
@@ -72,7 +81,7 @@ public class AdvertService {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-        //TODO daha kisa yazilabilir
+
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -108,7 +117,7 @@ public class AdvertService {
 
         User user= methodHelper.getUserByHttpRequest(request);
 
-        //TODO kullanici customer mi diye bakilabilir
+
 
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
@@ -118,7 +127,7 @@ public class AdvertService {
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-        //TODO dahada kisaltilabilir
+
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
@@ -136,7 +145,7 @@ public class AdvertService {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
 
         Advert advert=isAdvertExistById(id);
-        if(advert.getUser().getId()!=user.getId()){ //TODO Objects.equals yazilabilir
+        if(advert.getUser().getId()!=user.getId()){
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
 
@@ -153,21 +162,22 @@ public class AdvertService {
     @Transactional
     public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest, MultipartFile[] files) {
 
-        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
-        City city=cityService.getCityById(advertRequest.getCityId());
-        User user=methodHelper.getUserByHttpRequest(httpServletRequest);
-        Country country= countryService.getCountryById(advertRequest.getCountryId());
-        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
+        Map<String, Object> detailsMap = new HashMap<>();
+        getAdvertDetails(advertRequest,httpServletRequest,detailsMap);
 
-        Advert advert =advertMapper.mapAdvertRequestToAdvert(advertRequest,category,city,user,country,advertType,district);
 
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+        Advert advert =advertMapper.mapAdvertRequestToAdvert(
+                advertRequest,
+                (Category) detailsMap.get("category"),
+                (City) detailsMap.get("city"),
+                (User) detailsMap.get("user"),
+                (Country) detailsMap.get("country"),
+                (AdvertType) detailsMap.get("advertType"),
+                (District) detailsMap.get("district"));
+
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
         advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
         advert.setImagesList(methodHelper.getImagesForAdvert(files,advert.getImagesList()));//TODO:image setleme kontrol et
-
-
-
 
         logService.createLogEvent(advert.getUser(),advert, LogEnum.CREATED);
 
@@ -188,20 +198,20 @@ public class AdvertService {
         if(advert.getUser().getId() != user.getId()){
             throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
         }
-
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
-        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
-        City city=cityService.getCityById(advertRequest.getCityId());
-        Country country= countryService.getCountryById(advertRequest.getCountryId());
-        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
+        Map<String, Object> detailsMap = new HashMap<>();
+        getAdvertDetails(advertRequest,request,detailsMap);
 
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
 
-
-        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,category,city,country,advertType,district);
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,
+                (Category) detailsMap.get("category"),
+                (City) detailsMap.get("city"),
+                (Country) detailsMap.get("country"),
+                (AdvertType) detailsMap.get("advertType"),
+                (District) detailsMap.get("district"));
         updateAdvert.setUser(user);
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
@@ -224,14 +234,18 @@ public class AdvertService {
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
-        Category category=categoryService.getCategoryById(advertRequest.getCategoryId());
-        City city=cityService.getCityById(advertRequest.getCityId());
-        Country country= countryService.getCountryById(advertRequest.getCountryId());
-        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
-        District district= districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList(category,advertRequest,categoryPropertyValueService);
 
-        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvertForAdmin(id,advertRequest,category,city,country,advertType,district);
+        Map<String, Object> detailsMap = new HashMap<>();
+        getAdvertDetails(advertRequest,request,detailsMap);
+
+        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
+
+        Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,
+                (Category) detailsMap.get("category"),
+                (City) detailsMap.get("city"),
+                (Country) detailsMap.get("country"),
+                (AdvertType) detailsMap.get("advertType"),
+                (District) detailsMap.get("district"));
 
         updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
@@ -267,8 +281,9 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-       LocalDate begin =LocalDate.parse(date1);
-       LocalDate end =LocalDate.parse(date2);
+       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+       LocalDateTime begin =LocalDateTime.parse(date1+" 00:00:00",formatter);
+       LocalDateTime end =LocalDateTime.parse(date2+" 23:59:59",formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
@@ -281,7 +296,7 @@ public class AdvertService {
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
         }
 
-       return advertRepository.findByQuery(date1,date2,category,type,enumStatus ).orElseThrow(
+       return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 
@@ -292,4 +307,69 @@ public class AdvertService {
      return advertRepository.getMostPopulerAdverts(pageable);
 
     }
+
+    @Transactional
+    public ResponseEntity<AdvertResponse> trySave(CreateAdvertRequest createRequest, HttpServletRequest request) {
+       methodHelper.getUserByHttpRequest(request);
+
+        Advert advert=advertSet(createRequest);
+
+         List<CategoryPropertyValue>advertValueList=new ArrayList<>();
+
+        for (CreateAdvertPropertyRequest request1 :createRequest.getAdvertPropertyRequest()) {
+
+          advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        }
+
+        advert.setCategoryPropertyValuesList(advertValueList);
+
+        Advert savedAdvert =advertRepository.save(advert);
+
+        imagesService.uploadImages(savedAdvert.getId(),createRequest.getFiles());
+
+        savedAdvert.generateSlug();
+
+        Advert updatedAdvert =advertRepository.save(savedAdvert);
+
+        return  ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(updatedAdvert));
+
+
+    }
+
+    public Advert advertSet(CreateAdvertRequest createRequest){
+        Category category= categoryService.getCategoryById(createRequest.getCategoryId());
+        City city=cityService.getCityById(createRequest.getCityId());
+        Country country= countryService.getCountryById(createRequest.getCountryId());
+        AdvertType advertType=advertTypesService.getAdvertTypeByIdForAdvert(createRequest.getAdvertTypeId());
+        District district= districtService.getDistrictByIdForAdvert(createRequest.getDistrictId());
+        return advertMapper.mapCreateRequestToAdvert(category,createRequest,city,country,advertType,district);
+    }
+
+
+    public Map<String, Object> getAdvertDetails(AbstractAdvertRequest advertRequest, HttpServletRequest httpServletRequest,Map<String, Object> detailsMap) {
+
+        Category category = categoryService.getCategoryById(advertRequest.getCategoryId());
+        City city = cityService.getCityById(advertRequest.getCityId());
+        User user = methodHelper.getUserByHttpRequest(httpServletRequest);
+        Country country = countryService.getCountryById(advertRequest.getCountryId());
+        AdvertType advertType = advertTypesService.getAdvertTypeByIdForAdvert(advertRequest.getAdvertTypeId());
+        District district = districtService.getDistrictByIdForAdvert(advertRequest.getDistrictId());
+
+        detailsMap.put("category", category);
+        detailsMap.put("city", city);
+        detailsMap.put("user", user);
+        detailsMap.put("country", country);
+        detailsMap.put("advertType", advertType);
+        detailsMap.put("district", district);
+
+        return detailsMap;
+    }
+
+
+
+    @Transactional
+    public void resetAdvertTables() {
+        advertRepository.deleteByBuiltIn(false);
+    }
+
 }

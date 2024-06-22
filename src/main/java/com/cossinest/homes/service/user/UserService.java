@@ -21,6 +21,7 @@ import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -261,5 +262,11 @@ public class UserService {
 
         return userRepository.findByRoleType(roleType);
 
+    }
+
+    @Transactional
+    public void resetUserTables() {
+
+       userRepository.deleteByBuilt_in(false);
     }
 }

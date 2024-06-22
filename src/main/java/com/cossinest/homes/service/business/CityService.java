@@ -40,4 +40,8 @@ public class CityService {
         return cityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.CITY_NOT_FOUND));
 
     }
+
+    public void resetCityTables() {
+        cityRepository.deleteAll();
+    }
 }

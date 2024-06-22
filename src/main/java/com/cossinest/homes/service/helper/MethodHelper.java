@@ -38,6 +38,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.management.relation.Role;
 import javax.swing.text.html.parser.Entity;
 import java.io.ByteArrayOutputStream;
@@ -215,9 +216,8 @@ public class MethodHelper {
         String propertyKeyName = categoryPropertyValueService.getPropertyKeyNameByPropertyValue(categoryPropertyValue.getId());
         String propertyValue = categoryPropertyValue.getValue();
         propertyNameAndValue.put(propertyKeyName, propertyValue);
-      //  categoryPropertyValue.getCategoryPropertyKeys().getName();
+        //  categoryPropertyValue.getCategoryPropertyKeys().getName();
     }
-
 
 
     public Map<String, String> getAdvertResponseProperties(Advert advert, CategoryPropertyValueService categoryPropertyValueService) {
@@ -240,7 +240,7 @@ public class MethodHelper {
         String email = (String) httpServletRequest.getAttribute("email");
 
 
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmail(email); // TODO Optional yerine throw new olabilir
 
 
         return userOptional.map(User::getId).orElse(null);
@@ -260,7 +260,21 @@ public class MethodHelper {
     }
 
 
+    private void createRow(Sheet sheet, int rowNum, Object... values) {
+        Row row = sheet.createRow(rowNum);
+        for (int i = 0; i < values.length; i++) {
 
+            row.createCell(i).setCellValue(values[i].toString());
+        }
+    }
+
+    private HttpHeaders returnHeader(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "report.xlsx");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        return headers;
+    }
 
     public <T> ResponseEntity<byte[]> excelResponse(List<T> list) {
 
@@ -270,68 +284,35 @@ public class MethodHelper {
             int rowNum = 0;
 
             if (!list.isEmpty() && list.get(0) instanceof User) {
-
-
                 for (User fetchedUser : (List<User>) list) {
-
-                    Row row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(fetchedUser.getId());
-                    row.createCell(1).setCellValue(fetchedUser.getFirstName());
-                    row.createCell(2).setCellValue(fetchedUser.getLastName());
+                    createRow(sheet, rowNum++, fetchedUser.getId(), fetchedUser.getFirstName(), fetchedUser.getLastName());
                 }
-
-
             } else if (!list.isEmpty() && list.get(0) instanceof TourRequest) {
-
-
                 for (TourRequest tourRequest : (List<TourRequest>) list) {
-
-                    Row row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(tourRequest.getId());
-                    row.createCell(1).setCellValue(tourRequest.getOwnerUserId().getFirstName());
-                    row.createCell(2).setCellValue(tourRequest.getAdvertId().getTitle());
+                    createRow(sheet, rowNum++, tourRequest.getId(), tourRequest.getOwnerUserId().getFirstName(), tourRequest.getAdvertId().getTitle());
                 }
-
-
             } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
                 for (Advert advert : (List<Advert>) list) {
-
-                    Row row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(advert.getId());
-                    row.createCell(1).setCellValue(advert.getTitle());
-                    row.createCell(2).setCellValue(advert.getStatus());
-                    row.createCell(3).setCellValue(advert.getAdvertType().getTitle());
-                    row.createCell(4).setCellValue(advert.getCategory().getTitle());
+                    createRow(sheet, rowNum++, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
                 }
 
-            }
-            else if (!list.isEmpty() && list.get(0) instanceof Advert) {
+            } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
                 for (Advert advert : (Page<Advert>) list) {
 
-                    Row row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(advert.getId());
-                    row.createCell(1).setCellValue(advert.getTitle());
-                    row.createCell(2).setCellValue(advert.getStatus());
-                    row.createCell(3).setCellValue(advert.getAdvertType().getTitle());
-                    row.createCell(4).setCellValue(advert.getCategory().getTitle());
+                    createRow(sheet, rowNum++, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
                 }
-
+            }else{
+                throw new BadRequestException(ErrorMessages.EXCEL_COULD_NOT_BE_CREATED);
             }
-
-
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
             workbook.close();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-            headers.setContentDispositionFormData("attachment", "report.xlsx");
-            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
+            HttpHeaders headers =returnHeader();
             return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
 
         } catch (IOException e) {
-           throw new BadRequestException("ERROR");
+            throw new BadRequestException("ERROR");
         }
     }
 
@@ -340,29 +321,25 @@ public class MethodHelper {
 
         try {
             Workbook workbook = new XSSFWorkbook();
-            Sheet sheet=workbook.createSheet("AdvertReport");
+            Sheet sheet = workbook.createSheet("AdvertReport");
             int rowNum = 0;
+            List<T> page = list.getContent();
 
-            for (Advert advert :(Page<Advert>) list) {
-
-                Row row=sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(advert.getId());
-                row.createCell(1).setCellValue(advert.getTitle());
-                row.createCell(2).setCellValue(advert.getStatus());
-                row.createCell(3).setCellValue(advert.getAdvertType().getTitle());
-                row.createCell(4).setCellValue(advert.getCategory().getTitle());
+            if (page.isEmpty() || !(page.get(0) instanceof Advert)){
+                throw new BadRequestException(ErrorMessages.EXCEL_COULD_NOT_BE_CREATED_TYPE_IS_NOT_ADVERT);
             }
 
-            ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+            for (Advert advert : (Page<Advert>) page) {
+                createRow(sheet,rowNum++,advert.getId(),advert.getTitle(),advert.getStatus(),advert.getAdvertType().getTitle(),advert.getCategory().getTitle());
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
             workbook.close();
 
-            HttpHeaders headers=new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-            headers.setContentDispositionFormData("attachment", "report.xlsx");
-            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+            HttpHeaders headers =returnHeader();
 
-            return new ResponseEntity<>(outputStream.toByteArray(),headers, HttpStatus.OK);
+            return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
 
 
         } catch (BadRequestException | IOException err) {
@@ -372,38 +349,38 @@ public class MethodHelper {
     }
 
 
-    public List<Images> getImagesForAdvert(MultipartFile[] files,List<Images> images){
+    public List<Images> getImagesForAdvert(MultipartFile[] files, List<Images> images) {
         boolean isFirstImage = true;
-        for (MultipartFile file:files) {
+        for (MultipartFile file : files) {
 
-            try{
+            try {
                 Images image = new Images();
 
                 image.setData(file.getBytes());
                 image.setName(file.getOriginalFilename());
                 image.setType(file.getContentType());
 
-                if(isFirstImage){
+                if (isFirstImage) {
                     image.setFeatured(true);
-                    isFirstImage=false;
-                }else{
+                    isFirstImage = false;
+                } else {
                     image.setFeatured(false);
                 }
 
                 images.add(image);
 
-            }catch(IOException e){
-                throw  new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
+            } catch (IOException e) {
+                throw new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
             }
         }
         return images;
     }
 
 
-    public List<Long> getImagesIdsListForAdvert(List<Images> imagesList){
-        List<Long> imagesIdsList= new ArrayList<>();
+    public List<Long> getImagesIdsListForAdvert(List<Images> imagesList) {
+        List<Long> imagesIdsList = new ArrayList<>();
 
-        imagesList.stream().map(t->imagesIdsList.add(t.getId())).collect(Collectors.toList());
+        imagesList.stream().map(t -> imagesIdsList.add(t.getId())).collect(Collectors.toList());
         return imagesIdsList;
     }
 
@@ -415,7 +392,7 @@ public class MethodHelper {
         return category.getBuiltIn();
     }
 
-    public boolean isActive(Category category){
+    public boolean isActive(Category category) {
 
         return category.getActive();
     }
@@ -432,7 +409,7 @@ public class MethodHelper {
 
     public void isRelatedToAdvertsOrTourRequest(User user) {
 
-        if(user.getTourRequests().size()>0 || user.getAdvert().size()>0) {
+        if (user.getTourRequests().size() > 0 || user.getAdvert().size() > 0) {
             throw new BadRequestException(ErrorMessages.THE_USER_HAS_RELATED_RECORDS_WITH_ADVERTS_OR_TOUR_REQUESTS);
         }
 

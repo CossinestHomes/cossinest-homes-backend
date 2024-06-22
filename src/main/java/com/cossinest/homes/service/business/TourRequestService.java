@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -46,8 +47,8 @@ public class TourRequestService {
 
 
 
-//todo save methodu kontrol edilecek!
-    public ResponseMessage<TourRequestResponse> saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
+
+    public ResponseMessage<TourRequestResponse>saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
 
         // Advertta Date-time cakismasi var mi?
        List<TourRequest> tourRequestsFromRepo = getAlTourRequestl();
@@ -58,7 +59,7 @@ public class TourRequestService {
         User userGuest = methodHelper.findByUserByEmail(userEmail);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(userGuest,tourRequestRequest);
 
-        //UserOwner için çakışma kontrolü
+        //UserOwner için çakışma kontrolü //TODO burayi anlayamadim. id zaten var ve advert id neden ownerId oldu
         Advert advert = advertService.getAdvertForFaavorites(tourRequestRequest.getAdvertId());
         Long ownerId = advert.getId();
         User ownerUser = methodHelper.findUserWithId(ownerId);
@@ -290,9 +291,13 @@ public class TourRequestService {
 
 
 
-    public List<TourRequest> getTourRequest(String date1, String date2, StatusType statusType) {
+    public List<TourRequest> getTourRequest(LocalDateTime date1, LocalDateTime date2, StatusType statusType) {
 
        return tourRequestRepository.getTourRequest(date1,date2,statusType);
 
+    }
+
+    public void resetTourRequestTables() {
+        tourRequestRepository.deleteAll();
     }
 }
