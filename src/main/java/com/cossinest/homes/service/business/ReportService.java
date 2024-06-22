@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,8 +107,10 @@ public class ReportService {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
 
-        LocalDate begin = LocalDate.parse(date1);
-        LocalDate end = LocalDate.parse(date2);
+        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        LocalDateTime begin = LocalDateTime.parse(date1+"T00:00:00",formatter);
+        LocalDateTime end = LocalDateTime.parse(date2+"T23:59:59",formatter);
         dateTimeValidator.checkBeginTimeAndEndTime(begin, end);
 
         StatusType statusType;
@@ -116,7 +120,7 @@ public class ReportService {
         } catch (BadRequestException e) {
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
         }
-        List<TourRequest> tourRequests = tourRequestService.getTourRequest(date1, date2, statusType);
+        List<TourRequest> tourRequests = tourRequestService.getTourRequest(begin, end, statusType);
 
         return methodHelper.excelResponse(tourRequests);
 
@@ -128,10 +132,14 @@ public class ReportService {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
 
+
+
         List<Advert> adverts = advertService.getAdvertsReport(date1, date2, category, type.toLowerCase(), status);
 
         return methodHelper.excelResponse(adverts);
 
 
     }
+
+
 }

@@ -190,5 +190,9 @@ public class CategoryService {
       );
     }
 
+    @Transactional
+    public void resetCategoryTables() {
+        categoryRepository.deleteByBuiltIn(false);
+    }
 }
 

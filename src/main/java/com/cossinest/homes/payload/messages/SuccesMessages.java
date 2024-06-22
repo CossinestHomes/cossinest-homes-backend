@@ -12,7 +12,7 @@ public class SuccesMessages {
     public static final String TOUR_REQUEST_DECLINED_SUCCESSFULLY = "Tour request is declined successfully";
     public static final String TOUR_REQUEST_APPROVED_SUCCESSFULLY ="Tour request is approved successfully";
     public static final String TOUR_REQUEST_DELETED_SUCCESSFULLY = "Tour request is deleted successfully";
-    
+
 
 
     public static final String USER_UPDATED_SUCCESSFULLY ="User has updated Successfully" ;
@@ -38,7 +38,7 @@ public class SuccesMessages {
     public static final String FAVORITES_DELETED_SUCCESSFULLY = "Favorites is deleted successfully";
     public static final String FAVORITE_REMOVED_SUCCESSFULLY = "Favorites removed successfully";
     public static final String FAVORITE_ADDED_SUCCESSFULLY = "Favorites added successfully";
-
+    public static final String ALL_FAVORITES_DELETED = "All Favorites are deleted";
 
 
     private SuccesMessages(){
