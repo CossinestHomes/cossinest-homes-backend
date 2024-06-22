@@ -1,15 +1,11 @@
 package com.cossinest.homes.repository.business;
 
-import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Favorites;
-import com.cossinest.homes.domain.concretes.user.User;
-import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FavoritesRepository extends JpaRepository<Favorites,Long> {
 
@@ -34,12 +30,6 @@ public interface FavoritesRepository extends JpaRepository<Favorites,Long> {
     @Query("DELETE FROM Favorites f WHERE f.user.id = :user_id")
     void deleteAllByUserId(@Param("user_id") Long userId);
 
-
     @Query("SELECT f FROM Favorites f WHERE f.user.id=?1 AND f.advert.id=?2")
     Favorites getFavoriteByAdvertAndUser(Long id, Long advertId);
-
-   // @Query("SELECT COUNT(f) > 0 FROM Favorites f WHERE f.advert.id=?1 AND f.user.id=?2")
-   // Boolean isExistsFavByAdvert(Long id, Long id1);
-
-
 }
