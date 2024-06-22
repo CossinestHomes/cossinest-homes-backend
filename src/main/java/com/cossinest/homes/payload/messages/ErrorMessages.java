@@ -62,6 +62,10 @@ public class ErrorMessages {
     public static final String NOT_FOUND_ADVERT_WITH_ID_MESSAGE ="Error: Advert with id: %s not found";
     public static final String ADVERT_IS_NOT_FOUND_FOR_USER ="Error: Advert is not found with user id: %s";
     public static final String THIS_ADVERT_DOES_NOT_UPDATE ="Error: This advert is built in";
+    public static final String FAVORITES_NOT_FOUND ="Error: Favorites not found";
+    public static final String FAVORITES_ID_NOT_FOUND ="Error: Favorites id not found";
+
+
 
 
 
