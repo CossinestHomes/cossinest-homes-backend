@@ -4,7 +4,6 @@ import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.Status;
 import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
-import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
@@ -29,7 +28,7 @@ public class AdvertMapper {
                 .id(advert.getId())
                 .price(advert.getPrice())
                 .slug(advert.getSlug())
-                .desc(advert.getDesc())
+                .desc(advert.getDescription())
                 .title(advert.getTitle())
                 .status(getStatusName(advert.getStatus()))
                 .createAt(advert.getCreatedAt())
@@ -63,7 +62,7 @@ public class AdvertMapper {
     public Advert mapAdvertRequestToAdvert(AbstractAdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType, District district){
         return Advert.builder()
                 .title(advertRequest.getTitle())
-                .desc(advertRequest.getDesc())
+                .description(advertRequest.getDesc())
                 //.builtIn(false) //default olarak advert entity de setlendi olacak mı kontrol et
                 //.status(Status.PENDING.getValue())//default olarak advert entity de setlendi olacak mı kontrol et
                 //.viewCount(advertRequest.getViewCount())//default olarak advert entity de setlendi olacak mı kontrol et
@@ -73,6 +72,7 @@ public class AdvertMapper {
                 .slug(advertRequest.getSlug())
                 .district(district)
                 .category(category)
+                .status(Status.PENDING.getValue())
                 .city(city)
                 .user(user)
                 .country(country)
@@ -89,7 +89,7 @@ public class AdvertMapper {
                 .slug(advertRequest.getSlug())
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
-                .desc(advertRequest.getDesc())
+                .description(advertRequest.getDesc())
                 .district(district)
                 .status(Status.PENDING.getValue())//update de status u tekrardan pending e çek
                 .category(category)
@@ -107,7 +107,7 @@ public class AdvertMapper {
                 .slug(advertRequest.getSlug())
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
-                .desc(advertRequest.getDesc())
+                .description(advertRequest.getDesc())
                 .builtIn(advertRequest.getBuiltIn())
                 .district(district)
                 .status(advertRequest.getStatus())
@@ -135,7 +135,8 @@ public class AdvertMapper {
                 .advertType(advertType)
                 .price(createRequest.getPrice())
                 .title(createRequest.getTitle())
-                .desc(createRequest.getDesc())
+                .description(createRequest.getDesc())
+                .status(Status.PENDING.getValue())
                 .district(district)
                 .category(category)
                 .location(createRequest.getLocation())

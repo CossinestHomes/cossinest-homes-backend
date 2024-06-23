@@ -3,6 +3,7 @@ package com.cossinest.homes.service.user;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.LogEnum;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.BadRequestException;
@@ -16,7 +17,6 @@ import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.LogService;
-import com.cossinest.homes.service.business.ReportService;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
@@ -260,13 +260,15 @@ public class UserService {
 
     public List<User> getUsersByRoleType(RoleType roleType) {
 
-        return userRepository.findByRoleType(roleType);
+       UserRole userRole =userRoleService.getUserRole(roleType);
+
+        return userRepository.findByUserRole(userRole);
 
     }
 
     @Transactional
     public void resetUserTables() {
 
-        userRepository.deleteByBuilt_in(false);
+        userRepository.deleteByBuiltIn(false);
     }
 }

@@ -176,6 +176,11 @@ public class FavoritesService {
                 .build();
 
     }
+
+    public void resetFavoritesTables() {
+
+        favoritesRepository.deleteAll();
+    }
 }
 
 

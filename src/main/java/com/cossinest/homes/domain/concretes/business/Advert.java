@@ -11,7 +11,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "adverts")
@@ -33,14 +32,14 @@ public class Advert {
     private String title;
 
     @Column(length = 300)
-    private String desc;
+    private String description;
 
     private String slug;//TODO:Tekrar bakılacak
 
     @Column(nullable = false)
     private Double price= 0.0;
 
-    @Enumerated(EnumType.ORDINAL)
+  //  @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private int status = Status.PENDING.getValue();
 
@@ -109,11 +108,11 @@ public class Advert {
     @JsonIgnore
     private List<Favorites> favoritesList;
 
-    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<TourRequest> tourRequestList;
 
-    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "adverts",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<CategoryPropertyValue> categoryPropertyValuesList;
 
@@ -127,7 +126,7 @@ public class Advert {
     @JoinColumn(name = "district_id")
     private District district;
 
-    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<Images> imagesList;
 
