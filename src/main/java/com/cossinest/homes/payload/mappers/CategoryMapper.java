@@ -6,11 +6,15 @@ import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 
 import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
+import com.cossinest.homes.payload.response.business.CategoryPropKeyssResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+import static java.util.stream.IntStream.builder;
 
 
 @Data
@@ -38,6 +42,7 @@ public class CategoryMapper {
                 .active(category.getActive())
                 .createdAt(category.getCreatedAt())
                 .updatedAt(category.getUpdatedAt())
+                .categoryPropertyKeys(category.getCategoryPropertyKeys())
                 .build();
     }
 
@@ -66,6 +71,15 @@ public class CategoryMapper {
                 .builtIn(categoryPropertyKey.getBuiltIn())
                 .build();
     }
+
+//    // CategoryPropertyKeyssENTITY ====> DTO:
+//
+//    public List<CategoryPropKeyssResponseDTO> mapCategPropKeysssToCategPropKeysssResponseDTO(Category category){
+//
+//        return CategoryPropKeyssResponseDTO.builder()
+//                .categoryPropertyKeys(category.getCategoryPropertyKeys())
+//                .build();
+//    }
 
 
 

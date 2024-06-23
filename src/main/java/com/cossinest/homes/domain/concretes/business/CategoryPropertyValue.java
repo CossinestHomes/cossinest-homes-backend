@@ -27,9 +27,6 @@ public class CategoryPropertyValue {
     private String value;
 
 
-    private Integer advert_id;
-
-
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
     @JoinColumn(name="category_Property_Key_id")
     @ManyToOne

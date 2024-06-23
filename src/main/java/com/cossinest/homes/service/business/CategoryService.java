@@ -19,6 +19,7 @@ import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
 import com.cossinest.homes.repository.business.CategoryRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,20 +30,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+
+@RequiredArgsConstructor
 @Service
 public class CategoryService {
 
 
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final CategoryPropertyKeyRepository categoryPropertyKeyRepository;
 
-    @Autowired
-    private CategoryMapper categoryMapper;
-
-    @Autowired
-    CategoryPropertyKeyRepository categoryPropertyKeyRepository;
 
 
 
@@ -61,20 +61,27 @@ public class CategoryService {
 
     public Page<CategoryResponseDTO> getActiveCategoriesWithPage( String q, int page, int size, String sort, String type) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(type, sort));
 
+        Pageable pageable= PageRequest.of(page, size, Sort.by(String.valueOf(sort)).ascending());
+
+        if(Objects.equals(type, "DESC")){
+                                            pageable=PageRequest.of(page, size, Sort.by(String.valueOf(sort)).descending());
+                                            }
         return categoryRepository.findAllActiveCategories(pageable);
     }
 
 
     public Page<CategoryResponseDTO> getAllCategoriesWithPage(String q, int page, int size, String sort, String type) {
 
-        Pageable pageable = PageRequest.of( page, size, Sort.by (type, sort) );
+        Pageable pageable= PageRequest.of(page, size, Sort.by(String.valueOf(sort)).ascending());
 
+        if(Objects.equals(type, "DESC")){
+                                            pageable=PageRequest.of(page, size, Sort.by(String.valueOf(sort)).descending());
+                                            }
         return categoryRepository.findAllCategories(pageable);
     }
 
-    public Category findCategory(Long id){
+    public Category findCategoryById(Long id){
         return categoryRepository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Category not found with id :" + id));
     }
@@ -109,7 +116,12 @@ public class CategoryService {
 
         boolean existTitle = categoryRepository.existsByTitle(categoryRequestDTO.getTitle());  // categoryRequest ile gelen Title DB'de VAR mi?
 
-        Category category = findCategory(id);
+        Category category = findCategoryById(id);
+
+
+        if(category.getBuiltIn()){
+            throw new ResourceNotFoundException("This category cannot be updated");
+        }
 
         if (existTitle && !categoryRequestDTO.getTitle().equals(category.getTitle())){
 
@@ -139,6 +151,10 @@ public class CategoryService {
         Category category = categoryRepository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Category not found with id :" + id));
 
+        if(category.getBuiltIn()){
+            throw new ResourceNotFoundException("This category cannot be deleted");
+        }
+
         categoryRepository.deleteById(id);
 
         return categoryMapper.mapCategoryToCategoryResponseDTO(category);
@@ -147,17 +163,18 @@ public class CategoryService {
 
     public List<CategoryPropertyKey> findCategoryPropertyKeys(Long id) {
 
-        Category category = findCategory(id);
+        Category category = findCategoryById(id);
 
-        List <CategoryPropertyKey> categoryProperties = category.getCategoryPropertyKeys();
-        return  categoryProperties;
+        List<CategoryPropertyKey> categoryProperKeys = category.getCategoryPropertyKeys();
+
+        return categoryProperKeys;
     }
 
 
     public CategoryPropKeyResponseDTO createPropertyKey(Long id, String... keys) {
 
 
-        Category category = findCategory(id);
+        Category category = findCategoryById(id);
 
         List <CategoryPropertyKey> categoryProperties = category.getCategoryPropertyKeys();
         CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
