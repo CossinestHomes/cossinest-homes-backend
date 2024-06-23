@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class UserRequest extends BaseUserRequest {

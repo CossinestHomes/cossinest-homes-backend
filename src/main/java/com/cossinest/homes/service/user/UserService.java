@@ -39,7 +39,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+  //  private final PasswordEncoder passwordEncoder;
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
     private final LogService logService;
@@ -79,15 +79,15 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
 
-        String password = passwordEncoder.encode(request.getPassword());
+     /*   String password = passwordEncoder.encode(request.getPassword());
         if (!(Objects.equals(password, user.getPasswordHash()))) {
             throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
         }
         if (!(Objects.equals(request.getNewPassword(), request.getReWriteNewPassword()))) {
             throw new BadRequestException(ErrorMessages.THE_PASSWORDS_ARE_NOT_MATCHED);
-        }
+        }*/
 
-        user.setPasswordHash(password);
+       // user.setPasswordHash(password);
         userRepository.save(user);
 
 
@@ -102,8 +102,8 @@ public class UserService {
         methodHelper.checkRoles(user, RoleType.CUSTOMER);
         methodHelper.isRelatedToAdvertsOrTourRequest(user);
 
-        String requestPassword = passwordEncoder.encode(request.getPassword());
-        request.setPassword(requestPassword);
+      //  String requestPassword = passwordEncoder.encode(request.getPassword());
+      //  request.setPassword(requestPassword);
 
         methodHelper.checkEmailAndPassword(user, request);
 
@@ -239,8 +239,8 @@ public class UserService {
 
 
         methodHelper.UpdatePasswordControl(request.getPassword(), request.getReWritePassword());
-        String requestPassword = passwordEncoder.encode(request.getPassword());
-        user.setPasswordHash(requestPassword);
+    //    String requestPassword = passwordEncoder.encode(request.getPassword());
+      //  user.setPasswordHash(requestPassword);
         userRepository.save(user);
         return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY, HttpStatus.OK);
 
