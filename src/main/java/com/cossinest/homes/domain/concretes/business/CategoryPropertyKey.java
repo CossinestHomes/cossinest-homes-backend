@@ -38,13 +38,12 @@ public class CategoryPropertyKey {
 
 
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="category_id") // Bu anotasyon ile CategoryPropertyKeys table'ina ismi "category_id" olan bir Sutun ( FK ???) ekliyoruz
     private Category category;
 
-    @OneToMany(mappedBy = "categoryPropertyKeys")
+    @OneToMany(mappedBy = "categoryPropertyKeys", cascade = CascadeType.ALL)
     private List<CategoryPropertyValue> categoryPropertyValues = new ArrayList<>();
-
 
 
 }

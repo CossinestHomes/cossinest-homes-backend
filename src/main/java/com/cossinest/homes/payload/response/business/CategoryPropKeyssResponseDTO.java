@@ -3,7 +3,6 @@ package com.cossinest.homes.payload.response.business;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,39 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder(toBuilder = true)
-public class CategoryResponseDTO {
+public class CategoryPropKeyssResponseDTO {
 
-
-
-    private Long catId;
-
-
-    private String title;
-
-
-    private String icon;
-
-
-    private boolean builtIn;
-
-
-    private Integer seq;
-
-
-    private String slug;
-
-
-    private boolean active;
-
-
-    private LocalDateTime createdAt;
-
-
-    private LocalDateTime updatedAt;
 
 
     private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
-
 
 
 }
