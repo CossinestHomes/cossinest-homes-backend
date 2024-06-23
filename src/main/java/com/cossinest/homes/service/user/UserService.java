@@ -267,6 +267,6 @@ public class UserService {
     @Transactional
     public void resetUserTables() {
 
-       userRepository.deleteByBuilt_in(false);
+        userRepository.deleteByBuilt_in(false);
     }
 }
