@@ -302,9 +302,9 @@ public class AdvertService {
 
     }
 
-    public Page<Advert> getPopulerAdverts(Pageable pageable) {
+    public Page<Advert> getPopulerAdverts(int amount,Pageable pageable) {
 
-     return advertRepository.getMostPopulerAdverts(pageable);
+     return advertRepository.getMostPopulerAdverts(amount,pageable);
 
     }
 

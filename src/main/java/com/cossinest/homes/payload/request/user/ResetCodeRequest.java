@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.request.user;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -18,8 +19,12 @@ public class ResetCodeRequest {
             message = "Password must contain at least one digit, one lowercase character, one uppercase character, and one special character (@#$%^&+=)")
     private String password;
 
+    @NotBlank
     private String reWritePassword;
 
     private String resetPasswordCode;
+
+    @Email
+    private String email;
 
 }
