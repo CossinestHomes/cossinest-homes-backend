@@ -14,6 +14,7 @@ import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
+import com.cossinest.homes.payload.response.business.CategoryPropKeyssResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
 import com.cossinest.homes.repository.business.CategoryRepository;
@@ -161,14 +162,16 @@ public class CategoryService {
     }
 
 
-    public List<CategoryPropertyKey> findCategoryPropertyKeys(Long id) {
+    public CategoryPropKeyssResponseDTO findCategoryPropertyKeys(Long id) {
 
         Category category = findCategoryById(id);
 
         List<CategoryPropertyKey> categoryProperKeys = category.getCategoryPropertyKeys();
 
-        return categoryProperKeys;
+        return categoryMapper.mapCategPropKeyssToCategPropKeyssResponseDTO(categoryProperKeys);
     }
+
+
 
 
     public CategoryPropKeyResponseDTO createPropertyKey(Long id, String... keys) {
