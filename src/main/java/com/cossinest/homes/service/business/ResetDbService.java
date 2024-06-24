@@ -46,7 +46,7 @@ public class ResetDbService {
         cityService.resetCityTables();
         countryService.resetCountryTables();
         districtService.resetDistrictTables();
-       // reportService.resetReportTables(); //TODO buna gerek var mi
+       // reportService.resetReportTables();
         logService.resetLogTables();
         contactMessageService.resetContactMessageTables();
         categoryPropertyKeyService.resetCategoryPropertyKeyTables();

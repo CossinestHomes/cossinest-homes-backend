@@ -27,15 +27,15 @@ public class Country {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private String name;
+    private com.cossinest.homes.domain.enums.Country name;
 
 
-    @OneToMany (mappedBy = "city",cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "country",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<City> city= new HashSet<>();
 
 
-    @OneToMany (mappedBy = "advertList",cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "country",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Advert> advertList = new ArrayList<>();
 

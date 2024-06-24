@@ -1,5 +1,6 @@
 package com.cossinest.homes.service.business;
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.exception.NotLoadingCompleted;
 import com.cossinest.homes.exception.ResourceNotFoundException;
@@ -32,7 +33,7 @@ public class ImagesService {
 
     public List<Long> uploadImages(Long advertId, MultipartFile[] files){
 
-        advertService.getAdvertForFaavorites(advertId);
+       Advert advert =advertService.getAdvertForFaavorites(advertId);
 
         List<Long> imageIds = new ArrayList<>();
         boolean isFirstImage = true;
@@ -44,7 +45,7 @@ public class ImagesService {
                 image.setData(file.getBytes());
                 image.setName(file.getOriginalFilename());
                 image.setType(file.getContentType());
-                image.setAdvertId(advertId);
+                image.setAdvert(advert);
 
                 if(isFirstImage){
                     image.setFeatured(true);
@@ -97,7 +98,7 @@ public class ImagesService {
        Images image = imagesRepository.findById(imageId).orElseThrow(()->
                new ResourceNotFoundException(ErrorMessages.NOT_FOUND_IMAGE));
 
-       List<Images> images = imagesRepository.findByAdvertId(image.getAdvertId());
+       List<Images> images = imagesRepository.findByAdvertId(image.getAdvert().getId());
 
         images.forEach(item -> item.setFeatured(false));
 

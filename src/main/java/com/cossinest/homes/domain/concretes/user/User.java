@@ -5,12 +5,9 @@ import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -64,7 +61,7 @@ public class User {
     @Column(name = "reset_password_code")
     private String resetPasswordCode;
 
-    private Boolean built_in=false;
+    private Boolean builtIn =false;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH-mm", timezone = "Turkey")
     @Column(name = "create_at", nullable = false)

@@ -3,14 +3,12 @@ package com.cossinest.homes.payload.mappers;
 import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
-import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.UsersUpdateRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.payload.response.user.CustomerResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
-import com.cossinest.homes.service.business.FavoritesService;
 import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -55,7 +53,7 @@ public class UserMapper {
                 .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
                 .tourRequestsResponse(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
                 .favoritesList(user.getFavoritesList().stream().map(Favorites::getId).collect(Collectors.toSet()))
-                .built_in(user.getBuilt_in())
+                .built_in(user.getBuiltIn())
                 .build();
     }
 
@@ -67,7 +65,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .lastName(user.getLastName())
                 .firstName(user.getFirstName())
-               .built_in(user.getBuilt_in())
+               .built_in(user.getBuiltIn())
                .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
                .tourRequestsResponse(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
                .advert(user.getAdvert().stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toSet()))

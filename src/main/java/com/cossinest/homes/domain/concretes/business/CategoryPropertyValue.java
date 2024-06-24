@@ -23,7 +23,6 @@ public class CategoryPropertyValue {
     private Long id;
 
 
-
     private String value;
 
 
