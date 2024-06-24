@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @Setter
 @Builder(toBuilder = true)
 public class Log {
-
-    @Setter(AccessLevel.NONE)
     @Id
+    @Setter(AccessLevel.NONE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

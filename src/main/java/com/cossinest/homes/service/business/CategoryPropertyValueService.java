@@ -15,6 +15,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryPropertyValueService {
 
+
+
+
     private final CategoryPropertyValueRepository categoryPropertyValueRepository;
 
     //advert için method

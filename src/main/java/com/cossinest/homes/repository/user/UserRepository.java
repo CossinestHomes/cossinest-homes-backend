@@ -1,25 +1,25 @@
 package com.cossinest.homes.repository.user;
 
 import com.cossinest.homes.domain.concretes.user.User;
-import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.domain.concretes.user.UserRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByEmail(String email);
 
-    boolean existsByEmail();
+    boolean existsByEmail(String email);
 
-    boolean existsByPhone();
+    boolean existsByPhone(String phone);
 
 
 
@@ -44,9 +44,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Page<User> findAll(@Param("query") String query, Pageable pageable);
 
-    @Query("SELECT u FROM User u WHERE u.userRole.roleType=?1")
-    List<User> findByRoleType(RoleType roleType);
+    @Query("SELECT u FROM User u WHERE u.userRole=?1")
+    List<User> findByUserRole(UserRole userRole);
 
 
-    void deleteByBuilt_in(boolean b);
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.builtIn = ?1")
+    void deleteByBuiltIn(boolean b);
 }

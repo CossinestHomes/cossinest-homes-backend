@@ -23,11 +23,7 @@ public class CategoryPropertyValue {
     private Long id;
 
 
-
     private String value;
-
-
-    private Integer advert_id;
 
 
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi

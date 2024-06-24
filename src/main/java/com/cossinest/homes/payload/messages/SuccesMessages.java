@@ -39,6 +39,7 @@ public class SuccesMessages {
     public static final String FAVORITE_REMOVED_SUCCESSFULLY = "Favorites removed successfully";
     public static final String FAVORITE_ADDED_SUCCESSFULLY = "Favorites added successfully";
     public static final String ALL_FAVORITES_DELETED = "All Favorites are deleted";
+    public static final String DB_HAS_SUCCESSFULLY_RESET ="Db has successfully reset" ;
 
 
     private SuccesMessages(){

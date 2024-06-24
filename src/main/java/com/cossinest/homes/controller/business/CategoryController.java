@@ -12,6 +12,7 @@ import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.service.business.CategoryPropertyKeyService;
 import com.cossinest.homes.service.business.CategoryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.List;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/categories")
 public class CategoryController {
 
@@ -37,12 +39,8 @@ public class CategoryController {
     Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
 
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private CategoryPropertyKeyService categoryPropertyKeyService;
-
+    private final CategoryService categoryService;
+    private final CategoryPropertyKeyService categoryPropertyKeyService;
 
 
 
@@ -50,13 +48,13 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
-            @RequestParam("q") String query,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sort") String sort,
-            @RequestParam("type") Sort.Direction type) {
+            @RequestParam("q") String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size" , defaultValue = "20") int size,
+            @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
+            @RequestParam(value = "type" , defaultValue = "ASC") String type) {
 
-        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getActiveCategoriesWithPage( page,  size, sort,  type);
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getActiveCategoriesWithPage( q, page,  size, sort,  type);
 
         return ResponseEntity.ok(categoryResponseDTOPage);
     }
@@ -65,16 +63,17 @@ public class CategoryController {
 
     // C 02     Tum kategorileri Pageable yapida cagirma :
 
-    @GetMapping("/admin")
+    @GetMapping()
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<Page<CategoryResponseDTO>> getAllCategoriesWithPage(
 
-            @RequestParam("q") String query,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sort") String sort,
-            @RequestParam("type") Sort.Direction type
-    ){
-        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getAllCategoriesWithPage(page,  size, sort,  type);
+            @RequestParam("q") String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size" , defaultValue = "20") int size,
+            @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
+            @RequestParam(value = "type" , defaultValue = "ASC") String type){
+
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getAllCategoriesWithPage(q, page,  size, sort,  type);
 
         return ResponseEntity.ok(categoryResponseDTOPage);
     }
@@ -82,7 +81,7 @@ public class CategoryController {
 
     // C 03     id ile bir category cagirma (Path Variable ile) :
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> getCategoryWithId(@PathVariable("id") Long id){
 
         CategoryResponseDTO categoryResponseDTO = categoryService.findCategoryWithId(id);
@@ -94,6 +93,7 @@ public class CategoryController {
     // C 04     Category Objesi olusturma :
 
     @PostMapping
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<CategoryResponseDTO> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
 
         CategoryResponseDTO categoryResponseDTO = categoryService.createCategory(categoryRequestDTO);
@@ -105,7 +105,8 @@ public class CategoryController {
     // C 05 id ile category UPDATE etme (Path Variable ile) :
 
 
-    @PutMapping("{id}")         // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
+    @PutMapping("/{id}")                                // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<CategoryResponseDTO> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO){
 
         CategoryResponseDTO categoryResponseDTO = categoryService.updateCategory(id, categoryRequestDTO);
@@ -117,6 +118,7 @@ public class CategoryController {
     // C 06 id ile category DELETE etme (Path Variable ile) :
 
     @DeleteMapping("/{id}")
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id ){
 
         CategoryResponseDTO categoryResponseDTO = categoryService.deleteCategory(id);
@@ -128,6 +130,7 @@ public class CategoryController {
     // C07 id ile bir category'nin property key'lerini getirme (Path Variable ile) :
 
     @GetMapping("/{id}/properties")
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<List<CategoryPropertyKey>> getCategoryPropertyKeys(@PathVariable("id") Long id){
 
         List<CategoryPropertyKey> categoryProps = categoryService.findCategoryPropertyKeys(id);
@@ -138,6 +141,7 @@ public class CategoryController {
     // C08 id ile bir category'nin property key'ini olusturma (Path Variable ile) :
 
     @PostMapping("/{id}/properties")
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<CategoryPropKeyResponseDTO> createPropertyKey(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO, String... keys){
 
         CategoryPropKeyResponseDTO categoryPropKeyResponseDTO = categoryService.createPropertyKey(id,  keys);
@@ -149,9 +153,11 @@ public class CategoryController {
     // C09 id ile property key'i UPDATE etme  (Path Variable ile) :
 
     @PutMapping("/properties/{id}")
-    public ResponseEntity<CategoryPropertyKey> updateCatPropertyKey(@PathVariable("id") Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public ResponseEntity<CategoryPropKeyResponseDTO> updateCatPropertyKey(@PathVariable("id") Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        CategoryPropertyKey  updatedPropertyKey = categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
+
+        CategoryPropKeyResponseDTO  updatedPropertyKey = categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
 
         return ResponseEntity.ok(updatedPropertyKey);
     }
@@ -160,9 +166,10 @@ public class CategoryController {
     // C10 id ile property key'i DELETE etme (Silme)  (Path Variable ile) :
 
     @DeleteMapping("/properties/{id}")
-    public ResponseEntity<CategoryPropertyKey> deleteCatPropertyKey(@PathVariable("id") Long id ) {
+    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public ResponseEntity<CategoryPropKeyResponseDTO> deleteCategPropertyKey(@PathVariable("id") Long id ) {
 
-        CategoryPropertyKey deletedPropertyKey = categoryPropertyKeyService.deletePropertyKey(id);
+        CategoryPropKeyResponseDTO deletedPropertyKey = categoryPropertyKeyService.deletePropertyKey(id);
 
         return ResponseEntity.ok(deletedPropertyKey);
     }
