@@ -21,11 +21,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -70,13 +70,13 @@ public class ReportService {
     }
 
 
-    public ResponseEntity<byte[]> getPopulerAdverts(int amount, HttpServletRequest request) {
+    public ResponseEntity<byte[]> getPopulerAdvertsReport(int amount, HttpServletRequest request) {
 
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.MANAGER, RoleType.ADMIN);
-        Pageable pageable = PageRequest.of(0, amount);
+        Pageable pageable = PageRequest.of(0,10);
 
-        Page<Advert> adverts = advertService.getPopulerAdverts(pageable);
+        Page<Advert> adverts = advertService.getPopulerAdverts(amount,pageable);
         return methodHelper.excelResponse(adverts);
 
 

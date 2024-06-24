@@ -2,6 +2,7 @@ package com.cossinest.homes.repository.user;
 
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
+import com.cossinest.homes.domain.enums.RoleType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,11 +45,15 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Page<User> findAll(@Param("query") String query, Pageable pageable);
 
-    @Query("SELECT u FROM User u WHERE u.userRole=?1")
-    List<User> findByUserRole(UserRole userRole);
+ /*   @Query("SELECT u FROM User u WHERE u.userRole=?1")
+    List<User> findByUserRole(UserRole userRole);*/
 
+  /*  @Query("SELECT u FROM User u WHERE u.userRole.roleType = :roleType")
+    List<User> findByUserRole(@Param("roleType") RoleType roleType);*/
 
     @Modifying
     @Query("DELETE FROM User u WHERE u.builtIn = ?1")
     void deleteByBuiltIn(boolean b);
+
+    List<User> findByUserRole_RoleType(RoleType roleType);
 }

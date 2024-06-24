@@ -218,24 +218,25 @@ public class UserService {
 
     public String forgotPassword(ForgetPasswordRequest request) {
 
+        String resetCode;
         try {
             User user = methodHelper.findByUserByEmail(request.getEmail());
-            String resetCode = UUID.randomUUID().toString();
+             resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
-            emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
+         //   emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
 
         } catch (BadRequestException e) {
             return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
         }
 
-        return SuccesMessages.RESET_PASSWORD_CODE_HAS_BEEN_SENT_TO_YOUR_EMAIL_ADRESS;
+        return resetCode;
 
     }
 
     public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
-        User user = userRepository.resetPasswordWithCode(request.getResetPasswordCode()).orElseThrow(
-                () -> new BadRequestException(ErrorMessages.RESET_PASSWORD_CODE_DID_NOT_MATCH));
+
+        User user =userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new BadRequestException(ErrorMessages.NOT_FOUND_USER_EMAIL));
 
 
         methodHelper.UpdatePasswordControl(request.getPassword(), request.getReWritePassword());
@@ -260,9 +261,9 @@ public class UserService {
 
     public List<User> getUsersByRoleType(RoleType roleType) {
 
-       UserRole userRole =userRoleService.getUserRole(roleType);
+      // UserRole userRole =userRoleService.getUserRole(roleType);
 
-        return userRepository.findByUserRole(userRole);
+       return userRepository.findByUserRole_RoleType(roleType);
 
     }
 
