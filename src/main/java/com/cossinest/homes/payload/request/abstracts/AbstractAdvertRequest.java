@@ -1,9 +1,5 @@
 package com.cossinest.homes.payload.request.abstracts;
 
-import com.cossinest.homes.domain.concretes.business.Images;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +26,7 @@ public abstract class AbstractAdvertRequest {
     @NotNull(message = "Description must not be empty")
     @Size(max = 300, message = "Description should be at max 300 chars")
     @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = "Description must consist of the characters .")
-    private String desc;
+    private String description;
 
 
     @NotNull(message = "Slug must not be empty")
