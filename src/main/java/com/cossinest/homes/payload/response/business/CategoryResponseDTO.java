@@ -45,7 +45,7 @@ public class CategoryResponseDTO {
     private LocalDateTime updatedAt;
 
 
-    private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
+    private List<CategoryPropertyKey> categoryPropertyKeys;
 
 
 

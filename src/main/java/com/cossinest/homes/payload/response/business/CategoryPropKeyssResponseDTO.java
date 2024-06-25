@@ -17,7 +17,6 @@ public class CategoryPropKeyssResponseDTO {
 
 
 
-    private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
-
+    private List<CategoryPropertyKey> categoryPropertyKeys;
 
 }

@@ -12,19 +12,22 @@ import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.builder;
 
 
 @Data
 @Component
+@RequiredArgsConstructor
 public class CategoryMapper {
 
 
 
 
-    private MethodHelper methodHelper;
+    private final MethodHelper methodHelper;
 
 
 
@@ -72,25 +75,15 @@ public class CategoryMapper {
                 .build();
     }
 
-//    // CategoryPropertyKeyssENTITY ====> DTO:
-//
-//    public List<CategoryPropKeyssResponseDTO> mapCategPropKeysssToCategPropKeysssResponseDTO(Category category){
-//
-//        return CategoryPropKeyssResponseDTO.builder()
-//                .categoryPropertyKeys(category.getCategoryPropertyKeys())
-//                .build();
-//    }
 
+   // CategoryPropertyKeyssENTITY ====> DTO:
 
+    public CategoryPropKeyssResponseDTO mapCategPropKeyssToCategPropKeyssResponseDTO(List<CategoryPropertyKey> categoryProperKeys){
 
+        CategoryPropKeyssResponseDTO dto = new CategoryPropKeyssResponseDTO();
+        dto.setCategoryPropertyKeys(categoryProperKeys);
 
-
-
-
-
-
-
-
-
+        return dto;
+    }
 
 }
