@@ -5,6 +5,7 @@ import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.user.ForgetPasswordRequest;
 import com.cossinest.homes.payload.request.user.ResetCodeRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
+
 import com.cossinest.homes.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

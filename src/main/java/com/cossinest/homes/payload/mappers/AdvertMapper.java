@@ -28,7 +28,7 @@ public class AdvertMapper {
                 .id(advert.getId())
                 .price(advert.getPrice())
                 .slug(advert.getSlug())
-                .desc(advert.getDescription())
+                .description(advert.getDescription())
                 .title(advert.getTitle())
                 .status(getStatusName(advert.getStatus()))
                 .createAt(advert.getCreatedAt())
@@ -62,7 +62,7 @@ public class AdvertMapper {
     public Advert mapAdvertRequestToAdvert(AbstractAdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType, District district){
         return Advert.builder()
                 .title(advertRequest.getTitle())
-                .description(advertRequest.getDesc())
+                .description(advertRequest.getDescription())
                 //.builtIn(false) //default olarak advert entity de setlendi olacak mı kontrol et
                 //.status(Status.PENDING.getValue())//default olarak advert entity de setlendi olacak mı kontrol et
                 //.viewCount(advertRequest.getViewCount())//default olarak advert entity de setlendi olacak mı kontrol et
@@ -89,7 +89,7 @@ public class AdvertMapper {
                 .slug(advertRequest.getSlug())
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
-                .description(advertRequest.getDesc())
+                .description(advertRequest.getDescription())
                 .district(district)
                 .status(Status.PENDING.getValue())//update de status u tekrardan pending e çek
                 .category(category)
@@ -107,7 +107,7 @@ public class AdvertMapper {
                 .slug(advertRequest.getSlug())
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
-                .description(advertRequest.getDesc())
+                .description(advertRequest.getDescription())
                 .builtIn(advertRequest.getBuiltIn())
                 .district(district)
                 .status(advertRequest.getStatus())
@@ -135,7 +135,7 @@ public class AdvertMapper {
                 .advertType(advertType)
                 .price(createRequest.getPrice())
                 .title(createRequest.getTitle())
-                .description(createRequest.getDesc())
+                .description(createRequest.getDescription())
                 .status(Status.PENDING.getValue())
                 .district(district)
                 .category(category)

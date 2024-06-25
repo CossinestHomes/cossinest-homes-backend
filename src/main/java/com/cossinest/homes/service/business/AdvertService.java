@@ -18,6 +18,7 @@ import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
 import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
+
 import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
@@ -30,7 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

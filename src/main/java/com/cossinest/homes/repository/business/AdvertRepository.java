@@ -29,13 +29,24 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, Integer status, String location, String query, Pageable pageable);
 */
 
+
+    /*@Query("SELECT a FROM Advert a WHERE " +
+            "(?1 IS NULL OR a.categoryId = ?1) AND " +
+            "(?2 IS NULL OR a.advertTypeId = ?2) AND " +
+            "(?3 IS NULL OR a.price >= ?3) AND " +
+            "(?4 IS NULL OR a.price <= ?4) AND " +
+            "(?5 IS NULL OR a.status = ?5) AND " +
+            "(?6 IS NULL OR a.location LIKE %?6%) AND " +
+            "(?7 IS NULL OR a.query LIKE %?7%)")
+    Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, Integer status, String location, String query, Pageable pageable);
+*/
     @Query("SELECT a FROM Advert a WHERE " +
             "a.category.id = :categoryId AND " +
             "a.advertType.id = :advertTypeId AND " +
             "(:priceStart IS NULL OR :priceEnd IS NULL OR a.price BETWEEN :priceStart AND :priceEnd) AND " +
             "(:status IS NULL OR a.status = :status) AND " +
             "(:location IS NULL OR a.location = :location) AND " +
-            "(:query IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(a.desc) LIKE LOWER(CONCAT('%', :query, '%')))")
+            "(:query IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(a.description) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Advert> findByAdvertByQuery(@Param("categoryId") Long categoryId,
                                      @Param("advertTypeId") Long advertTypeId,
                                      @Param("priceStart") Double priceStart,
@@ -44,6 +55,8 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                                      @Param("location") String location,
                                      @Param("query") String query,
                                      Pageable pageable);
+
+
 
 
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")
