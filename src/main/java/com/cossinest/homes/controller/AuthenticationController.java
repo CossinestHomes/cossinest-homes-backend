@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final UserService userService;
+    /*private final UserService userService;
 
     @PostMapping("/forgot-password")
     public ResponseMessage<String> forgotPassword(@Valid @RequestBody ForgetPasswordRequest request){
@@ -32,12 +32,12 @@ public class AuthenticationController {
                 .status(HttpStatus.OK)
                 .object( userService.forgotPassword(request))
                 .build();
-    }
+    }*/
 
 
-    @PostMapping("/reset-password")
+   /* @PostMapping("/reset-password")
     ResponseEntity<String>resetPassword(@Valid @RequestBody ResetCodeRequest request){
         return userService.resetPassword(request);
-    }
+    }*/
 
 }

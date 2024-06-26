@@ -101,6 +101,6 @@ public class AdvertTypesService {
 
     @Transactional
     public void resetAdvertTypesTables() {
-        advertTypesRepository.deleteByBuiltIn(false);
+   //     advertTypesRepository.deleteByBuiltIn(false);
     }
 }

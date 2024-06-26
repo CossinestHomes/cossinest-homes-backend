@@ -21,6 +21,7 @@ import java.util.Map;
 public class ResetDataBase {
 
 
+/*
 private final ResetDbService resetDbService;
 
     @PostMapping("/db-reset")
@@ -34,6 +35,7 @@ private final ResetDbService resetDbService;
                 .message(SuccesMessages.DB_HAS_SUCCESSFULLY_RESET)
                 .build();
     }
+*/
 
 
 }

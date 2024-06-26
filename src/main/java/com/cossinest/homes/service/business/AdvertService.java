@@ -370,7 +370,8 @@ public class AdvertService {
 
     @Transactional
     public void resetAdvertTables() {
-        advertRepository.deleteByBuiltIn(false);
+      //  advertRepository.deleteByBuiltIn(false);
+
     }
 
 }
