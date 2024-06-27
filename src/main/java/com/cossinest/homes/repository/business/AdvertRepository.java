@@ -77,10 +77,10 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     @Query("SELECT a FROM Advert a WHERE SIZE(a.tourRequestList) > :amount ORDER BY SIZE(a.tourRequestList) DESC")
     Page<Advert> getMostPopulerAdverts(@Param("amount") int amount, Pageable pageable);
 
-    @Modifying
+   /* @Modifying
     @Transactional
-    @Query("DELETE FROM Advert a WHERE a.builtIn = :builtIn")
-    void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
+    @Query("DELETE FROM Advert a WHERE a.builtIn = :builtIn")*/
+  //  void deleteByBuiltIn(/*@Param("builtIn")*/ boolean builtIn);
 
 
 

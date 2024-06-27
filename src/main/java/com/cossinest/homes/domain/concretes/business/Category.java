@@ -54,7 +54,8 @@ public class Category {
 
 
     @Column(name = "built_in")
-    private Boolean builtIn = false;
+    private Boolean builtIn = Boolean.FALSE;
+
 
 
     @NotNull(message = "seq can not be null")

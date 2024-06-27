@@ -15,5 +15,5 @@ public interface CategoryPropertyKeyRepository extends JpaRepository<CategoryPro
     boolean existsByName(String name);
 
 
-    void deleteByBuiltIn(boolean b);
+   // void deleteByBuiltIn(boolean b);
 }

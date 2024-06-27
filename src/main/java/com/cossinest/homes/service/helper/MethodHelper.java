@@ -48,8 +48,7 @@ public class MethodHelper {
 
     private final UserRoleService userRoleService;
 
-    private final AdvertService advertService;
-    private final TourRequestService tourRequestService;
+
 
 
     public User findByUserByEmail(String email) {

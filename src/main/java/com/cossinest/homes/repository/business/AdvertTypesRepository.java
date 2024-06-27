@@ -10,5 +10,5 @@ public interface AdvertTypesRepository extends JpaRepository<AdvertType , Long> 
     boolean findByTitle(String title);
 
 
-    void deleteByBuiltIn(boolean b);
+  //  void deleteByBuiltIn(boolean b);
 }
