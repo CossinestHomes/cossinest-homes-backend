@@ -30,7 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -60,11 +60,14 @@ public class AdvertService {
     private final CategoryPropertyValueService categoryPropertyValueService;
 
     private final AdvertTypesService advertTypesService;
+
     private final DateTimeValidator dateTimeValidator;
+
     private final LogService logService;
 
     private final DistrictService districtService;
-    private final ImagesService imagesService;
+
+    //private final ImagesService imagesService;
 
 
 
@@ -72,29 +75,27 @@ public class AdvertService {
         return advertRepository.findAll();
     }
 
-    public Advert getAdvertForFaavorites(Long id){
+    public Advert getAdvertForFavorites(Long id){
         return advertRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
     }
 
 
-    public Page<AdvertResponse> getAllAdvertsByPage(String query,Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPage(String query, Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, String location, Integer status, int page, int size, String sort, String type) {
+        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
-
-
-        if(methodHelper.priceControl(priceStart,priceEnd)){
+        if (methodHelper.priceControl(priceStart, priceEnd)) {
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
 
-        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,status,location,query,pageable).map(advertMapper::mapAdvertToAdvertResponse);
-
+        return advertRepository.findByAdvertByQuery(categoryId, advertTypeId, priceStart, priceEnd, status, location, query, pageable)
+                .map(advertMapper::mapAdvertToAdvertResponse);
     }
 
     //category
     public List<CategoryForAdvertResponse> getCategoryWithAmountForAdvert(){
 
        List<Category> categoryList = categoryService.getAllCategory();
-//TODO direk return yazilabilir
+
        List<CategoryForAdvertResponse> categoryForAdvertList= categoryList.stream().map(advertMapper::mapperCategoryToCategoryForAdvertResponse).toList();
 
        return categoryForAdvertList;
@@ -325,8 +326,8 @@ public class AdvertService {
 
         Advert savedAdvert =advertRepository.save(advert);
 
-        imagesService.uploadImages(savedAdvert.getId(),createRequest.getFiles());
-
+        List<Images> newImageList= methodHelper.getImagesForAdvert(createRequest.getFiles(),savedAdvert.getImagesList());
+        savedAdvert.setImagesList(newImageList);
         savedAdvert.generateSlug();
 
         Advert updatedAdvert =advertRepository.save(savedAdvert);

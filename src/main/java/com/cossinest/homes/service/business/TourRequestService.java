@@ -60,7 +60,7 @@ public class TourRequestService {
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(userGuest,tourRequestRequest);
 
         //UserOwner için çakışma kontrolü //TODO burayi anlayamadim. id zaten var ve advert id neden ownerId oldu
-        Advert advert = advertService.getAdvertForFaavorites(tourRequestRequest.getAdvertId());
+        Advert advert = advertService.getAdvertForFavorites(tourRequestRequest.getAdvertId());
         Long ownerId = advert.getId();
         User ownerUser = methodHelper.findUserWithId(ownerId);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForOwner(ownerUser,tourRequestRequest);
@@ -182,7 +182,7 @@ public class TourRequestService {
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(guestUser,tourRequestRequest);
 
         //request to entity
-        Advert advert = advertService.getAdvertForFaavorites(tourRequestRequest.getAdvertId());
+        Advert advert = advertService.getAdvertForFavorites(tourRequestRequest.getAdvertId());
         TourRequest updatedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest,advert);
         updatedTourRequest.setId(id);
         updatedTourRequest.setStatus(StatusType.PENDING);
