@@ -82,12 +82,12 @@ public class FavoritesService {
 
         }
 
-        // Favori ilanları AdvertResponse nesnelerine dönüştür ve döndür
+        // Favori ilanları AdvertResponse nesnelerine dönüştür ve dönder
         return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
 
     }
 
-//BAKILACAK!!!! - DELETE KISMI(104)
+//BAKILACAK!!!! - DELETE KISMI 104
 
     public AdvertResponse addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest, Long advertId)
     {
@@ -102,8 +102,8 @@ public class FavoritesService {
             favoritesRepository.delete(favorite);
             user.setFavoritesList(user.getFavoritesList().stream().filter(t->!t.getId().equals(favorite.getId())).toList());
 
-            //TODO direkt sql ile silinmemeli
-            //  favoritesRepository.deleteFavoriteIfExists(user.getId(), advertId);
+            //TODO direkt sql ile silinmemeli ?
+            //  favoritesRepository.deleteFavoriteIfExists(user.getId(), advertId)
 
         } else {
             Favorites favorites = new Favorites();
