@@ -14,6 +14,7 @@ import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.repository.business.FavoritesRepository;
 import com.cossinest.homes.repository.user.UserRepository;
+
 import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.business.ImagesService;
@@ -47,10 +48,9 @@ public class MethodHelper {
     private final UserRepository userRepository;
 
     private final UserRoleService userRoleService;
-
     //private final AdvertService advertService;
-
     //private final TourRequestService tourRequestService;
+
 
 
     public User findByUserByEmail(String email) {

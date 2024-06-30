@@ -5,6 +5,7 @@ import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.user.ForgetPasswordRequest;
 import com.cossinest.homes.payload.request.user.ResetCodeRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
+
 import com.cossinest.homes.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.Builder;
@@ -17,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final UserService userService;
+    /*private final UserService userService;
 
     @PostMapping("/forgot-password")
     public ResponseMessage<String> forgotPassword(@Valid @RequestBody ForgetPasswordRequest request){
@@ -31,12 +32,12 @@ public class AuthenticationController {
                 .status(HttpStatus.OK)
                 .object( userService.forgotPassword(request))
                 .build();
-    }
+    }*/
 
 
-    @PostMapping("/reset-password")
+   /* @PostMapping("/reset-password")
     ResponseEntity<String>resetPassword(@Valid @RequestBody ResetCodeRequest request){
         return userService.resetPassword(request);
-    }
+    }*/
 
 }

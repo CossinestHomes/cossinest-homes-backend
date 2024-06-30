@@ -6,7 +6,10 @@ import com.cossinest.homes.exception.NotLoadingCompleted;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.repository.business.ImagesRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +22,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ImagesService {
 
-    private final ImagesRepository imagesRepository;
-    private final AdvertService advertService;
+
+    private ImagesRepository imagesRepository;
+
+    private  AdvertService advertService;
+
+
+     @Autowired
+    public ImagesService(AdvertService advertService,ImagesRepository imagesRepository) {
+        this.advertService = advertService;
+        this.imagesRepository=imagesRepository;
+    }
+
+
     private final String imageDirectory="/path/to/image/directory";
 
     public Optional<Images> getImageById(Long id) {

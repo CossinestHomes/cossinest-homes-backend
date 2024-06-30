@@ -1,9 +1,5 @@
 package com.cossinest.homes.payload.response.business;
 
-import com.cossinest.homes.domain.concretes.business.Images;
-import com.cossinest.homes.domain.concretes.user.User;
-import com.cossinest.homes.domain.enums.Status;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +19,7 @@ public class AdvertResponse {
 
     private String title;
 
-    private String desc;
+    private String description;
 
     private String slug;
 

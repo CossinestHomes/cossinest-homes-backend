@@ -14,8 +14,10 @@ public interface AdvertTypesRepository extends JpaRepository<AdvertType , Long> 
     boolean findByTitle(String title);
 
 
+
     @Modifying
     @Transactional
     @Query("DELETE FROM AdvertType a WHERE a.builtIn = :builtIn")
     void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
+
 }

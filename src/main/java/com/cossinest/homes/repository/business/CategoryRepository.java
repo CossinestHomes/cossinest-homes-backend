@@ -1,9 +1,7 @@
 package com.cossinest.homes.repository.business;
 
 
-import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -37,8 +35,10 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     Optional<List<Category>> findByTitle(String title);
 
 
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Category c WHERE c.builtIn = :builtIn")
     void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
+
 }

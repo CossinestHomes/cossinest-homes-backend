@@ -16,8 +16,10 @@ public interface FavoritesRepository extends JpaRepository<Favorites,Long> {
     @Query("SELECT f FROM Favorites f WHERE f.user.id = :userId")
     List<Favorites> findFavorites(@Param(value = "userId") Long userId);
 
+    @Modifying
     @Query("DELETE FROM Favorites f WHERE f.user.id = :user_id AND f.advert.id = :advert_id")
     void deleteFavoriteIfExists(@Param("user_id") Long userId, @Param("advert_id") Long advertId);
+
 
     @Transactional
     @Modifying
@@ -31,8 +33,10 @@ public interface FavoritesRepository extends JpaRepository<Favorites,Long> {
     @Query("SELECT f FROM Favorites f WHERE f.user.id = :user_id")
     List<Favorites> findFavoritesByUserId(@Param("user_id") Long userId);
 
+    @Modifying
     @Query("DELETE FROM Favorites f WHERE f.user.id = :user_id")
     void deleteAllByUserId(@Param("user_id") Long userId);
+
 
     @Query("SELECT f FROM Favorites f WHERE f.user.id=?1 AND f.advert.id=?2")
     Favorites getFavoriteByAdvertAndUser(Long id, Long advertId);

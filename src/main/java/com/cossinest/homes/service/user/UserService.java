@@ -17,6 +17,7 @@ import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.LogService;
+
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
@@ -79,7 +80,7 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
 
-     /*   String password = passwordEncoder.encode(request.getPassword());
+      /*  String password = passwordEncoder.encode(request.getPassword());
         if (!(Objects.equals(password, user.getPasswordHash()))) {
             throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
         }
@@ -216,7 +217,7 @@ public class UserService {
     }
 
 
-    public String forgotPassword(ForgetPasswordRequest request) {
+   /* public String forgotPassword(ForgetPasswordRequest request) {
 
         String resetCode;
         try {
@@ -232,9 +233,9 @@ public class UserService {
 
         return resetCode;
 
-    }
+    }*/
 
-    public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
+  /*public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
 
         User user =userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new BadRequestException(ErrorMessages.NOT_FOUND_USER_EMAIL));
 
@@ -245,7 +246,7 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY, HttpStatus.OK);
 
-    }
+    }*/
 
     public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -267,9 +268,9 @@ public class UserService {
 
     }
 
-    @Transactional
+/*    @Transactional
     public void resetUserTables() {
 
         userRepository.deleteByBuiltIn(false);
-    }
+    }*/
 }

@@ -36,7 +36,7 @@ public class AdvertController {
 
 
     public Page<AdvertResponse> getAllAdvertsByPage(
-            @RequestParam(value = "q",required = false, defaultValue = "") String query,
+            @RequestParam(value = "q",required = false) String query,
             @RequestParam(value = "category_id") Long categoryId,
             @RequestParam(value = "advert_type_id") Long advertTypeId,
             @RequestParam(value = "price_start",required = false) Double priceStart,

@@ -18,6 +18,7 @@ import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
 import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
+
 import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
@@ -370,7 +371,8 @@ public class AdvertService {
 
     @Transactional
     public void resetAdvertTables() {
-        advertRepository.deleteByBuiltIn(false);
+      //  advertRepository.deleteByBuiltIn(false);
+
     }
 
 }
