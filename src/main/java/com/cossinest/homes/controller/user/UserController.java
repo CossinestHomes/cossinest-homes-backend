@@ -50,7 +50,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("auth")
+    @DeleteMapping("auth/customer")
     //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<String> deleteCustomer(HttpServletRequest auth, CustomerRequest request) {
 
@@ -109,7 +109,7 @@ public class UserController {
 
     }
 
-    @DeleteMapping("auth")
+    @DeleteMapping("auth/user")
     //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id, HttpServletRequest auth) {
 

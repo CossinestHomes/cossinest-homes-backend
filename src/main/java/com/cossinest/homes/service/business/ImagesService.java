@@ -47,7 +47,7 @@ public class ImagesService {
 
     public List<Long> uploadImages(Long advertId, MultipartFile[] files){
 
-       Advert advert =advertService.getAdvertForFaavorites(advertId);
+       Advert advert =advertService.getAdvertForFavorites(advertId);
 
         List<Long> imageIds = new ArrayList<>();
         boolean isFirstImage = true;

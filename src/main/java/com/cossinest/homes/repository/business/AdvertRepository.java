@@ -2,7 +2,6 @@ package com.cossinest.homes.repository.business;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.enums.Status;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -55,8 +53,6 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                                      @Param("location") String location,
                                      @Param("query") String query,
                                      Pageable pageable);
-
-
 
 
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")

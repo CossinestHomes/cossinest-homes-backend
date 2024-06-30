@@ -1,3 +1,32 @@
+<<<<<<< HEAD
+"2024-06-28 21:02:06,541 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Starting HomesApplication using Java 21.0.1 with PID 13984 (C:\Users\Asus\Desktop\cossinest-homes-backend-main\target\classes started by Asus in C:\Users\Asus\Desktop\cossinest-homes-backend-main)
+""2024-06-28 21:02:06,557 INFO  [restartedMain] com.cossinest.homes.HomesApplication:No active profile set, falling back to 1 default profile: "default"
+""2024-06-28 21:02:06,644 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+""2024-06-28 21:02:06,645 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+""2024-06-28 21:02:09,881 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+""2024-06-28 21:02:10,077 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 178 ms. Found 15 JPA repository interfaces.
+""2024-06-28 21:02:11,614 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
+""2024-06-28 21:02:11,648 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
+""2024-06-28 21:02:11,649 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.24]
+""2024-06-28 21:02:11,779 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
+""2024-06-28 21:02:11,780 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 5133 ms
+""2024-06-28 21:02:12,425 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
+""2024-06-28 21:02:12,547 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.8.Final
+""2024-06-28 21:02:12,607 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
+""2024-06-28 21:02:13,061 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
+""2024-06-28 21:02:13,112 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
+""2024-06-28 21:02:13,507 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1a153b81
+""2024-06-28 21:02:13,512 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
+""2024-06-28 21:02:13,676 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+""2024-06-28 21:02:18,293 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+""2024-06-28 21:02:19,172 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
+""2024-06-28 21:02:20,276 INFO  [restartedMain] org.springframework.data.jpa.repository.query.QueryEnhancerFactory:Hibernate is in classpath; If applicable, HQL parser will be used.
+""2024-06-28 21:02:22,890 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+""2024-06-28 21:02:24,005 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
+""2024-06-28 21:02:24,024 INFO  [restartedMain] org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver:Exposing 1 endpoint(s) beneath base path '/actuator'
+""2024-06-28 21:02:24,142 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat started on port 8080 (http) with context path ''
+""2024-06-28 21:02:24,162 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Started HomesApplication in 18.266 seconds (process running for 22.449)
+=======
 "2024-06-23 20:42:08,989 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Starting HomesApplication using Java 17.0.8 with PID 3648 (C:\Users\mavic\Desktop\bitirmeProje\target\classes started by mavic in C:\Users\mavic\Desktop\bitirmeProje)
 ""2024-06-23 20:42:08,999 INFO  [restartedMain] com.cossinest.homes.HomesApplication:No active profile set, falling back to 1 default profile: "default"
 ""2024-06-23 20:42:09,075 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
@@ -13755,4 +13784,5 @@ Action:
 
 Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
 
+>>>>>>> main
 "
