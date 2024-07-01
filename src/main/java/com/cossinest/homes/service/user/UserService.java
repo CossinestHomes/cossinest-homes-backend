@@ -17,6 +17,7 @@ import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.business.LogService;
+
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
@@ -79,7 +80,7 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
 
-     /*   String password = passwordEncoder.encode(request.getPassword());
+      /*  String password = passwordEncoder.encode(request.getPassword());
         if (!(Objects.equals(password, user.getPasswordHash()))) {
             throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
         }
@@ -216,26 +217,27 @@ public class UserService {
     }
 
 
-    public String forgotPassword(ForgetPasswordRequest request) {
+   /* public String forgotPassword(ForgetPasswordRequest request) {
 
+        String resetCode;
         try {
             User user = methodHelper.findByUserByEmail(request.getEmail());
-            String resetCode = UUID.randomUUID().toString();
+             resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
-            emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
+         //   emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
 
         } catch (BadRequestException e) {
             return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
         }
 
-        return SuccesMessages.RESET_PASSWORD_CODE_HAS_BEEN_SENT_TO_YOUR_EMAIL_ADRESS;
+        return resetCode;
 
-    }
+    }*/
 
-    public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
-        User user = userRepository.resetPasswordWithCode(request.getResetPasswordCode()).orElseThrow(
-                () -> new BadRequestException(ErrorMessages.RESET_PASSWORD_CODE_DID_NOT_MATCH));
+  /*public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
+
+        User user =userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new BadRequestException(ErrorMessages.NOT_FOUND_USER_EMAIL));
 
 
         methodHelper.UpdatePasswordControl(request.getPassword(), request.getReWritePassword());
@@ -244,7 +246,7 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY, HttpStatus.OK);
 
-    }
+    }*/
 
     public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -260,15 +262,15 @@ public class UserService {
 
     public List<User> getUsersByRoleType(RoleType roleType) {
 
-       UserRole userRole =userRoleService.getUserRole(roleType);
+      // UserRole userRole =userRoleService.getUserRole(roleType);
 
-        return userRepository.findByUserRole(userRole);
+       return userRepository.findByUserRole_RoleType(roleType);
 
     }
 
-    @Transactional
+/*    @Transactional
     public void resetUserTables() {
 
         userRepository.deleteByBuiltIn(false);
-    }
+    }*/
 }

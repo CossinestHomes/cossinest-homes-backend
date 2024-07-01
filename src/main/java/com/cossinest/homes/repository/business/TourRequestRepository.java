@@ -50,7 +50,10 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     TourRequest findByIdByCustomer(Long userId, Long tourRequestId);
 
 
-    @Query("SELECT t FROM TourRequest t WHERE (:date1 IS NULL OR :date2 IS NULL OR t.createAt BETWEEN(:date1 AND :date2) ) AND" +
-            "t.status=:statusType")
-    List<TourRequest> getTourRequest(@Param("date1") LocalDateTime date1, @Param("date2") LocalDateTime date2,@Param("statusType") StatusType statusType);
+    @Query("SELECT t FROM TourRequest t WHERE " +
+            "(:date1 IS NULL OR :date2 IS NULL OR t.createAt BETWEEN :date1 AND :date2) AND " +
+            "t.status = :statusType")
+    List<TourRequest> getTourRequest(@Param("date1") LocalDateTime date1,
+                                     @Param("date2") LocalDateTime date2,
+                                     @Param("statusType") StatusType statusType);
 }

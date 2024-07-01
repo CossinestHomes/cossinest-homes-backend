@@ -8,6 +8,7 @@ import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
+import com.cossinest.homes.payload.response.business.CategoryPropKeyssResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.service.business.CategoryPropertyKeyService;
 import com.cossinest.homes.service.business.CategoryService;
@@ -46,7 +47,7 @@ public class CategoryController {
 
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
-    @GetMapping
+    @GetMapping("/active-categories")
     public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
             @RequestParam("q") String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -131,9 +132,9 @@ public class CategoryController {
 
     @GetMapping("/{id}/properties")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<List<CategoryPropertyKey>> getCategoryPropertyKeys(@PathVariable("id") Long id){
+    public ResponseEntity<CategoryPropKeyssResponseDTO> getCategoryPropertyKeys(@PathVariable("id") Long id){
 
-        List<CategoryPropertyKey> categoryProps = categoryService.findCategoryPropertyKeys(id);
+        CategoryPropKeyssResponseDTO categoryProps = categoryService.findCategoryPropertyKeys(id);
         return ResponseEntity.ok(categoryProps);
     }
 

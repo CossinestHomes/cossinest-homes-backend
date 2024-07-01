@@ -14,17 +14,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static java.util.stream.IntStream.builder;
-
 
 @Data
 @Component
+@RequiredArgsConstructor
 public class CategoryMapper {
-
-
-
-
-    private MethodHelper methodHelper;
 
 
 
@@ -72,25 +66,15 @@ public class CategoryMapper {
                 .build();
     }
 
-//    // CategoryPropertyKeyssENTITY ====> DTO:
-//
-//    public List<CategoryPropKeyssResponseDTO> mapCategPropKeysssToCategPropKeysssResponseDTO(Category category){
-//
-//        return CategoryPropKeyssResponseDTO.builder()
-//                .categoryPropertyKeys(category.getCategoryPropertyKeys())
-//                .build();
-//    }
 
+   // CategoryPropertyKeyssENTITY ====> DTO:
 
+    public CategoryPropKeyssResponseDTO mapCategPropKeyssToCategPropKeyssResponseDTO(List<CategoryPropertyKey> categoryProperKeys){
 
+        CategoryPropKeyssResponseDTO dto = new CategoryPropKeyssResponseDTO();
+        dto.setCategoryPropertyKeys(categoryProperKeys);
 
-
-
-
-
-
-
-
-
+        return dto;
+    }
 
 }

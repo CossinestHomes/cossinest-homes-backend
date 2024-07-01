@@ -33,7 +33,6 @@ public class FavoritesService {
     private final FavoritesRepository favoritesRepository;
     private final UserRepository userRepository;
     private final MethodHelper methodHelper;
-    private final AdvertRequest advertRequest;
     private final AdvertMapper advertMapper;
 
 
@@ -92,7 +91,7 @@ public class FavoritesService {
     public AdvertResponse addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest, Long advertId)
     {
         User user = methodHelper.getUserByHttpRequest(httpServletRequest);
-        Advert advert = advertService.getAdvertForFaavorites(advertId);
+        Advert advert = advertService.getAdvertForFavorites(advertId);
 
         // Favori ilanın var olup olmadığını kontrol et
         boolean isFavorite = favoritesRepository.existsByUserIdAndAdvertId(user.getId(),advertId);

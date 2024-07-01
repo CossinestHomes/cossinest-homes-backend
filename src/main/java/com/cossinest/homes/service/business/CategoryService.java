@@ -5,28 +5,23 @@ import com.cossinest.homes.domain.concretes.business.*;
 
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.exception.BadRequestException;
-import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.payload.mappers.CategoryMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
-import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
-import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
+import com.cossinest.homes.payload.response.business.CategoryPropKeyssResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
 import com.cossinest.homes.repository.business.CategoryRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -161,14 +156,16 @@ public class CategoryService {
     }
 
 
-    public List<CategoryPropertyKey> findCategoryPropertyKeys(Long id) {
+    public CategoryPropKeyssResponseDTO findCategoryPropertyKeys(Long id) {
 
         Category category = findCategoryById(id);
 
         List<CategoryPropertyKey> categoryProperKeys = category.getCategoryPropertyKeys();
 
-        return categoryProperKeys;
+        return categoryMapper.mapCategPropKeyssToCategPropKeyssResponseDTO(categoryProperKeys);
     }
+
+
 
 
     public CategoryPropKeyResponseDTO createPropertyKey(Long id, String... keys) {
@@ -207,9 +204,9 @@ public class CategoryService {
       );
     }
 
-    @Transactional
+  /*  @Transactional
     public void resetCategoryTables() {
         categoryRepository.deleteByBuiltIn(false);
-    }
+    }*/
 }
 

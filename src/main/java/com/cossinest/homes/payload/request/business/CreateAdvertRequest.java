@@ -1,6 +1,5 @@
 package com.cossinest.homes.payload.request.business;
 
-import com.cossinest.homes.domain.concretes.business.Images;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ public class CreateAdvertRequest {
 @Size(max = 150)
 private String title;
 
-private String desc;
+private String description;
 
 private Long cityId;
 
