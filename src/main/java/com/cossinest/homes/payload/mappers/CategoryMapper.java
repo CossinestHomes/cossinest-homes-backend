@@ -12,6 +12,7 @@ import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ public class CategoryMapper {
     }
 
 
-    // DTO ====> CategoryENTITY :
+    // DTO ====> CategoryENTITY (POJO) :
 
     public Category mapCategoryRequestDTOToCategory(CategoryRequestDTO categoryRequestDTO){
 
@@ -60,6 +61,8 @@ public class CategoryMapper {
                 .seq(categoryRequestDTO.getSeq())
                 .slug(categoryRequestDTO.getSlug())
                 .active(categoryRequestDTO.isActive())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 

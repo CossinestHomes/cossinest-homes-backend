@@ -60,4 +60,8 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                        Pageable pageable);
 
     * */
+
+    @Query("SELECT a FROM Advert a WHERE " +
+            "a.category.id = :categoryId ")
+    Advert findAdvertByCategory(Long categoryId);
 }

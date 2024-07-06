@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
+@Builder(toBuilder = true)  //Lombok'taki @Getter, @Setter, @ToString @HashCode vb anotas. yazmak yerine bu anotasyon'u buraya koyuyoruz.
 @Entity
 @Table(name="categories")
 public class Category {

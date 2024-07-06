@@ -5,13 +5,16 @@ import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.CategoryMapper;
+import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
 import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
 import com.cossinest.homes.repository.business.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -32,7 +35,7 @@ public class CategoryPropertyKeyService {
     }
 
 
-    public CategoryPropKeyResponseDTO updatePropertyKey(Long id, CategoryRequestDTO categoryRequestDTO) {
+    public ResponseMessage<CategoryPropKeyResponseDTO> updatePropertyKey(Long id, CategoryRequestDTO categoryRequestDTO) {
 
         boolean existName = categoryPropertyKeyRepository.existsByName(categoryRequestDTO.getName());
 
@@ -51,10 +54,14 @@ public class CategoryPropertyKeyService {
         CategoryPropertyKey updatedPropertyKey = categoryPropertyKeyRepository.save(categoryPropertyKey);
 
 
-        return categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(updatedPropertyKey);
+        return ResponseMessage.<CategoryPropKeyResponseDTO> builder()
+                .object(categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(updatedPropertyKey))
+                .message(SuccesMessages.CATEGORY_PROPERTY_KEY_UPDATED_SUCCESS)
+                .status(HttpStatus.OK)
+                .build();
     }
 
-    public  CategoryPropKeyResponseDTO deletePropertyKey(Long id) {
+    public  ResponseMessage<CategoryPropKeyResponseDTO> deletePropertyKey(Long id) {
 
         CategoryPropertyKey categoryPropertyKey = findPropertyKeyById(id);
 
@@ -64,7 +71,11 @@ public class CategoryPropertyKeyService {
 
         categoryPropertyKeyRepository.delete(categoryPropertyKey);
 
-        return categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(categoryPropertyKey);
+        return ResponseMessage.<CategoryPropKeyResponseDTO> builder()
+                .object(categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(categoryPropertyKey))
+                .message(SuccesMessages.CATEGORY_PROPERTY_KEY_DELETED_SUCCESS)
+                .status(HttpStatus.OK)
+                .build();
     }
 
 
