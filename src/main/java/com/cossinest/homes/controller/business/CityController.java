@@ -27,7 +27,7 @@ public class CityController {
     @GetMapping("/getAll") //http://localhost:8080/cities/getAll
     public ResponseMessage<List<City>> getAllCity(){
         List<City> cityList =cityService.getAllCity();
-        return ResponseMessage.<cityList>builder()
+        return ResponseMessage.<List<City>>builder()
                 .status(HttpStatus.OK)
                 .object(cityList)
                 .build();

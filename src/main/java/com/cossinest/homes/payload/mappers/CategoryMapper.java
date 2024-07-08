@@ -12,23 +12,17 @@ import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.stream.IntStream.builder;
+import java.util.List;
 
 
 @Data
 @Component
 @RequiredArgsConstructor
 public class CategoryMapper {
-
-
-
-
-    private final MethodHelper methodHelper;
 
 
 

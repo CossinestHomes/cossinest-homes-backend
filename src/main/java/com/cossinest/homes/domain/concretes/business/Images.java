@@ -29,7 +29,7 @@ public class Images {
 
     @ManyToOne
     @JoinColumn(name = "advert_id", nullable = false)
-    private Long advertId;
+    private Advert advert;
 
 
 

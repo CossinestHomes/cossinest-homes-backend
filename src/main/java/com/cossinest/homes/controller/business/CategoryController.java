@@ -47,8 +47,10 @@ public class CategoryController {
 
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
-    @GetMapping
+
+    @GetMapping@GetMapping("/active-categories")
     public Page<CategoryResponseDTO> getActiveCategoriesWithPage(
+
             @RequestParam("q") String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size" , defaultValue = "20") int size,

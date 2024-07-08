@@ -1,11 +1,8 @@
 package com.cossinest.homes.controller.business;
 
-import com.cossinest.homes.domain.concretes.business.Advert;
-import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.service.business.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -42,9 +39,9 @@ public class ReportController {
 
     @GetMapping("/most-popular-properties")
     // @PreAthorized()
-    public ResponseEntity<byte[]> getPopulerAdverts(@RequestParam("amount") int amount, HttpServletRequest request) {
+    public ResponseEntity<byte[]> getReportOfPopulerAdverts(@RequestParam(value = "amount") int amount, HttpServletRequest request) {
 
-        return logService.getPopulerAdverts(amount, request);
+        return logService.getPopulerAdvertsReport(amount, request);
 
     }
 

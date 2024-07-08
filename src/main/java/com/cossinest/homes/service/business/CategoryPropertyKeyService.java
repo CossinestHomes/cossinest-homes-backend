@@ -81,6 +81,6 @@ public class CategoryPropertyKeyService {
 
     @Transactional
     public void resetCategoryPropertyKeyTables() {
-        categoryPropertyKeyRepository.deleteByBuiltIn(false);
+     //   categoryPropertyKeyRepository.deleteByBuiltIn(false);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class ResetDbService {
 
 
-    private final UserService userService;
+    /*private final UserService userService;
     private final TourRequestService tourRequestService;
     private final AdvertService advertService;
     private final FavoritesService favoritesService;
@@ -31,13 +31,13 @@ public class ResetDbService {
     private final UserRoleService userRoleService;
     private final ImagesService imagesService;
     private final LogService logService;
-    private final MethodHelper methodHelper;
+    private final MethodHelper methodHelper;*/
 
-    public void resetDb(HttpServletRequest request) {
+   /* public void resetDb(HttpServletRequest request) {
        User user =methodHelper.getUserByHttpRequest(request);
        methodHelper.checkRoles(user,RoleType.ADMIN);
 
-        userService.resetUserTables();
+       *//* userService.resetUserTables();
         tourRequestService.resetTourRequestTables();
         advertService.resetAdvertTables();
         favoritesService.resetFavoritesTables();
@@ -46,14 +46,14 @@ public class ResetDbService {
         cityService.resetCityTables();
         countryService.resetCountryTables();
         districtService.resetDistrictTables();
-       // reportService.resetReportTables(); //TODO buna gerek var mi
+       // reportService.resetReportTables();
         logService.resetLogTables();
         contactMessageService.resetContactMessageTables();
         categoryPropertyKeyService.resetCategoryPropertyKeyTables();
         categoryPropertyValueService.resetCategoryPropertyValueTables();
         userRoleService.resetUserRoleTables();
-        imagesService.resetImageTables();
+        imagesService.resetImageTables();*//*
 
 
-    }
+    }*/
 }

@@ -10,22 +10,19 @@ import com.cossinest.homes.exception.NotLoadingCompleted;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
-import com.cossinest.homes.payload.request.business.AdvertRequest;
-import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
-import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
-import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.repository.business.FavoritesRepository;
 import com.cossinest.homes.repository.user.UserRepository;
+
 import com.cossinest.homes.service.business.AdvertService;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
+import com.cossinest.homes.service.business.ImagesService;
 import com.cossinest.homes.service.business.TourRequestService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -35,12 +32,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.relation.Role;
-import javax.swing.text.html.parser.Entity;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -54,9 +48,9 @@ public class MethodHelper {
     private final UserRepository userRepository;
 
     private final UserRoleService userRoleService;
+    //private final AdvertService advertService;
+    //private final TourRequestService tourRequestService;
 
-    private final AdvertService advertService;
-    private final TourRequestService tourRequestService;
 
 
     public User findByUserByEmail(String email) {
@@ -71,7 +65,7 @@ public class MethodHelper {
 
     public boolean isBuiltIn(User user) {
 
-        return user.getBuilt_in();
+        return user.getBuiltIn();
     }
 
 
@@ -83,10 +77,10 @@ public class MethodHelper {
 
     public void checkDuplicate(String email, String phone) {
 
-        if (userRepository.existsByEmail()) {
+        if (userRepository.existsByEmail(email)) {
             throw new ConflictException(String.format(ErrorMessages.THIS_EMAIL_IS_ALREADY_TAKEN, email));
         }
-        if (userRepository.existsByPhone()) {
+        if (userRepository.existsByPhone(phone)) {
             throw new ConflictException(String.format(ErrorMessages.THIS_PHONE_NUMBER_IS_ALREADY_TAKEN, phone));
 
         }
@@ -414,6 +408,8 @@ public class MethodHelper {
         }
 
     }
+
+
 }
 
 
