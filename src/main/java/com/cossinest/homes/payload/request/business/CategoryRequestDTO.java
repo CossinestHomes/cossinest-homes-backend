@@ -10,6 +10,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
@@ -17,12 +18,11 @@ public class CategoryRequestDTO {
 
 
 
-    private Long id;
 
     @NotNull(message = "title can not be null")
     @NotBlank(message = "title can not be white space")
     @Size(min=2, max=150, message = "title '${validatedValue}' must be between {min} and {max} long")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Title must consist of the characters .")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+", message="Title must consist of the characters .")
     private String title;
 
     @NotNull(message = "name can not be null")

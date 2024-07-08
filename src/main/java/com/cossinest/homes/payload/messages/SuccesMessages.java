@@ -43,6 +43,18 @@ public class SuccesMessages {
     public static final String RESET_CODE_HAS_BEEN_SENT ="Reset code has been sent" ;
 
 
+            // CATEGORIES :
+
+    public static final String RETURNED_A_CATEGORY = "Category returned successfully";
+    public static final String CATEGORY_CREATED_SUCCESS= "Category created successfully";
+    public static final String CATEGORY_UPDATED_SUCCESS= "Category updated successfully";
+    public static final String CATEGORY_DELETED_SUCCESS = "Category deleted successfully";
+    public static final String RETURNED_A_CATEGORY_PROPERTY_KEYS = "Category property keys returned successfully";
+    public static final String CATEGORY_PROPERTY_KEY_CREATED_SUCCESS= "Category property key created successfully";
+    public static final String CATEGORY_PROPERTY_KEY_UPDATED_SUCCESS= "Category property key updated successfully";
+    public static final String CATEGORY_PROPERTY_KEY_DELETED_SUCCESS= "Category property key deleted successfully";
+    public static final String RETURNED_CATEGORY_BY_SLUG_SUCCESS = "Category returned by slug successfully";
+
     private SuccesMessages(){
 
     }
