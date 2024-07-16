@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 
 @RequiredArgsConstructor
@@ -299,5 +300,11 @@ public class TourRequestService {
 
     public void resetTourRequestTables() {
         tourRequestRepository.deleteAll();
+    }
+
+    public Set<TourRequest> getTourRequestsById(Set<Long> tourRequestIdList) {
+
+      return   tourRequestRepository.findByIdIn(tourRequestIdList);
+
     }
 }

@@ -22,6 +22,16 @@ public class UserController {
     private final UserService userService;
 
 
+
+    @PostMapping
+    //@Pre
+    public ResponseEntity<UserResponse>saveUser(@Valid @RequestBody UserSaveRequest request){
+
+
+        return userService.saveUserWithoutRequest(request);
+
+    }
+
     @GetMapping("/auth")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<AuthenticatedUsersResponse> getAuthenticatedUser(HttpServletRequest request) {

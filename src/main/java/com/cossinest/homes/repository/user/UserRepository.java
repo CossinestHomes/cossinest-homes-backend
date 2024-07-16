@@ -56,4 +56,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     void deleteByBuiltIn(boolean b);
 
     List<User> findByUserRole_RoleType(RoleType roleType);
+
+    @Query("SELECT COUNT(u) FROM User u JOIN u.userRole r WHERE r.roleType=?1")
+    Long countAllAdmins(RoleType roleType);
 }

@@ -48,7 +48,7 @@ public class CategoryController {
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
 
-    @GetMapping@GetMapping("/active-categories")
+    @GetMapping("/active-categories")
     public Page<CategoryResponseDTO> getActiveCategoriesWithPage(
 
             @RequestParam("q") String q,
@@ -66,7 +66,7 @@ public class CategoryController {
 
     // C 02     Tum kategorileri Pageable yapida cagirma :
 
-    @GetMapping()
+    @GetMapping
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public Page<CategoryResponseDTO> getAllCategoriesWithPage(
 
@@ -165,7 +165,7 @@ public class CategoryController {
 
     // C11 SLUG ile Category cagirma  (Path Variable ile) :
 
-    @GetMapping("/{slug}")
+    @GetMapping("/{slug}/category")
     public ResponseMessage<CategoryResponseDTO> getCategoryBySlug(@PathVariable("slug") String slug){
 
         return categoryService.findCategoryBySlug(slug);

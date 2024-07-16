@@ -57,6 +57,7 @@ public class CategoryMapper {
                 .active(categoryRequestDTO.isActive())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .builtIn(false)
                 .build();
     }
 

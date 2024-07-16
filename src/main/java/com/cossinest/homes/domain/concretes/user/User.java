@@ -73,7 +73,7 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDateTime updatedAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns=@JoinColumn(name = "user_id"),
