@@ -4,6 +4,8 @@ import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
+import com.cossinest.homes.payload.request.user.UserRequest;
+import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.payload.request.user.UsersUpdateRequest;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.payload.response.user.CustomerResponse;
@@ -12,6 +14,8 @@ import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 
@@ -46,17 +50,15 @@ public class UserMapper {
                 .id(user.getId())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .advert(user.getAdvert().stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toSet()))
-                .favoritesList(user.getFavoritesList().stream().map(Favorites::getId).collect(Collectors.toSet()))
+                .advert(user.getAdvert() != null ? user.getAdvert().stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toSet()) : new HashSet<>())
+                .favoritesList(user.getFavoritesList() != null ? user.getFavoritesList().stream().map(Favorites::getId).collect(Collectors.toSet()) : new HashSet<>())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
-                .tourRequestsResponse(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
-                .favoritesList(user.getFavoritesList().stream().map(Favorites::getId).collect(Collectors.toSet()))
+                .userRole(user.getUserRole() != null ? user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()) : new HashSet<>())
+                .tourRequestsResponse(user.getTourRequests() != null ? user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()) : new HashSet<>())
                 .built_in(user.getBuiltIn())
                 .build();
     }
-
 
     public AuthenticatedUsersResponse authenticatedUsersResponse(User user) {
        return AuthenticatedUsersResponse.builder()
@@ -108,7 +110,16 @@ public class UserMapper {
     }
 
 
+    public User userRequestToUser(UserSaveRequest request) {
 
+       return User.builder()
+               .email(request.getEmail())
+               .firstName(request.getFirstName())
+               .lastName(request.getLastName())
+               .phone(request.getPhone())
+               .builtIn(request.getBuiltIn())
+               .build();
 
+    }
 }
 

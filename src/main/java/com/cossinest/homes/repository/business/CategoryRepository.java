@@ -43,4 +43,7 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     @Query("DELETE FROM Category c WHERE c.builtIn = :builtIn")
     void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
 
+
+    @Query("SELECT COUNT(b) FROM  Category b WHERE b.builtIn=?1")
+    int countBuiltIn(boolean b);
 }

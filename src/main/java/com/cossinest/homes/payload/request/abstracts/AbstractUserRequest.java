@@ -32,9 +32,9 @@ public abstract class AbstractUserRequest {
     private String email;
 
 
-    //  @Size(min = 12, max = 12, message = "Your phone number should be at least 12 chars")
-    //   @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
-    //          message = "Please enter valid phone number")
+      @Size(min = 12, max = 12, message = "Your phone number should be at least 12 chars")
+       @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
+              message = "Please enter valid phone number")
     @NotBlank(message = "Please enter your phone number")
     private String phone;
 

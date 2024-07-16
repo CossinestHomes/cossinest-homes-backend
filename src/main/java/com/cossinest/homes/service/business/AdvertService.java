@@ -34,10 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -375,4 +372,7 @@ public class AdvertService {
 
     }
 
+    public Set<Advert> getAdvertsByIdList(Set<Long> advertIdList) {
+        return advertRepository.findByIdIn(advertIdList);
+    }
 }

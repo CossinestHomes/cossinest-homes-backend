@@ -114,6 +114,11 @@ public class CategoryService {
 
         Category category = categoryMapper.mapCategoryRequestDTOToCategory(categoryRequestDTO);
 
+      if(category.getTitle().equalsIgnoreCase("Arsa")){
+          category.setBuiltIn(true);
+      }
+
+
         Category createdCategory = categoryRepository.save(category);
         createdCategory.generateSlug();
         Category categoryResponse = categoryRepository.save(createdCategory);
@@ -243,6 +248,12 @@ public class CategoryService {
    return categoryRepository.findByTitle(category).orElseThrow(
               ()-> new BadRequestException(ErrorMessages.CATEGORY_NOT_FOUND)
       );
+    }
+
+    public int countBuiltInTrue() {
+
+      return   categoryRepository.countBuiltIn(true);
+
     }
 
   /*  @Transactional
