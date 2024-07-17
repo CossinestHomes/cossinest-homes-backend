@@ -26,10 +26,9 @@ public class AdvertType {
     private String title;
 
 
-
     private Boolean builtIn;
 
-    @OneToMany(mappedBy = "advertType",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "advertType",cascade = CascadeType.ALL)
     private List<Advert> advertList;
 
 }

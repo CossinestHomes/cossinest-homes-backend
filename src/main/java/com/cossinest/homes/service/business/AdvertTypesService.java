@@ -57,7 +57,7 @@ public class AdvertTypesService {
 
     //yardımcı metod: title ile advert type arama
         public boolean isAdvertTypeExistsByTitle(String title){
-                boolean advertTypeTitleExist= advertTypesRepository.findByTitle(title);
+                boolean advertTypeTitleExist= advertTypesRepository.existsByTitle(title);
 
                 if (advertTypeTitleExist){
                     throw new ConflictException(ErrorMessages.ADVERT_TYPE_ALREADY_EXIST);
@@ -72,7 +72,7 @@ public class AdvertTypesService {
 
         if(
                 !(advertType.getTitle().equalsIgnoreCase(advertTypeRequest.getTitle())) &&
-                        (advertTypesRepository.findByTitle(advertTypeRequest.getTitle()))){
+                        (advertTypesRepository.existsByTitle(advertTypeRequest.getTitle()))){
                     throw new ConflictException(ErrorMessages.ADVERT_TYPE_ALREADY_EXIST);
         }
 
