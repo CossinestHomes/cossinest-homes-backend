@@ -47,26 +47,28 @@ public class CategoryController {
 
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
+
     @GetMapping("/active-categories")
-    public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
+    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(
+
             @RequestParam("q") String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size" , defaultValue = "20") int size,
             @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
             @RequestParam(value = "type" , defaultValue = "ASC") String type) {
 
-        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getActiveCategoriesWithPage( q, page,  size, sort,  type);
+        return categoryService.getActiveCategoriesWithPage( q, page,  size, sort,  type);
 
-        return ResponseEntity.ok(categoryResponseDTOPage);
+
     }
 
 
 
     // C 02     Tum kategorileri Pageable yapida cagirma :
 
-    @GetMapping()
+    @GetMapping
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<Page<CategoryResponseDTO>> getAllCategoriesWithPage(
+    public Page<CategoryResponseDTO> getAllCategoriesWithPage(
 
             @RequestParam("q") String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -74,45 +76,39 @@ public class CategoryController {
             @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
             @RequestParam(value = "type" , defaultValue = "ASC") String type){
 
-        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryService.getAllCategoriesWithPage(q, page,  size, sort,  type);
+        return categoryService.getAllCategoriesWithPage(q, page,  size, sort,  type);
 
-        return ResponseEntity.ok(categoryResponseDTOPage);
+
     }
 
 
     // C 03     id ile bir category cagirma (Path Variable ile) :
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> getCategoryWithId(@PathVariable("id") Long id){
+    public ResponseMessage<CategoryResponseDTO> getCategoryWithId(@PathVariable("id") Long id){
 
-        CategoryResponseDTO categoryResponseDTO = categoryService.findCategoryWithId(id);
-
-        return  ResponseEntity.ok(categoryResponseDTO);
+        return categoryService.findCategoryWithId(id);
     }
+
 
 
     // C 04     Category Objesi olusturma :
 
     @PostMapping
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryResponseDTO> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
+    public ResponseMessage<CategoryResponseDTO> createCategory(@RequestBody @Valid CategoryRequestDTO categoryRequestDTO){
 
-        CategoryResponseDTO categoryResponseDTO = categoryService.createCategory(categoryRequestDTO);
-
-        return ResponseEntity.ok(categoryResponseDTO);
+        return categoryService.createCategory(categoryRequestDTO);
     }
 
 
     // C 05 id ile category UPDATE etme (Path Variable ile) :
 
-
     @PutMapping("/{id}")                                // http://localhost:8080/categories/1  + PUT + JSON  // MESELA YANi...
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryResponseDTO> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO){
+    public ResponseMessage<CategoryResponseDTO> updateCategoryWithId(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO){
 
-        CategoryResponseDTO categoryResponseDTO = categoryService.updateCategory(id, categoryRequestDTO);
-
-        return new ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
+        return categoryService.updateCategory(id, categoryRequestDTO);
     }
 
 
@@ -120,11 +116,9 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id ){
+    public ResponseMessage<CategoryResponseDTO> deleteCategory(@PathVariable("id") Long id ){
 
-        CategoryResponseDTO categoryResponseDTO = categoryService.deleteCategory(id);
-
-        return new ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
+        return categoryService.deleteCategory(id);
     }
 
 
@@ -132,10 +126,9 @@ public class CategoryController {
 
     @GetMapping("/{id}/properties")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryPropKeyssResponseDTO> getCategoryPropertyKeys(@PathVariable("id") Long id){
+    public ResponseMessage<CategoryPropKeyssResponseDTO> getCategoryPropertyKeys(@PathVariable("id") Long id){
 
-        CategoryPropKeyssResponseDTO categoryProps = categoryService.findCategoryPropertyKeys(id);
-        return ResponseEntity.ok(categoryProps);
+        return categoryService.findCategoryPropertyKeys(id);
     }
 
 
@@ -143,24 +136,20 @@ public class CategoryController {
 
     @PostMapping("/{id}/properties")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryPropKeyResponseDTO> createPropertyKey(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO, String... keys){
+    public ResponseMessage<CategoryPropKeyResponseDTO> createPropertyKey(@PathVariable("id") Long id, @Valid  @RequestBody CategoryRequestDTO categoryRequestDTO, String... keys){
 
-        CategoryPropKeyResponseDTO categoryPropKeyResponseDTO = categoryService.createPropertyKey(id,  keys);
-
-        return new ResponseEntity<>(categoryPropKeyResponseDTO, HttpStatus.CREATED);
-
+        return categoryService.createPropertyKey(id,  keys);
     }
+
 
     // C09 id ile property key'i UPDATE etme  (Path Variable ile) :
 
     @PutMapping("/properties/{id}")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryPropKeyResponseDTO> updateCatPropertyKey(@PathVariable("id") Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
+    public ResponseMessage<CategoryPropKeyResponseDTO> updateCatPropertyKey(@PathVariable("id") Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
 
 
-        CategoryPropKeyResponseDTO  updatedPropertyKey = categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
-
-        return ResponseEntity.ok(updatedPropertyKey);
+        return categoryPropertyKeyService.updatePropertyKey (id, categoryRequestDTO);
     }
 
 
@@ -168,22 +157,20 @@ public class CategoryController {
 
     @DeleteMapping("/properties/{id}")
     //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<CategoryPropKeyResponseDTO> deleteCategPropertyKey(@PathVariable("id") Long id ) {
+    public ResponseMessage<CategoryPropKeyResponseDTO> deleteCategPropertyKey(@PathVariable("id") Long id ) {
 
-        CategoryPropKeyResponseDTO deletedPropertyKey = categoryPropertyKeyService.deletePropertyKey(id);
-
-        return ResponseEntity.ok(deletedPropertyKey);
+        return categoryPropertyKeyService.deletePropertyKey(id);
     }
 
 
     // C11 SLUG ile Category cagirma  (Path Variable ile) :
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<CategoryResponseDTO> getCategoryBySlug(@PathVariable("slug") String slug){
+    @GetMapping("/{slug}/category")
+    public ResponseMessage<CategoryResponseDTO> getCategoryBySlug(@PathVariable("slug") String slug){
 
-        CategoryResponseDTO categoryResponseDTO = categoryService.findCategoryBySlug(slug);
+        return categoryService.findCategoryBySlug(slug);
 
-        return  ResponseEntity.ok(categoryResponseDTO);
+
     }
 
 

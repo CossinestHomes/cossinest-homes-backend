@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CategoryPropertyValueRepository extends JpaRepository<CategoryPropertyValue,Long> {
+public interface CategoryPropertyValueRepository extends JpaRepository<CategoryPropertyValue, Long> {
 
     @Query("SELECT v FROM CategoryPropertyValue v WHERE value=?1")
     Optional<CategoryPropertyValue> findValueByName(Object obje);

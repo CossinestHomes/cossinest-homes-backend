@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
@@ -56,4 +57,6 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     List<TourRequest> getTourRequest(@Param("date1") LocalDateTime date1,
                                      @Param("date2") LocalDateTime date2,
                                      @Param("statusType") StatusType statusType);
+
+    Set<TourRequest> findByIdIn(Set<Long> tourRequestIdList);
 }

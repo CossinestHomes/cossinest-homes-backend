@@ -2,6 +2,8 @@ package com.cossinest.homes.service.user;
 
 
 import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.Favorites;
+import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.LogEnum;
@@ -16,8 +18,11 @@ import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
+import com.cossinest.homes.service.business.AdvertService;
+import com.cossinest.homes.service.business.FavoritesService;
 import com.cossinest.homes.service.business.LogService;
 
+import com.cossinest.homes.service.business.TourRequestService;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
@@ -37,6 +42,9 @@ import java.util.*;
 public class UserService {
 
     private final MethodHelper methodHelper;
+    private final AdvertService advertService;
+    private final TourRequestService tourRequestService;
+   // private final FavoritesService favoritesService;
     private final UserMapper userMapper;
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
@@ -267,6 +275,81 @@ public class UserService {
        return userRepository.findByUserRole_RoleType(roleType);
 
     }
+
+    public Long countAllAdmins() {
+
+        return userRepository.countAllAdmins(RoleType.ADMIN);
+
+    }
+
+/*    public ResponseEntity<UserResponse> saveUser(UserSaveRequest request,HttpServletRequest servletRequest) {
+
+     User user  = methodHelper.getUserByHttpRequest(servletRequest);
+     methodHelper.checkRoles(user,RoleType.ADMIN);
+
+    User savedUser =userMapper.userRequestToUser(request);
+     methodHelper.checkDuplicate(savedUser.getEmail(),savedUser.getPhone());
+
+
+
+    Set<Advert>adverts =advertService.getAdvertsByIdList(request.getAdvertIdList());
+    Set<TourRequest>tourRequests= tourRequestService.getTourRequestsById(request.getTourRequestIdList());
+   // List<Favorites>favorites=favoritesService.getFavoritesById(request.getFavoritesList());
+
+    savedUser.setAdvert(adverts);
+    savedUser.setTourRequests(tourRequests);
+ //   savedUser.setFavoritesList(favorites);
+
+    //TODO Password encoder
+    savedUser.setPasswordHash(request.getPassword());
+
+
+
+    //methodHelper.
+   // savedUser.setUserRole();
+
+
+
+     userRepository.save(savedUser);
+
+     return ResponseEntity.ok(userMapper.userToUserResponse(savedUser));
+
+
+    }*/
+
+    @Transactional
+    public ResponseEntity<UserResponse> saveUserWithoutRequest(UserSaveRequest request) {
+
+
+        methodHelper.checkDuplicate(request.getEmail(),request.getPhone());
+        User savedUser =userMapper.userRequestToUser(request);
+
+       /* Set<Advert>adverts =advertService.getAdvertsByIdList(request.getAdvertIdList());
+        Set<TourRequest>tourRequests= tourRequestService.getTourRequestsById(request.getTourRequestIdList());
+        List<Favorites>favorites=favoritesService.getFavoritesById(request.getFavoritesList());
+        savedUser.setFavoritesList(favorites);*/
+
+        //TODO Password encoder
+        savedUser.setPasswordHash(request.getPassword());
+
+     //   savedUser.setAdvert(adverts);
+     //   savedUser.setTourRequests(tourRequests);
+
+
+        Set<UserRole>userRolesSaved=new HashSet<>();
+        userRolesSaved.add(userRoleService.getUserRole(RoleType.ADMIN));
+        savedUser.setUserRole(userRolesSaved);
+
+
+        userRepository.save(savedUser);
+
+        return ResponseEntity.ok(userMapper.userToUserResponse(savedUser));
+
+
+    }
+
+
+
 
 /*    @Transactional
     public void resetUserTables() {

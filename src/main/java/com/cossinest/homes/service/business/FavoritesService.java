@@ -180,6 +180,12 @@ public class FavoritesService {
 
         favoritesRepository.deleteAll();
     }
+
+    public List<Favorites> getFavoritesById(List<Long> favoritesList) {
+
+      return   favoritesRepository.findAllById(favoritesList);
+
+    }
 }
 
 

@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
+@Builder(toBuilder = true)  //Lombok'taki @Getter, @Setter, @ToString @HashCode vb anotas. yazmak yerine bu anotasyon'u buraya koyuyoruz.
 @Entity
 @Table(name="categories")
 public class Category {
@@ -40,14 +40,14 @@ public class Category {
 
 
     @NotNull(message = "title can not be null")
-    @NotBlank(message = "title can not be white space")
+ //   @NotBlank(message = "title can not be white space")
     @Size(min=2, max=150, message = "title '${validatedValue}' must be between {min} and {max} long")
     @Column(nullable = false, length = 150)
     private String title;
 
 
     @NotNull(message = "icon can not be null")
-    @NotBlank(message = "icon can not be white space")
+  //  @NotBlank(message = "icon can not be white space")
     @Size(min=2, max=50, message = "title '${validatedValue}' must be between {min} and {max} long")
     @Column(nullable = false, length = 50)
     private String icon;
@@ -59,25 +59,25 @@ public class Category {
 
 
     @NotNull(message = "seq can not be null")
-    @NotBlank(message = "seq can not be white space")
+   // @NotBlank(message = "seq can not be white space")
     private Integer seq = 0;
 
 
     @NotNull(message = "slug can not be null")
-    @NotBlank(message = "slug can not be white space")
+   // @NotBlank(message = "slug can not be white space")
     @Size(min=5, max=200, message = "slug '${validatedValue}' must be between {min} and {max} long")
     @Column(nullable = false, length = 200)
     private String slug;
 
 
     @NotNull(message = "is_active can not be null")
-    @NotBlank(message = "is_active can not be white space")
+  //  @NotBlank(message = "is_active can not be white space")
     @Column(name = "is_active")
     private Boolean active = true;
 
 
     @NotNull(message = "create_at can not be null")
-    @NotBlank(message = "create_at can not be white space")
+   // @NotBlank(message = "create_at can not be white space")
     @Setter(AccessLevel.NONE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(nullable = false, name="create_at")
