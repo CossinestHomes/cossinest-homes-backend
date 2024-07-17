@@ -51,7 +51,7 @@ public class ContactMessageService {
         return Messages.DELETE_CONTACT_MESSAGE_BY_ID;
     }
 
-    public Page<ContactMessageResponse> getAllByQuery(String q, int page, int size, Long sort, String type) {
+    public Page<ContactMessageResponse> getAllByQuery(String q, int page, int size, String sort, String type) {
             Pageable pageable= PageRequest.of(page, size, Sort.by(String.valueOf(sort)).ascending());
                 if(Objects.equals(type, "DESC")){
                     pageable=PageRequest.of(page, size, Sort.by(String.valueOf(sort)).descending());

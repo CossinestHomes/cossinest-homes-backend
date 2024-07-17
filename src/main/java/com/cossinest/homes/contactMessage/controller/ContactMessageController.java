@@ -29,7 +29,7 @@ public class ContactMessageController {
             @RequestParam(required = false) String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size" , defaultValue = "20") int size,
-            @RequestParam(value = "sort" , defaultValue = "category_id") Long sort,
+            @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
             @RequestParam(value = "type" , defaultValue = "ASC") String type
     ){
         return contactMessageService.getAllByQuery(q, page, size, sort, type);
