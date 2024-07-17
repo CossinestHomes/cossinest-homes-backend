@@ -2836,6 +2836,7 @@ List of constraint violations:[
 ""2024-07-16 14:16:20,440 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
 ""2024-07-16 14:16:20,451 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
 ""2024-07-16 14:16:20,458 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
+
 ""2024-07-16 18:43:49,760 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Starting HomesApplication using Java 17.0.11 with PID 2864 (C:\Users\pc\Desktop\RealEstate\target\classes started by pc in C:\Users\pc\Desktop\RealEstate)
 ""2024-07-16 18:43:49,768 INFO  [restartedMain] com.cossinest.homes.HomesApplication:No active profile set, falling back to 1 default profile: "default"
 ""2024-07-16 18:43:50,050 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
@@ -3050,10 +3051,12 @@ List of constraint violations:[
 	at org.hibernate.internal.AbstractSharedSessionContract.createQuery(AbstractSharedSessionContract.java:136)
 	at jdk.internal.reflect.GeneratedMethodAccessor30.invoke(Unknown Source)
 
+
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+
 	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:319)
 	at jdk.proxy4/jdk.proxy4.$Proxy153.createQuery(Unknown Source)
 
@@ -3221,10 +3224,12 @@ List of constraint violations:[
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:716)
 	at com.cossinest.homes.service.business.AdvertTypesService$$SpringCGLIB$$0.updateAdvertTypeById(<generated>)
 	at com.cossinest.homes.controller.business.AdvertTypesController.updateAdvertTypeById(AdvertTypesController.java:42)
+
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
@@ -3346,10 +3351,12 @@ List of constraint violations:[
 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
 	at jdk.proxy4/jdk.proxy4.$Proxy169.save(Unknown Source)
 	at com.cossinest.homes.service.business.AdvertTypesService.updateAdvertTypeById(AdvertTypesService.java:81)
+
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:354)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:716)
 	at com.cossinest.homes.service.business.AdvertTypesService$$SpringCGLIB$$0.updateAdvertTypeById(<generated>)
@@ -3359,10 +3366,12 @@ List of constraint violations:[
 	at com.cossinest.homes.contactMessage.service.ContactMessageService.getAllByQuery(ContactMessageService.java:60)
 	at com.cossinest.homes.contactMessage.controller.ContactMessageController.getAllMessages(ContactMessageController.java:35)
 
+
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
@@ -3419,4 +3428,5 @@ List of constraint violations:[
 "2024-07-16 20:42:19,283 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
 ""2024-07-16 20:42:19,956 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
 ""2024-07-16 20:42:20,116 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
+
 
