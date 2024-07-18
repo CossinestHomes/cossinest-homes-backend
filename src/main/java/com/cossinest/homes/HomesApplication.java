@@ -90,7 +90,6 @@ public class HomesApplication implements CommandLineRunner {
 			category.setTitle("Arsa");
 			category.setSeq(0);
 
-
 			categoryService.createCategory(category);
 
 		}
