@@ -25,18 +25,27 @@ public class UserDetailsImpl implements UserDetails {
     private String passwordHash;
     private Collection<? extends GrantedAuthority> authorities;
 
+    private Set<UserRole> roles; // Kullanıcı rolleri
+
     public UserDetailsImpl(Long id, String firstName, String lastName, String email, Set<UserRole> role, String passwordHash) {
         this.id=id;
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
         this.passwordHash=passwordHash;
-        List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        grantedAuthorityList.addAll(role.stream()
-                .map(r -> new SimpleGrantedAuthority(r.getRoleName()))
-                .collect(Collectors.toList()));
+        this.authorities = buildGrantedAuthorities(role);
 
-        this.authorities = grantedAuthorityList;
+    }
+
+    private static List<SimpleGrantedAuthority> buildGrantedAuthorities(final Set<UserRole> roles) {
+
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (UserRole role : roles) {
+            authorities.add(
+                    new SimpleGrantedAuthority(role.getRoleType().name())
+            );
+        }
+        return authorities;
 
     }
 
