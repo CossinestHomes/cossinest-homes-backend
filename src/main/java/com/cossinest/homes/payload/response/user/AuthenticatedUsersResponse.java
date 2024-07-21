@@ -39,6 +39,8 @@ public class AuthenticatedUsersResponse {
 
     private Set<String> userRole;
 
+    private String token;
+
 
     private Set<AdvertResponse> advert;
 
