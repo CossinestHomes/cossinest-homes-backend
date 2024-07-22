@@ -251,7 +251,7 @@ public class UserService {
 
   public ResponseEntity<String> resetPassword(CodeRequest request) {
 
-        User user=userRepository.findByResetPasswordCode().orElseThrow(()-> new IllegalArgumentException(String.format(ErrorMessages.RESET_CODE_IS_NOT_FOUND,request.getCode())));
+        User user=userRepository.findByResetPasswordCode(request.getCode()).orElseThrow(()-> new IllegalArgumentException(String.format(ErrorMessages.RESET_CODE_IS_NOT_FOUND,request.getCode())));
 
 
 
