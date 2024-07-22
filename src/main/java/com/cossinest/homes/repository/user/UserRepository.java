@@ -59,4 +59,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query("SELECT COUNT(u) FROM User u JOIN u.userRole r WHERE r.roleType=?1")
     Long countAllAdmins(RoleType roleType);
+
+
+    Optional<User> findByResetPasswordCode(String code);
 }
