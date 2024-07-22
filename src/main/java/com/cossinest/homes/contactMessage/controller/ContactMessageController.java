@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,7 +25,7 @@ public class ContactMessageController {
     }
 
     @GetMapping("/contact-messages")  //http://localhost:8080/contact-messages + GET
-    //TODO: manager ve admin yapacak
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public Page<ContactMessageResponse> getAllMessages(
             @RequestParam(required = false) String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -36,13 +37,13 @@ public class ContactMessageController {
     }
 
     @GetMapping("/contact-messages/{contactMessageId}") // //http://localhost:8080/contact-messages/1 + GET
-    //TODO: manager ve admin yapacak
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ContactMessageResponse getContactMessageById(@PathVariable Long contactMessageId){
         return contactMessageService.getContactMessageById(contactMessageId);
     }
 
     @DeleteMapping("/contact-messages/{contactMessageId}") // //http://localhost:8080/contact-messages/2 + DELETE
-    //TODO: manager ve admin yapacak
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<String> deleteContactMessageById(@PathVariable Long contactMessageId){
         return ResponseEntity.ok(contactMessageService.deleteById(contactMessageId));
     }
