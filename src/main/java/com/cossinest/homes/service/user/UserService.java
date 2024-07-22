@@ -15,6 +15,7 @@ import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.user.*;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
+import com.cossinest.homes.payload.response.user.SignInResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
@@ -33,6 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -52,6 +54,7 @@ public class UserService {
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
     private final LogService logService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthenticatedUsersResponse getAuthenticatedUser(HttpServletRequest request) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -345,6 +348,48 @@ public class UserService {
 
         return ResponseEntity.ok(userMapper.userToUserResponse(savedUser));
 
+
+    }
+
+    public ResponseEntity<SignInResponse> registerUser(SignInRequest signInRequest) {
+        //duplicate email & phone kontrolü
+        methodHelper.checkDuplicate(signInRequest.getEmail(), signInRequest.getPhone());
+
+        User newUser= new User();
+        newUser.setFirstName(signInRequest.getFirstName());
+        newUser.setLastName(signInRequest.getLastName());
+        newUser.setEmail(signInRequest.getEmail());
+        newUser.setPhone(signInRequest.getPhone());
+        newUser.setUserRole(signInRequest.getRole());
+        newUser.setPasswordHash(passwordEncoder.encode(signInRequest.getPassword()));
+
+        Set<UserRole> userRoles= signInRequest.getRole();
+        Set<UserRole> roles= new HashSet<>();
+
+        //Eğer userRoles null ise, varsayılan olarak CUSTOMER rolü eklenir.
+        if(userRoles == null){
+            UserRole userRole= userRoleService.getUserRole(RoleType.CUSTOMER);
+            roles.add(userRole);
+
+        }else{ //ğer userRoles null değilse, içindeki her rol kontrol edilir.Eğer rol adı "Admin" ise, ADMIN rolü eklenir.
+
+            userRoles.forEach(role ->{
+                switch (role.getRoleName()){
+                    case "Admin" :
+                        UserRole userAdminRole=userRoleService.getUserRole(RoleType.ADMIN);
+                        roles.add(userAdminRole);
+                        break;
+
+                    default: //Diğer durumlarda, CUSTOMER rolü eklenir.
+                        UserRole userRole= userRoleService.getUserRole(RoleType.CUSTOMER);
+                        roles.add(userRole);
+                }
+
+            });
+        }
+        newUser.setUserRole(roles);
+        User registeredUser= userRepository.save(newUser);
+         return ResponseEntity.ok(userMapper.userToSignInResponse(registeredUser));
 
     }
 

@@ -4,6 +4,7 @@ package com.cossinest.homes.controller.user;
 import com.cossinest.homes.payload.request.user.*;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
+import com.cossinest.homes.payload.response.user.SignInResponse;
 import com.cossinest.homes.payload.response.user.UserPageableResponse;
 import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.service.user.UserService;
@@ -27,8 +28,12 @@ public class UserController {
     //@Pre
     public ResponseEntity<UserResponse>saveUser(@Valid @RequestBody UserSaveRequest request){
 
-
         return userService.saveUserWithoutRequest(request);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<SignInResponse> registerUser (@RequestBody @Valid SignInRequest signInRequest){
+       return userService.registerUser(signInRequest);
 
     }
 

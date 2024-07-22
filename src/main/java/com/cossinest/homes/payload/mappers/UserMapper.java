@@ -7,10 +7,7 @@ import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.UserRequest;
 import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.payload.request.user.UsersUpdateRequest;
-import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
-import com.cossinest.homes.payload.response.user.CustomerResponse;
-import com.cossinest.homes.payload.response.user.UserPageableResponse;
-import com.cossinest.homes.payload.response.user.UserResponse;
+import com.cossinest.homes.payload.response.user.*;
 import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -120,6 +117,16 @@ public class UserMapper {
                .builtIn(request.getBuiltIn())
                .build();
 
+    }
+
+    public SignInResponse userToSignInResponse(User newUser){
+        return SignInResponse.builder()
+                .id(newUser.getId())
+                .firstName(newUser.getFirstName())
+                .lastName(newUser.getLastName())
+                .phone(newUser.getPhone())
+                .email(newUser.getEmail())
+                .build();
     }
 }
 
