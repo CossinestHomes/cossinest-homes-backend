@@ -18,6 +18,7 @@ public class ErrorMessages {
     public static final String EXCEL_COULD_NOT_BE_CREATED_TYPE_IS_NOT_ADVERT = "Excel could not be created type is not advert";
     public static final String EXCEL_COULD_NOT_BE_CREATED = "Excel could not be created";
     public static final String CATEGORY_VALUE_IS_NOT_FOUND = "Category value is not found";
+    public static final String RESET_CODE_IS_NOT_FOUND ="Reset code is not found. Code: %s" ;
 
 
     private ErrorMessages() {

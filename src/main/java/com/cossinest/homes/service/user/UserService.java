@@ -33,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -52,6 +53,7 @@ public class UserService {
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
     private final LogService logService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthenticatedUsersResponse getAuthenticatedUser(HttpServletRequest request) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -88,15 +90,18 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         }
 
-      /*  String password = passwordEncoder.encode(request.getPassword());
-        if (!(Objects.equals(password, user.getPasswordHash()))) {
-            throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
-        }
         if (!(Objects.equals(request.getNewPassword(), request.getReWriteNewPassword()))) {
             throw new BadRequestException(ErrorMessages.THE_PASSWORDS_ARE_NOT_MATCHED);
-        }*/
+        }
 
-       // user.setPasswordHash(password);
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
+        }
+
+        String password = passwordEncoder.encode(request.getPassword());
+
+        user.setPasswordHash(password);
         userRepository.save(user);
 
 
@@ -111,8 +116,8 @@ public class UserService {
         methodHelper.checkRoles(user, RoleType.CUSTOMER);
         methodHelper.isRelatedToAdvertsOrTourRequest(user);
 
-      //  String requestPassword = passwordEncoder.encode(request.getPassword());
-      //  request.setPassword(requestPassword);
+        String requestPassword = passwordEncoder.encode(request.getPassword());
+        request.setPassword(requestPassword);
 
         methodHelper.checkEmailAndPassword(user, request);
 
@@ -225,7 +230,7 @@ public class UserService {
     }
 
 
-   /* public String forgotPassword(ForgetPasswordRequest request) {
+    public String forgotPassword(ForgetPasswordRequest request) {
 
         String resetCode;
         try {
@@ -233,28 +238,29 @@ public class UserService {
              resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
-         //   emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
+            emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
 
         } catch (BadRequestException e) {
             return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
         }
 
-        return resetCode;
+        return "Code has been sent";
 
-    }*/
+    }
 
-  /*public ResponseEntity<String> resetPassword(ResetCodeRequest request) {
+  public ResponseEntity<String> resetPassword(CodeRequest request) {
 
-        User user =userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new BadRequestException(ErrorMessages.NOT_FOUND_USER_EMAIL));
+        User user=userRepository.findByResetPasswordCode().orElseThrow(()-> new IllegalArgumentException(String.format(ErrorMessages.RESET_CODE_IS_NOT_FOUND,request.getCode())));
 
 
-        methodHelper.UpdatePasswordControl(request.getPassword(), request.getReWritePassword());
-    //    String requestPassword = passwordEncoder.encode(request.getPassword());
-      //  user.setPasswordHash(requestPassword);
+
+        String requestPassword = passwordEncoder.encode(request.getPassword());
+        user.setPasswordHash(requestPassword);
+        user.setResetPasswordCode(null);
         userRepository.save(user);
         return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY, HttpStatus.OK);
 
-    }*/
+    }
 
     public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);

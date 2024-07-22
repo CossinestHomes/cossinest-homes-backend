@@ -3,6 +3,7 @@ package com.cossinest.homes.controller;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
 import com.cossinest.homes.payload.request.LoginRequest;
+import com.cossinest.homes.payload.request.user.CodeRequest;
 import com.cossinest.homes.payload.request.user.ForgetPasswordRequest;
 import com.cossinest.homes.payload.request.user.ResetCodeRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
@@ -34,7 +35,7 @@ public class AuthenticationController {
 
 
 
-    /*private final UserService userService;
+
 
     @PostMapping("/forgot-password")
     public ResponseMessage<String> forgotPassword(@Valid @RequestBody ForgetPasswordRequest request){
@@ -44,12 +45,12 @@ public class AuthenticationController {
                 .status(HttpStatus.OK)
                 .object( userService.forgotPassword(request))
                 .build();
-    }*/
+    }
 
 
-   /* @PostMapping("/reset-password")
-    ResponseEntity<String>resetPassword(@Valid @RequestBody ResetCodeRequest request){
+    @PostMapping("/reset-password")
+    ResponseEntity<String>resetPassword(@Valid @RequestBody CodeRequest request){
         return userService.resetPassword(request);
-    }*/
+    }
 
 }
