@@ -173,4 +173,35 @@ Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'ba
 ""2024-07-18 21:41:25,338 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Started HomesApplication in 32.712 seconds (process running for 34.505)
 ""2024-07-18 21:42:08,507 INFO  [http-nio-8080-exec-1] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring DispatcherServlet 'dispatcherServlet'
 ""2024-07-18 21:42:21,808 INFO  [http-nio-8080-exec-10] org.springdoc.api.AbstractOpenApiResource:Init duration for springdoc-openapi is: 11212 ms
+""2024-07-22 15:41:43,967 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Starting HomesApplication using Java 17.0.11 with PID 8756 (C:\Users\pc\Desktop\RealEstate\target\classes started by pc in C:\Users\pc\Desktop\RealEstate)
+""2024-07-22 15:41:43,976 INFO  [restartedMain] com.cossinest.homes.HomesApplication:No active profile set, falling back to 1 default profile: "default"
+""2024-07-22 15:41:44,562 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+""2024-07-22 15:41:44,563 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+""2024-07-22 15:41:49,980 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+""2024-07-22 15:41:50,419 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 414 ms. Found 15 JPA repository interfaces.
+""2024-07-22 15:41:53,417 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
+""2024-07-22 15:41:53,455 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
+""2024-07-22 15:41:53,456 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.24]
+""2024-07-22 15:41:53,653 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
+""2024-07-22 15:41:53,660 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 9092 ms
+""2024-07-22 15:41:54,591 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
+""2024-07-22 15:41:54,832 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.8.Final
+""2024-07-22 15:41:55,012 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
+""2024-07-22 15:41:55,847 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
+""2024-07-22 15:41:55,925 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
+""2024-07-22 15:41:56,532 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c7cf8e3
+""2024-07-22 15:41:56,536 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
+""2024-07-22 15:41:56,660 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+""2024-07-22 15:42:01,001 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+""2024-07-22 15:42:02,096 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
+""2024-07-22 15:42:03,565 INFO  [restartedMain] org.springframework.data.jpa.repository.query.QueryEnhancerFactory:Hibernate is in classpath; If applicable, HQL parser will be used.
+""2024-07-22 15:42:13,344 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+""2024-07-22 15:42:15,083 INFO  [restartedMain] org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver:Exposing 1 endpoint(s) beneath base path '/actuator'
+""2024-07-22 15:42:15,289 INFO  [restartedMain] org.springframework.security.web.DefaultSecurityFilterChain:Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@283c5edb, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@63c3056, org.springframework.security.web.context.SecurityContextHolderFilter@51f373fe, org.springframework.security.web.header.HeaderWriterFilter@7348e791, org.springframework.web.filter.CorsFilter@6731f342, org.springframework.security.web.authentication.logout.LogoutFilter@5f23d938, com.cossinest.homes.security.jwt.AuthTokenFilter@1e51409c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1124c887, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@46aaee56, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@54511f0b, org.springframework.security.web.session.SessionManagementFilter@5ad9e87b, org.springframework.security.web.access.ExceptionTranslationFilter@2570bbcd, org.springframework.security.web.access.intercept.AuthorizationFilter@4b8e9404]
+""2024-07-22 15:42:16,571 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
+""2024-07-22 15:42:16,754 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat started on port 8080 (http) with context path ''
+""2024-07-22 15:42:16,842 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Started HomesApplication in 34.271 seconds (process running for 35.941)
+""2024-07-22 15:42:33,455 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
+""2024-07-22 15:42:33,463 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
+""2024-07-22 15:42:33,497 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
 "
