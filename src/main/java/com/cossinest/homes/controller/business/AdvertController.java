@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +34,6 @@ public class AdvertController {
 
     @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
                  //status=1;page=1&size=10&sort=date&type=asc
-
-
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q",required = false) String query,
             @RequestParam(value = "category_id") Long categoryId,
@@ -91,7 +90,7 @@ public class AdvertController {
     }
 
     @GetMapping("/auth")
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public Page<AdvertResponse> getAllAdvertForAuthUserByPage(
             HttpServletRequest request,
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
@@ -103,7 +102,7 @@ public class AdvertController {
     }
 
     @GetMapping("/admin")
-    //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
             HttpServletRequest request,
             @RequestParam(value = "q",required = false, defaultValue = "") String query,
@@ -133,7 +132,7 @@ public class AdvertController {
     }
 
     @GetMapping("/{id}/auth")
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<AdvertResponse> getAdvertByIdForCustomer(@PathVariable Long id, HttpServletRequest request) {
 
         return advertService.getAdvertByIdForCustomer(id, request);
@@ -141,7 +140,7 @@ public class AdvertController {
     }
 
     @GetMapping("/{id}/admin")
-    //@PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<AdvertResponse> getAdvertByIdForAdmin(@PathVariable Long id, HttpServletRequest request) {
 
         return advertService.getAdvertByIdForAdmin(id, request);
@@ -149,7 +148,7 @@ public class AdvertController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
         AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
@@ -160,7 +159,7 @@ public class AdvertController {
     }
 
     @PutMapping("/auth/{id}")
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseMessage<AdvertResponse> updateUsersAdvertById(@RequestBody @Valid AdvertRequest advertRequest,@PathVariable Long id,HttpServletRequest httpServletRequest){
         AdvertResponse advertResponse= advertService.updateUsersAdvert(advertRequest,id,httpServletRequest);
         return ResponseMessage.<AdvertResponse>builder()
@@ -170,7 +169,7 @@ public class AdvertController {
                 .build();
     }
     @PutMapping("/admin/{id}")
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseMessage<AdvertResponse> updateAdvertById(@RequestBody @Valid AdvertRequestForAdmin advertRequest, @PathVariable Long id, HttpServletRequest httpServletRequest){
         AdvertResponse advertResponse= advertService.updateAdvert(advertRequest,id,httpServletRequest);
         return ResponseMessage.<AdvertResponse>builder()
@@ -181,7 +180,7 @@ public class AdvertController {
     }
 
     @DeleteMapping("/admin/{id}")
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseMessage<AdvertResponse> updateAdvertById(@PathVariable Long id,HttpServletRequest httpServletRequest){
         AdvertResponse advertResponse= advertService.deleteAdvert(id,httpServletRequest);
         return ResponseMessage.<AdvertResponse>builder()
