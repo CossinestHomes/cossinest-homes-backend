@@ -1,6 +1,7 @@
 package com.cossinest.homes.payload.request.user;
 
 import com.cossinest.homes.domain.concretes.user.UserRole;
+import com.cossinest.homes.domain.enums.RoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -26,8 +27,8 @@ public class SignInRequest {
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Your last name must be consist of the characters a-z")
     private String lastName;
 
-    @Size(min = 12, max = 12, message = "Your phone number should be at least 12 chars")
-    @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
+    @Size(min = 10, max = 12, message = "Your phone number should be at least 12 chars")
+    @Pattern(regexp = "^(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",
             message = "Please enter valid phone number")
     @NotBlank(message = "Please enter your phone number")
     private String phone;
@@ -43,6 +44,6 @@ public class SignInRequest {
             message = "Password must contain at least one digit, one lowercase character, one uppercase character, and one special character (@#$%^&+=)")
     private String password;
 
-    private Set<UserRole> role;
+    private Set<RoleType> role;
 
 }

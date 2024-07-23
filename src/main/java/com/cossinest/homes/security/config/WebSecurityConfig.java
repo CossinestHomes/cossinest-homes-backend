@@ -111,14 +111,23 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
 
     private static final String[] AUTH_WHITE_LIST = {
             "/v3/api-docs/**", // eklenecek
-            "swagger-ui.html", // eklenecek
+            "/swagger-ui.html", // eklenecek
             "/swagger-ui/**", // eklenecek
-            "/",
+            "/*",
             "/index.html",
             "/images/**",
             "/css/**",
             "/js/**",
-            "/contactMessages/save",
-            "/auth/login"
+            "/contact-messages/contact-messages",
+            "/auth/loginUser",
+            "/adverts",
+            "/cities",
+            "/categories",
+            "/popular/*",
+            "/trySave",
+            "/users/*"
+
+
+
     };
 }
