@@ -74,7 +74,7 @@ public class HomesApplication implements CommandLineRunner {
 			UserSaveRequest adminRequest = new UserSaveRequest();
 		//	adminRequest.setUsername("SuperAdmin"); // builtIN degeri TRUE olarak setlenmis olacak
 			adminRequest.setEmail("admin@admin.com");
-			adminRequest.setPassword("A1a@secure");
+			adminRequest.setPassword(passwordEncoder.encode("A1a@secure"));
 			adminRequest.setFirstName("Eda");
 			adminRequest.setLastName("Duygu");
 			adminRequest.setPhone("123-123-123-4444");
