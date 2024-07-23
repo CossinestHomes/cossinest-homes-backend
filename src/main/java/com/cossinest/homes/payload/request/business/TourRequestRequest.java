@@ -26,7 +26,6 @@ public class TourRequestRequest {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @NotNull(message = "Tour date can not be empty")
-    @FutureOrPresent(message = "Tour time must be today or in the future")
     private LocalTime tourTime;
 
     @NotNull(message = "Advert can not be empty")
