@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,8 +25,8 @@ public class UserController {
 
 
 
-    @PostMapping
-    //@Pre
+    @PostMapping //http://localhost:8080/users
+   // @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<UserResponse>saveUser(@Valid @RequestBody UserSaveRequest request){
 
         return userService.saveUserWithoutRequest(request);
@@ -37,8 +38,8 @@ public class UserController {
 
     }
 
-    @GetMapping("/auth")
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
+    @GetMapping("/auth") //http://localhost:8080/users/auth
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<AuthenticatedUsersResponse> getAuthenticatedUser(HttpServletRequest request) {
 
         AuthenticatedUsersResponse response = userService.getAuthenticatedUser(request);
@@ -48,16 +49,16 @@ public class UserController {
     }
 
 
-    @PutMapping("/auth")
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
+    @PutMapping("/auth") //http://localhost:8080/users/auth
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<AuthenticatedUsersResponse> updateAuthenticatedUser(@Valid @RequestBody AuthenticatedUsersRequest request, HttpServletRequest auth) {
 
         return userService.updateAuthenticatedUser(request, auth);
 
     }
 
-    @PatchMapping("/auth")
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
+    @PatchMapping("/auth") //http://localhost:8080/users/auth
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<String> updateUserPassword(@Valid @RequestBody UserPasswordRequest request, HttpServletRequest auth) {
 
         return userService.updateUserPassword(request, auth);
@@ -65,8 +66,8 @@ public class UserController {
     }
 
 
-    @DeleteMapping("auth/customer")
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @DeleteMapping("auth/customer") //http://localhost:8080/users/auth/customer
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<String> deleteCustomer(HttpServletRequest auth, CustomerRequest request) {
 
         String message = userService.deleteCustomer(auth, request);
@@ -75,8 +76,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin/qr")
-    //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    @GetMapping("/admin/qr") //http://localhost:8080/users//admin/qr?-----
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseMessage<Page<UserPageableResponse>> getAllUsersByPageQueries(
             HttpServletRequest request,
             @RequestParam(value = "name", required = false) String name,
@@ -93,8 +94,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin")
-    //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    @GetMapping("/admin") //http://localhost:8080/users/admin----
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<Page<UserPageableResponse>>getAllUsersByPage(
             HttpServletRequest request,
             @RequestParam(value = "q", required = false) String q,
@@ -107,8 +108,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/{id}/admin")
-    //@PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
+    @GetMapping("/{id}/admin") //http://localhost:8080/users/1/admin
+    @PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id, HttpServletRequest request) {
 
         return userService.getUserById(id, request);
@@ -116,16 +117,16 @@ public class UserController {
     }
 
 
-    @PutMapping("/{id}/admin")
-    //@PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
+    @PutMapping("/{id}/admin") //http://localhost:8080/users/1/admin
+    @PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
     public ResponseMessage<UserResponse> updateUser(@PathVariable Long id, UsersUpdateRequest request, HttpServletRequest auth) {
 
         return userService.updateUser(id, request, auth);
 
     }
 
-    @DeleteMapping("auth/user")
-    //@PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    @DeleteMapping("auth/user") //http://localhost:8080/users/auth/user
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id, HttpServletRequest auth) {
 
         UserResponse response = userService.deleteUserBusiness(id, auth);

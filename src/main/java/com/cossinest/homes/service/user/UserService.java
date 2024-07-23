@@ -372,10 +372,11 @@ public class UserService {
 
         //Eğer userRoles null ise, varsayılan olarak CUSTOMER rolü eklenir.
         if(userRoles == null){
+
             UserRole userRole= userRoleService.getUserRole(RoleType.CUSTOMER);
             roles.add(userRole);
 
-        }else{ //ğer userRoles null değilse, içindeki her rol kontrol edilir.Eğer rol adı "Admin" ise, ADMIN rolü eklenir.
+        }else{ //eğer userRoles null değilse, içindeki her rol kontrol edilir.Eğer rol adı "Admin" ise, ADMIN rolü eklenir.
 
             userRoles.forEach(role ->{
                 switch (role.getRoleName()){
