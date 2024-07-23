@@ -54,6 +54,7 @@ public class AuthenticationService {
         Optional<String> role= roles.stream().findFirst();
 
         AuthenticatedUsersResponse.AuthenticatedUsersResponseBuilder authResponse= AuthenticatedUsersResponse.builder();
+        authResponse.id(userDetails.getId());
         authResponse.email(userDetails.getEmail());
         authResponse.token(token.substring(7));
         authResponse.firstName(userDetails.getFirstName());
