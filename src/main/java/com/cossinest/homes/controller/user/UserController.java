@@ -45,7 +45,6 @@ public class UserController {
         AuthenticatedUsersResponse response = userService.getAuthenticatedUser(request);
         return ResponseEntity.ok(response);
 
-
     }
 
 
