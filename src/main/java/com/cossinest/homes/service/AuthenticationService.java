@@ -60,6 +60,8 @@ public class AuthenticationService {
         authResponse.firstName(userDetails.getFirstName());
         authResponse.lastName(userDetails.getLastName());
         authResponse.userRole(roles);
+        authResponse.phone(userDetails.getPhone());
+        authResponse.built_in(userDetails.getBuiltIn());
 
         return ResponseEntity.ok(authResponse.build());
 
