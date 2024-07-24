@@ -41,8 +41,7 @@ public class UserDetailsImpl implements UserDetails {
         this.passwordHash=passwordHash;
         this.built_in=built_in;
         this.authorities = buildGrantedAuthorities(role);
-        this.phone= phone;
-        this.builtIn = builtIn;
+        this.builtIn = built_in;
 
     }
 
