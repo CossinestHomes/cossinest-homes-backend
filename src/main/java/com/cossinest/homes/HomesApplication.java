@@ -14,12 +14,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @SpringBootApplication
 public class HomesApplication implements CommandLineRunner {
 
 
-
+	private final PasswordEncoder passwordEncoder;
 	private final UserRoleService userRoleService;
 	private final UserService userService;
 	private final UserRoleRepository userRoleRepository;
@@ -28,11 +30,12 @@ public class HomesApplication implements CommandLineRunner {
 
 	public HomesApplication (UserRoleService userRoleService,
 										UserService userService,
-										UserRoleRepository userRoleRepository,CategoryService categoryService) {
+										UserRoleRepository userRoleRepository,CategoryService categoryService,PasswordEncoder passwordEncoder) {
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.userRoleRepository = userRoleRepository;
 		this.categoryService=categoryService;
+		this.passwordEncoder=passwordEncoder;
 	}
 
 
@@ -71,7 +74,7 @@ public class HomesApplication implements CommandLineRunner {
 			UserSaveRequest adminRequest = new UserSaveRequest();
 		//	adminRequest.setUsername("SuperAdmin"); // builtIN degeri TRUE olarak setlenmis olacak
 			adminRequest.setEmail("admin@admin.com");
-			adminRequest.setPassword("A1a@secure");
+			adminRequest.setPassword(passwordEncoder.encode("A1a@secure"));
 			adminRequest.setFirstName("Eda");
 			adminRequest.setLastName("Duygu");
 			adminRequest.setPhone("123-123-123-4444");

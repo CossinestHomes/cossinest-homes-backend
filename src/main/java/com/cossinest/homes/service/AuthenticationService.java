@@ -54,11 +54,17 @@ public class AuthenticationService {
         Optional<String> role= roles.stream().findFirst();
 
         AuthenticatedUsersResponse.AuthenticatedUsersResponseBuilder authResponse= AuthenticatedUsersResponse.builder();
+        authResponse.id(userDetails.getId());
+
+        authResponse.built_in(userDetails.getBuilt_in());
+
         authResponse.email(userDetails.getEmail());
         authResponse.token(token.substring(7));
         authResponse.firstName(userDetails.getFirstName());
         authResponse.lastName(userDetails.getLastName());
         authResponse.userRole(roles);
+        authResponse.phone(userDetails.getPhone());
+        authResponse.built_in(userDetails.getBuiltIn());
 
         return ResponseEntity.ok(authResponse.build());
 

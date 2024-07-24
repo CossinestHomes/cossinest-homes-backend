@@ -30,11 +30,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER= LoggerFactory.getLogger(AuthTokenFilter.class);
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+
+
+
+
 
     //Bu metod, her HTTP isteği için çağrılır.
     //İstek başlıklarını (headers) kontrol eder ve bir JWT olup olmadığını belirler.

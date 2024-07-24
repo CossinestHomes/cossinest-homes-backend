@@ -46,11 +46,11 @@ public class UserService {
     private final MethodHelper methodHelper;
     private final AdvertService advertService;
     private final TourRequestService tourRequestService;
-   // private final FavoritesService favoritesService;
+    // private final FavoritesService favoritesService;
     private final UserMapper userMapper;
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
-  //  private final PasswordEncoder passwordEncoder;
+    //  private final PasswordEncoder passwordEncoder;
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
     private final LogService logService;
@@ -236,7 +236,7 @@ public class UserService {
         String resetCode;
         try {
             User user = methodHelper.findByUserByEmail(request.getEmail());
-             resetCode = UUID.randomUUID().toString();
+            resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
             emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
@@ -249,10 +249,9 @@ public class UserService {
 
     }
 
-  public ResponseEntity<String> resetPassword(CodeRequest request) {
+    public ResponseEntity<String> resetPassword(CodeRequest request) {
 
-        User user=userRepository.findByResetPasswordCode(request.getCode()).orElseThrow(()-> new IllegalArgumentException(String.format(ErrorMessages.RESET_CODE_IS_NOT_FOUND,request.getCode())));
-
+        User user = userRepository.findByResetPasswordCode(request.getCode()).orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessages.RESET_CODE_IS_NOT_FOUND, request.getCode())));
 
 
         String requestPassword = passwordEncoder.encode(request.getPassword());
@@ -277,9 +276,9 @@ public class UserService {
 
     public List<User> getUsersByRoleType(RoleType roleType) {
 
-      // UserRole userRole =userRoleService.getUserRole(roleType);
+        // UserRole userRole =userRoleService.getUserRole(roleType);
 
-       return userRepository.findByUserRole_RoleType(roleType);
+        return userRepository.findByUserRole_RoleType(roleType);
 
     }
 
@@ -328,8 +327,8 @@ public class UserService {
     public ResponseEntity<UserResponse> saveUserWithoutRequest(UserSaveRequest request) {
 
 
-        methodHelper.checkDuplicate(request.getEmail(),request.getPhone());
-        User savedUser =userMapper.userRequestToUser(request);
+        methodHelper.checkDuplicate(request.getEmail(), request.getPhone());
+        User savedUser = userMapper.userRequestToUser(request);
 
        /* Set<Advert>adverts =advertService.getAdvertsByIdList(request.getAdvertIdList());
         Set<TourRequest>tourRequests= tourRequestService.getTourRequestsById(request.getTourRequestIdList());
@@ -339,11 +338,11 @@ public class UserService {
         //TODO Password encoder
         savedUser.setPasswordHash(request.getPassword());
 
-     //   savedUser.setAdvert(adverts);
-     //   savedUser.setTourRequests(tourRequests);
+        //   savedUser.setAdvert(adverts);
+        //   savedUser.setTourRequests(tourRequests);
 
 
-        Set<UserRole>userRolesSaved=new HashSet<>();
+        Set<UserRole> userRolesSaved = new HashSet<>();
         userRolesSaved.add(userRoleService.getUserRole(RoleType.ADMIN));
         savedUser.setUserRole(userRolesSaved);
 
@@ -356,47 +355,46 @@ public class UserService {
     }
 
     public ResponseEntity<SignInResponse> registerUser(SignInRequest signInRequest) {
-        //duplicate email & phone kontrolü
+        // Duplicate email & phone kontrolü
         methodHelper.checkDuplicate(signInRequest.getEmail(), signInRequest.getPhone());
 
-        User newUser= new User();
+        // Yeni kullanıcı oluşturma
+        User newUser = new User();
         newUser.setFirstName(signInRequest.getFirstName());
         newUser.setLastName(signInRequest.getLastName());
         newUser.setEmail(signInRequest.getEmail());
         newUser.setPhone(signInRequest.getPhone());
-        newUser.setUserRole(signInRequest.getRole());
         newUser.setPasswordHash(passwordEncoder.encode(signInRequest.getPassword()));
 
-        Set<UserRole> userRoles= signInRequest.getRole();
-        Set<UserRole> roles= new HashSet<>();
+        // Roller için boş bir set oluşturma
+        Set<UserRole> roles = new HashSet<>();
 
-        //Eğer userRoles null ise, varsayılan olarak CUSTOMER rolü eklenir.
-        if(userRoles == null){
-            UserRole userRole= userRoleService.getUserRole(RoleType.CUSTOMER);
-            roles.add(userRole);
-
-        }else{ //ğer userRoles null değilse, içindeki her rol kontrol edilir.Eğer rol adı "Admin" ise, ADMIN rolü eklenir.
-
-            userRoles.forEach(role ->{
-                switch (role.getRoleName()){
-                    case "Admin" :
-                        UserRole userAdminRole=userRoleService.getUserRole(RoleType.ADMIN);
-                        roles.add(userAdminRole);
-                        break;
-
-                    default: //Diğer durumlarda, CUSTOMER rolü eklenir.
-                        UserRole userRole= userRoleService.getUserRole(RoleType.CUSTOMER);
-                        roles.add(userRole);
+        // Eğer roller null veya boş ise, varsayılan olarak CUSTOMER rolü eklenir
+        if (signInRequest.getRole() == null || signInRequest.getRole().isEmpty()) {
+            UserRole defaultRole = userRoleService.getUserRole(RoleType.CUSTOMER);
+            if (defaultRole != null) {
+                roles.add(defaultRole);
+            }
+        } else { // Eğer roller null değilse, içindeki her rol kontrol edilir
+            for (RoleType roleType : signInRequest.getRole()) {
+                UserRole userRole = userRoleService.getUserRole(roleType);
+                if (userRole != null) {
+                    roles.add(userRole);
                 }
-
-            });
+            }
         }
+
+        // Kullanıcının rollerini ayarlama
         newUser.setUserRole(roles);
-        User registeredUser= userRepository.save(newUser);
-         return ResponseEntity.ok(userMapper.userToSignInResponse(registeredUser));
 
+        // Kullanıcıyı veritabanına kaydetme
+        User registeredUser = userRepository.save(newUser);
+
+        // Başarılı yanıt döndürme
+
+        SignInResponse response= userMapper.userToSignInResponse(registeredUser);
+        return new ResponseEntity(response , HttpStatus.CREATED);
     }
-
 
 
 
@@ -405,4 +403,5 @@ public class UserService {
 
         userRepository.deleteByBuiltIn(false);
     }*/
-}
+    }
+

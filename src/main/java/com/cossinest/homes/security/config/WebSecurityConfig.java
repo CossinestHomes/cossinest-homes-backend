@@ -2,6 +2,7 @@ package com.cossinest.homes.security.config;
 
 import com.cossinest.homes.security.jwt.AuthEntryPointJwt;
 import com.cossinest.homes.security.jwt.AuthTokenFilter;
+import com.cossinest.homes.security.jwt.JwtUtils;
 import com.cossinest.homes.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class WebSecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt authEntryPointJwt;
+    private final JwtUtils jwtUtils;
+    private final AuthTokenFilter authTokenFilter;
 
 
     // kimlik bilgilerini doğrulamak ve oturum açma işlemlerini gerçekleştirmek için kullanılan merkezi bir bileşendir.
@@ -63,15 +66,13 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
 
         /*authenticationJwtTokenFilter() tarafından tanımlanan JWT kimlik doğrulama filtresini,
         UsernamePasswordAuthenticationFilter filtresinden önce ekler. Bu filtre, gelen isteklerdeki JWT tokenlarını doğrular.*/
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
 
-    public Filter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
-    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -111,16 +112,27 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
 
     private static final String[] AUTH_WHITE_LIST = {
             "/v3/api-docs/**", // eklenecek
-            "swagger-ui.html", // eklenecek
+            "/swagger-ui.html", // eklenecek
             "/swagger-ui/**", // eklenecek
-            "/",
+            "/*",
             "/index.html",
             "/images/**",
             "/css/**",
             "/js/**",
+
             "/contactMessages/save",
             "/auth/login",
             "/adverts/cities",
             "/adverts/categories"
+
+            "/contact-messages/contact-messages",
+            "/auth/loginUser",
+            "/adverts",
+            "/cities",
+            "/categories",
+            "/popular/*",
+            "/trySave",
+            "/users/*"
+
     };
 }

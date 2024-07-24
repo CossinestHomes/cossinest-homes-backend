@@ -29,7 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     user.getLastName(),
                     user.getEmail(),
                     user.getUserRole(),
-                    user.getPasswordHash()
+                    user.getPasswordHash(),
+
+
+                    user.getBuiltIn()
 
             );
         }

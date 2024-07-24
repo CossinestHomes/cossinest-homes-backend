@@ -27,7 +27,7 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/login") //http://localhost:8080/auth/login
+    @PostMapping("/loginUser") //http://localhost:8080/auth/login
     public ResponseEntity<AuthenticatedUsersResponse> authenticateUser(@RequestBody @Valid LoginRequest loginRequest){
         return authenticationService.authenticateUser(loginRequest);
     }
@@ -37,7 +37,7 @@ public class AuthenticationController {
 
 
 
-    @PostMapping("/forgot-password")
+    @PostMapping("/forgot-password") //http://localhost:8080/auth/forgot-password
     public ResponseMessage<String> forgotPassword(@Valid @RequestBody ForgetPasswordRequest request){
 
         return ResponseMessage.<String>builder()
@@ -48,7 +48,7 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("/reset-password")
+    @PostMapping("/reset-password") //http://localhost:8080/auth/reset-password
     ResponseEntity<String>resetPassword(@Valid @RequestBody CodeRequest request){
         return userService.resetPassword(request);
     }

@@ -21,7 +21,7 @@ public class JwtUtils {
     private String jwtSecretKey;
 
     @Value("${backendapi.app.jwtExpirationMs}")
-    private String jwtExpirationTime;
+    private Long jwtExpirationTime;
 
     public String generateJwtToken(Authentication authentication){
         UserDetailsImpl userDetails= (UserDetailsImpl) authentication.getPrincipal(); //kullanıcı adı veya kullanıcı nesnesi gibi kimliği temsil eden bilgiyi döner.Anlık login olan userı aldık.
