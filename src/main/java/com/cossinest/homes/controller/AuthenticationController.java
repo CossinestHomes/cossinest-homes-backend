@@ -11,6 +11,7 @@ import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.user.AuthenticatedUsersResponse;
 import com.cossinest.homes.service.AuthenticationService;
 import com.cossinest.homes.service.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +28,15 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
+    @GetMapping("/logout")
+    public String login() {
+        return "logout successfully";
+    }
+
     @PostMapping("/loginUser") //http://localhost:8080/auth/login
     public ResponseEntity<AuthenticatedUsersResponse> authenticateUser(@RequestBody @Valid LoginRequest loginRequest){
         return authenticationService.authenticateUser(loginRequest);
     }
-
-
-
-
 
 
     @PostMapping("/forgot-password") //http://localhost:8080/auth/forgot-password
@@ -52,5 +54,8 @@ public class AuthenticationController {
     ResponseEntity<String>resetPassword(@Valid @RequestBody CodeRequest request){
         return userService.resetPassword(request);
     }
+
+
+
 
 }

@@ -56,6 +56,11 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
+                ).logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 );
 
                 /*Frame Options başlığını "same origin" olarak ayarlar. Bu, yalnızca aynı kaynaktan gelen içeriklerin aynı iframe'de görüntülenmesine izin verir.*/
@@ -123,7 +128,7 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/contactMessages/save",
             "/auth/login",
             "/adverts/cities",
-            "/adverts/categories"
+            "/adverts/categories",
 
             "/contact-messages/contact-messages",
             "/auth/loginUser",
