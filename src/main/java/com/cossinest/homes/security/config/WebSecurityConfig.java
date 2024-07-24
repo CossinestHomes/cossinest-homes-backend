@@ -119,6 +119,8 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/css/**",
             "/js/**",
             "/contactMessages/save",
-            "/auth/login"
+            "/auth/login",
+            "/adverts/cities",
+            "/adverts/categories"
     };
 }
