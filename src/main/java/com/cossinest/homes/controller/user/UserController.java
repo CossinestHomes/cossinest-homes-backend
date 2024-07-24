@@ -21,6 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
+    //TODO 1 kere update ediyor sonra hata veriyor
+    //TODO deleteCustomer ve admin calismiyor
+    //TODO updateUser dogru calismiyor
+    //TODO getAllUsersByPageQueries calisiyor ama  getAllUsersByPage dogru calismiyor
+
+
     private final UserService userService;
 
 
@@ -126,7 +132,7 @@ public class UserController {
 
     @DeleteMapping("auth/user") //http://localhost:8080/users/auth/user
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id, HttpServletRequest auth) {
+    public ResponseEntity<UserResponse> deleteUser(@PathVariable("auth/user") Long id, HttpServletRequest auth) {
 
         UserResponse response = userService.deleteUserBusiness(id, auth);
         return ResponseEntity.ok(response);

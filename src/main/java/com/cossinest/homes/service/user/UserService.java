@@ -36,6 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.util.*;
 
@@ -239,7 +240,10 @@ public class UserService {
             resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
-            emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
+            Context context = new Context();
+            context.setVariable("subject", "Reset Password Code");
+            context.setVariable("message", "Your reset email code is: " + resetCode);
+            emailService.sendEmail(user.getEmail(), "Reset Password", context);
 
         } catch (BadRequestException e) {
             return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
