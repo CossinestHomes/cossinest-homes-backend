@@ -119,6 +119,12 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/images/**",
             "/css/**",
             "/js/**",
+
+            "/contactMessages/save",
+            "/auth/login",
+            "/adverts/cities",
+            "/adverts/categories"
+
             "/contact-messages/contact-messages",
             "/auth/loginUser",
             "/adverts",
@@ -127,8 +133,6 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/popular/*",
             "/trySave",
             "/users/*"
-
-
 
     };
 }
