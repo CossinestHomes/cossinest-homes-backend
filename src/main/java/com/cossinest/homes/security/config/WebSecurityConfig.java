@@ -132,7 +132,8 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/categories",
             "/popular/*",
             "/trySave",
-            "/users/*"
+            "/users/*",
+            "/auth/forgot-password"
 
     };
 }
