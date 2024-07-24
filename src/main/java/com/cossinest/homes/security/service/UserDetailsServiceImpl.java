@@ -30,7 +30,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     user.getEmail(),
                     user.getUserRole(),
                     user.getPasswordHash(),
-                    user.getPhone(),
+
+
                     user.getBuiltIn()
 
             );

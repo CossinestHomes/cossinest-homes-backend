@@ -391,7 +391,9 @@ public class UserService {
         User registeredUser = userRepository.save(newUser);
 
         // Başarılı yanıt döndürme
-        return ResponseEntity.ok(userMapper.userToSignInResponse(registeredUser));
+
+        SignInResponse response= userMapper.userToSignInResponse(registeredUser);
+        return new ResponseEntity(response , HttpStatus.CREATED);
     }
 
 

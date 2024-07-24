@@ -55,6 +55,9 @@ public class AuthenticationService {
 
         AuthenticatedUsersResponse.AuthenticatedUsersResponseBuilder authResponse= AuthenticatedUsersResponse.builder();
         authResponse.id(userDetails.getId());
+
+        authResponse.built_in(userDetails.getBuilt_in());
+
         authResponse.email(userDetails.getEmail());
         authResponse.token(token.substring(7));
         authResponse.firstName(userDetails.getFirstName());
