@@ -123,7 +123,7 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/contactMessages/save",
             "/auth/login",
             "/adverts/cities",
-            "/adverts/categories"
+            "/adverts/categories",
 
             "/contact-messages/contact-messages",
             "/auth/loginUser",
