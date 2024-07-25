@@ -9,6 +9,7 @@ import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.request.business.CityRequest;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
 import com.cossinest.homes.repository.business.CityRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ public class CityService {
         return cityRepository.findAll();
     }
 
+    @Transactional
     public City getCityById(Long id){
         return cityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.CITY_NOT_FOUND));
 
