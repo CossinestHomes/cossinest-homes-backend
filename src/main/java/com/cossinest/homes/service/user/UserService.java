@@ -53,7 +53,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
-    //  private final PasswordEncoder passwordEncoder;
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
     private final LogService logService;

@@ -72,6 +72,7 @@ public class AuthenticationService {
         authResponse.phone(userDetails.getPhone());
         authResponse.built_in(userDetails.getBuiltIn());
 
+
         try {
             MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(userDetails.getEmail());
             emailServiceInterface.sendEmail(registrationEmail);
