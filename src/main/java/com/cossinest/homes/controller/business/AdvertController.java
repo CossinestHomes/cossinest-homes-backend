@@ -149,7 +149,9 @@ public class AdvertController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseMessage<AdvertResponse> createAdvert(@RequestBody @Valid AdvertRequest advertRequest,HttpServletRequest httpServletRequest,@RequestParam("files") MultipartFile[] files){
+    public ResponseMessage<AdvertResponse> createAdvert(@RequestPart("advertRequest") @Valid AdvertRequest advertRequest,
+                                                        @RequestPart("files") MultipartFile[] files,
+                                                        HttpServletRequest httpServletRequest){
         AdvertResponse advertResponse= advertService.saveAdvert(advertRequest,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_CREATED_SUCCESS)
