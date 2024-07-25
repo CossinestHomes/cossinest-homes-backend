@@ -102,7 +102,7 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
         }
 
-        String password = passwordEncoder.encode(request.getPassword());
+        String password = passwordEncoder.encode(request.getNewPassword());
 
         user.setPasswordHash(password);
         userRepository.save(user);
@@ -119,8 +119,9 @@ public class UserService {
         methodHelper.checkRoles(user, RoleType.CUSTOMER);
         methodHelper.isRelatedToAdvertsOrTourRequest(user);
 
-        String requestPassword = passwordEncoder.encode(request.getPassword());
-        request.setPassword(requestPassword);
+        if(request.getEmail()==null){
+            throw new BadRequestException("EMAIL IS NULL");
+        }
 
         methodHelper.checkEmailAndPassword(user, request);
 
@@ -179,6 +180,13 @@ public class UserService {
         if (methodHelper.isBuiltIn(user)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         User updatedUser = userMapper.usersUpdateRequestToUser(user, request);
 
+        Set<UserRole>roles=new HashSet<>();
+
+        for (String rol:request.getRoles()) {
+            roles.add( userRoleService.getUserRole(RoleType.valueOf(rol)));
+        }
+        updatedUser.setUserRole(roles);
+
 
         for (Advert advert : user.getAdvert()) {
 
@@ -189,7 +197,7 @@ public class UserService {
         return ResponseMessage.<UserResponse>builder()
                 .message(SuccesMessages.USER_UPDATED_SUCCESSFULLY)
                 .status(HttpStatus.OK)
-                .object(userMapper.userToUserResponse(updatedUser))
+                .object(userMapper.userToUserResponse( userRepository.save(updatedUser)))
                 .build();
 
 

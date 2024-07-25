@@ -60,9 +60,9 @@ public class UserController {
     }
 
 
-    @DeleteMapping("auth/customer") //http://localhost:8080/users/auth/customer
+    @DeleteMapping("auth/customer") //http://localhost:8080/users/auth/customer ++
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseEntity<String> deleteCustomer(HttpServletRequest auth, CustomerRequest request) {
+    public ResponseEntity<String> deleteCustomer(HttpServletRequest auth, @RequestBody @Valid CustomerRequest request) {
 
         String message = userService.deleteCustomer(auth, request);
         return ResponseEntity.ok(message);
@@ -70,7 +70,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin/qr") //http://localhost:8080/users//admin/qr?-----
+    @GetMapping("/admin/qr") //http://localhost:8080/users/admin/qr?name=John&page=0&size=10&sort=firstName&type=desc ++
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseMessage<Page<UserPageableResponse>> getAllUsersByPageQueries(
             HttpServletRequest request,
@@ -80,7 +80,7 @@ public class UserController {
             @RequestParam(value = "phone", required = false) String phone,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "0") int size,
-            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "sort", defaultValue = "firstName") String sort,
             @RequestParam(value = "type", defaultValue = "desc") String type
     ) {
         return userService.getAllAdminAndManagerQueriesByPage(request, name, surname, email, phone, page, size, sort, type);
@@ -88,7 +88,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin") //http://localhost:8080/users/admin----
+    @GetMapping("/admin") //http://localhost:8080/users/admin?q=John&page=0&size=10&sort=firstName&type=desc ++
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<Page<UserPageableResponse>>getAllUsersByPage(
             HttpServletRequest request,
@@ -102,7 +102,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/{id}/admin") //http://localhost:8080/users/1/admin
+    @GetMapping("/{id}/admin") //http://localhost:8080/users/1/admin ++
     @PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id, HttpServletRequest request) {
 
@@ -111,15 +111,15 @@ public class UserController {
     }
 
 
-    @PutMapping("/{id}/admin") //http://localhost:8080/users/1/admin
+    @PutMapping("/{id}/admin") //http://localhost:8080/users/2/admin ++
     @PreAuthorize("hasAnyAuthority('MANAGER',ADMIN')")
-    public ResponseMessage<UserResponse> updateUser(@PathVariable Long id, UsersUpdateRequest request, HttpServletRequest auth) {
+    public ResponseMessage<UserResponse> updateUser(@PathVariable Long id, @RequestBody @Valid UsersUpdateRequest request, HttpServletRequest auth) {
 
         return userService.updateUser(id, request, auth);
 
     }
 
-    @DeleteMapping("auth/user") //http://localhost:8080/users/auth/user
+    @DeleteMapping("/{id}/admin") //http://localhost:8080/users/2/admin ++
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id, HttpServletRequest auth) {
 
