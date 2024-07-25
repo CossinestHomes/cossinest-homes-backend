@@ -1,15 +1,16 @@
 package com.cossinest.homes;
 
-import com.cossinest.homes.domain.concretes.business.City;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.Cities;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.payload.request.business.CityRequest;
+import com.cossinest.homes.payload.request.business.CountryRequest;
 import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.repository.user.UserRoleRepository;
 import com.cossinest.homes.service.business.CategoryService;
 import com.cossinest.homes.service.business.CityService;
+import com.cossinest.homes.service.business.CountryService;
 import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import org.springframework.boot.CommandLineRunner;
@@ -29,16 +30,18 @@ public class HomesApplication implements CommandLineRunner {
 	private  final CityService cityService;
 
 	private final CategoryService categoryService;
+	private final CountryService countryService;
 
 	public HomesApplication (UserRoleService userRoleService,
 							 UserService userService,
-							 UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService) {
+							 UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CountryService countryService) {
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.userRoleRepository = userRoleRepository;
 		this.categoryService=categoryService;
 		this.passwordEncoder=passwordEncoder;
 		this.cityService = cityService;
+		this.countryService = countryService;
 	}
 
 
@@ -100,12 +103,24 @@ public class HomesApplication implements CommandLineRunner {
 
 		}
 
-	/*	if (cityService.countAllCities() == 0) {
+		if (countryService.countAllCountries() == 0) {
+			CountryRequest countryRequest = new CountryRequest();
+			countryRequest.setName("Türkiye");
+
+			countryService.saveCountry(countryRequest);
+
+		}
+
+		if (cityService.countAllCities() == 0) {
 			CityRequest cityRequest = new CityRequest();
 			cityRequest.setName(Cities.ANKARA.getName());
+			cityRequest.setCountry_id(1);
 
 			cityService.saveCity(cityRequest);
 
-		}*/
+		}
+
+
+
 	}
 }

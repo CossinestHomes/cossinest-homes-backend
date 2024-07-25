@@ -1,8 +1,8 @@
 package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.City;
+import com.cossinest.homes.domain.concretes.business.Country;
 import com.cossinest.homes.domain.enums.Cities;
-import com.cossinest.homes.domain.enums.Country;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.CityMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
@@ -23,6 +23,8 @@ public class CityService {
 
   @Autowired
    private CityRepository cityRepository;
+  @Autowired
+  private CountryService countryService;
 
     @Autowired
     private  CityMapper cityMapper;
@@ -55,18 +57,19 @@ public class CityService {
       return cityRepository.countAllCities();
     }
 
-   /* public City saveCity(CityRequest cityRequest) {
+    public City saveCity(CityRequest cityRequest) {
 
         City city = new City();
         city.setName(cityRequest.getName());
 
         String cityName =cityRequest.getName();
-
-
         city.setCities( fromName(cityName));
 
-        return cityRepository.save();
-    }*/
+        Country country = countryService.getById(cityRequest.getCountry_id());
+        city.setCountry(country);
+
+        return cityRepository.save(city);
+    }
 
     public static Cities fromName(String name) {
         for (Cities city : Cities.values()) {
@@ -74,17 +77,9 @@ public class CityService {
                 return city;
             }
         }
-        return null; // veya Exception fırlatabilirsiniz, isteğe bağlı
+        return null;
     }
 
-    public static Country fromCountry(String name) {
-        for (Country country : Country.values()) {
-            if (country.getName().equalsIgnoreCase(name)) {
-                return country;
-            }
-        }
-        return null; // veya Exception fırlatabilirsiniz, isteğe bağlı
-    }
 
 
 }
