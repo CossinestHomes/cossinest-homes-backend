@@ -1,6 +1,7 @@
 package com.cossinest.homes.service;
 
 import com.cossinest.homes.domain.concretes.user.User;
+import com.cossinest.homes.exception.MailServiceException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.UserMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
@@ -10,8 +11,12 @@ import com.cossinest.homes.payload.response.user.UserResponse;
 import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.security.jwt.JwtUtils;
 import com.cossinest.homes.security.service.UserDetailsImpl;
+import com.cossinest.homes.service.user.EmailService;
+import com.cossinest.homes.service.user.EmailServiceInterface;
+import com.cossinest.homes.utils.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +36,7 @@ public class AuthenticationService {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final EmailServiceInterface emailServiceInterface;
 
     public ResponseEntity<AuthenticatedUsersResponse> authenticateUser(LoginRequest loginRequest){
         //login için gerekli olan email ve password LoginRequest classı üzerinden alınıyor.
@@ -55,6 +61,9 @@ public class AuthenticationService {
 
         AuthenticatedUsersResponse.AuthenticatedUsersResponseBuilder authResponse= AuthenticatedUsersResponse.builder();
         authResponse.id(userDetails.getId());
+
+        authResponse.built_in(userDetails.getBuilt_in());
+
         authResponse.email(userDetails.getEmail());
         authResponse.token(token.substring(7));
         authResponse.firstName(userDetails.getFirstName());
@@ -62,6 +71,14 @@ public class AuthenticationService {
         authResponse.userRole(roles);
         authResponse.phone(userDetails.getPhone());
         authResponse.built_in(userDetails.getBuiltIn());
+
+
+        try {
+            MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(userDetails.getEmail());
+            emailServiceInterface.sendEmail(registrationEmail);
+        } catch (Exception e) {
+            throw new MailServiceException(e.getMessage());
+        }
 
         return ResponseEntity.ok(authResponse.build());
 

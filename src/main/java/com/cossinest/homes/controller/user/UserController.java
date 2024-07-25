@@ -25,20 +25,15 @@ public class UserController {
 
 
 
-    @PostMapping //http://localhost:8080/users
-   // @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<UserResponse>saveUser(@Valid @RequestBody UserSaveRequest request){
 
-        return userService.saveUserWithoutRequest(request);
-    }
 
-    @PostMapping("/register")
+    @PostMapping("/register") //http://localhost:8080/users/register ++
     public ResponseEntity<SignInResponse> registerUser (@RequestBody @Valid SignInRequest signInRequest){
        return userService.registerUser(signInRequest);
 
     }
 
-    @GetMapping("/auth") //http://localhost:8080/users/auth
+    @GetMapping("/auth") //http://localhost:8080/users/auth ++
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<AuthenticatedUsersResponse> getAuthenticatedUser(HttpServletRequest request) {
 
@@ -48,7 +43,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/auth") //http://localhost:8080/users/auth
+    @PutMapping("/auth") //http://localhost:8080/users/auth ++
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<AuthenticatedUsersResponse> updateAuthenticatedUser(@Valid @RequestBody AuthenticatedUsersRequest request, HttpServletRequest auth) {
 
@@ -56,7 +51,7 @@ public class UserController {
 
     }
 
-    @PatchMapping("/auth") //http://localhost:8080/users/auth
+    @PatchMapping("/auth") //http://localhost:8080/users/auth ++
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<String> updateUserPassword(@Valid @RequestBody UserPasswordRequest request, HttpServletRequest auth) {
 
