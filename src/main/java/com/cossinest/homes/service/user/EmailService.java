@@ -21,7 +21,6 @@ public class EmailService implements EmailServiceInterface {
 
 
 
-    @Async
     public void sendEmail(MimeMessagePreparator mimeMessagePreparator) {
         javaMailSender.send(mimeMessagePreparator);
     }
