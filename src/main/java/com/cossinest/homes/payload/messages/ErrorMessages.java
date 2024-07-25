@@ -47,7 +47,7 @@ public class ErrorMessages {
     public static final String NOT_FOUND_USER_EMAIL = "There is no email that matches %s";
     public static final String BUILT_IN_USER_CAN_NOT_BE_UPDATED = "BuiltIn user can not be updated";
     public static final String PASSWORD_IS_NOT_CORRECT = "Password do not matched";
-    public static final String EMAIL_IS_INCORRECT = "Email %s is not correct";
+    public static final String EMAIL_IS_INCORRECT = " %s, Email is not correct";
     public static final String BUILT_IN_USER_CAN_NOT_BE_DELETED = "BuiltIn user can not be deleted";
 
     public static final String ROLE_NOT_FOUND = "There is no role like that, check the database";

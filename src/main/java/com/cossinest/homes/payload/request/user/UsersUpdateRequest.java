@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -31,5 +32,5 @@ public class UsersUpdateRequest {
     private String phone;
 
 
-    private Set<String> roles;
+    private Set<String> roles=new HashSet<>();
 }

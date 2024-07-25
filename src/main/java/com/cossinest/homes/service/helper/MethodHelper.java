@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 public class MethodHelper {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
     //private final AdvertService advertService;
     //private final TourRequestService tourRequestService;
@@ -111,11 +112,15 @@ public class MethodHelper {
 
     public void checkEmailAndPassword(User user, CustomerRequest request) {
 
-        if (!(user.getEmail().equals(request.getEmail())))
-            throw new BadRequestException(String.format(ErrorMessages.EMAIL_IS_INCORRECT, request.getEmail()));
-        if (!(Objects.equals(user.getPasswordHash(), request.getPassword())))
-            throw new BadRequestException(ErrorMessages.PASSWORD_IS_NOT_CORRECT);
 
+
+        if (!user.getEmail().equals(request.getEmail())){
+            throw new BadRequestException(String.format(ErrorMessages.EMAIL_IS_INCORRECT, request.getEmail()));
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(),user.getPasswordHash())){
+            throw new BadRequestException(ErrorMessages.PASSWORD_IS_NOT_CORRECT);
+        }
     }
 
     public User findUserWithId(Long id) {
