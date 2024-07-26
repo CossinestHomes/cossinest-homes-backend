@@ -10,13 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 
 @Repository
 public interface CategoryPropertyKeyRepository extends JpaRepository<CategoryPropertyKey, Long> {
-
-
-
-    boolean existsByName(String name);
 
 
     @Modifying
@@ -24,4 +22,9 @@ public interface CategoryPropertyKeyRepository extends JpaRepository<CategoryPro
     @Query("DELETE FROM CategoryPropertyKey c WHERE c.builtIn = :builtIn")
     void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
 
+    boolean existsByPropertyName(String propertyName);
+
+
+    @Query("SELECT c FROM CategoryPropertyKey c WHERE c.category.id= ?1")
+    Set<CategoryPropertyKey> findByCategory_IdEquals(Long id);
 }

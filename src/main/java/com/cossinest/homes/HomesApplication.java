@@ -54,10 +54,6 @@ public class HomesApplication implements CommandLineRunner {
 		SpringApplication.run(HomesApplication.class, args);
 	}
 
-
-
-
-
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -125,6 +121,7 @@ public class HomesApplication implements CommandLineRunner {
 
 		}
 
+<<<<<<< HEAD
 		if (districtService.countAllDistricts() == 0) {
 			DistrictRequest districtRequest = new DistrictRequest();
 			districtRequest.setName("Ay");
@@ -136,5 +133,7 @@ public class HomesApplication implements CommandLineRunner {
 
 
 
+=======
+>>>>>>> 0100302e76f981c4dd322df49df1311796ca93aa
 	}
 }

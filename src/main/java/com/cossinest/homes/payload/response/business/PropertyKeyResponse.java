@@ -1,6 +1,9 @@
 package com.cossinest.homes.payload.response.business;
 
+
 import lombok.*;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -8,15 +11,9 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 @Builder(toBuilder = true)
-public class CategoryPropKeyResponseDTO{
-
-
+public class PropertyKeyResponse {
 
     private Long id;
-
-    private String name;
-
+    private String propertyName;
     private Boolean builtIn = false;
-
-
 }
