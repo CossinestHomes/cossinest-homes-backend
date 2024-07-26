@@ -32,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
     private Set<UserRole> roles; // Kullanıcı rolleri
 
 
-    public UserDetailsImpl(Long id, String firstName, String lastName, String email, Set<UserRole> role, String passwordHash, Boolean built_in) {
+    public UserDetailsImpl(Long id, String firstName, String lastName, String email, Set<UserRole> role, String passwordHash, Boolean built_in,String phone) {
 
         this.id=id;
         this.firstName=firstName;
@@ -42,6 +42,7 @@ public class UserDetailsImpl implements UserDetails {
         this.built_in=built_in;
         this.authorities = buildGrantedAuthorities(role);
         this.builtIn = built_in;
+        this.phone=phone;
 
     }
 

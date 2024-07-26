@@ -306,20 +306,21 @@ public class MethodHelper {
                     createRow(sheet, rowNum++,null, fetchedUser.getId(), fetchedUser.getFirstName(), fetchedUser.getLastName(),fetchedUser.getEmail(),fetchedUser.getPhone());
                 }
             } else if (!list.isEmpty() && list.get(0) instanceof TourRequest) {
+                createRow(sheet, rowNum++, headerStyle,"ID", "Name", "Last Name","Title");
+
                 for (TourRequest tourRequest : (List<TourRequest>) list) {
-                    createRow(sheet, rowNum++,null, tourRequest.getId(), tourRequest.getOwnerUserId().getFirstName(), tourRequest.getAdvertId().getTitle());
+                    createRow(sheet, rowNum++,null, tourRequest.getId(), tourRequest.getOwnerUserId().getFirstName(),tourRequest.getOwnerUserId().getLastName(), tourRequest.getAdvertId().getTitle());
                 }
             } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
+                //TODO hem advert hemde advertType title var ikisinide gerek var mi?
+                createRow(sheet, rowNum++, headerStyle,"ID", "AdvertTitle", "Status","AdvertTypeTitle","CategoryTitle");
+
                 for (Advert advert : (List<Advert>) list) {
                     createRow(sheet, rowNum++,null, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
                 }
 
-            } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
-                for (Advert advert : (Page<Advert>) list) {
-
-                    createRow(sheet, rowNum++,null, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
-                }
-            }else{
+            }
+           else{
                 throw new BadRequestException(ErrorMessages.EXCEL_COULD_NOT_BE_CREATED);
             }
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -342,10 +343,12 @@ public class MethodHelper {
             Sheet sheet = workbook.createSheet("AdvertReport");
             int rowNum = 0;
             List<T> page = list.getContent();
+            CellStyle headerStyle = createHeaderStyle(workbook);
 
             if (page.isEmpty() || !(page.get(0) instanceof Advert)){
                 throw new BadRequestException(ErrorMessages.EXCEL_COULD_NOT_BE_CREATED_TYPE_IS_NOT_ADVERT);
             }
+            createRow(sheet, rowNum++, headerStyle,"ID", "AdvertTitle", "Status","AdvertTypeTitle","CategoryTitle");
 
             for (Advert advert : (Page<Advert>) page) {
                 createRow(sheet,rowNum++,null, advert.getId(),advert.getTitle(),advert.getStatus(),advert.getAdvertType().getTitle(),advert.getCategory().getTitle());
