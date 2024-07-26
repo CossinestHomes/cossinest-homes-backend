@@ -12,7 +12,7 @@ import lombok.*;
 @Setter
 public class CustomerRequest {
 
-    @NotBlank(message = "enter valid email adress")
+    @NotNull(message = "enter valid email adress")
     @Email(message = "enter valid email adress")
     private String email;
 

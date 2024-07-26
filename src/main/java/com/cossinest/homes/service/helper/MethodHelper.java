@@ -20,15 +20,14 @@ import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
 public class MethodHelper {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
     //private final AdvertService advertService;
     //private final TourRequestService tourRequestService;
@@ -111,11 +110,15 @@ public class MethodHelper {
 
     public void checkEmailAndPassword(User user, CustomerRequest request) {
 
-        if (!(user.getEmail().equals(request.getEmail())))
-            throw new BadRequestException(String.format(ErrorMessages.EMAIL_IS_INCORRECT, request.getEmail()));
-        if (!(Objects.equals(user.getPasswordHash(), request.getPassword())))
-            throw new BadRequestException(ErrorMessages.PASSWORD_IS_NOT_CORRECT);
 
+
+        if (!user.getEmail().equals(request.getEmail())){
+            throw new BadRequestException(String.format(ErrorMessages.EMAIL_IS_INCORRECT, request.getEmail()));
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(),user.getPasswordHash())){
+            throw new BadRequestException(ErrorMessages.PASSWORD_IS_NOT_CORRECT);
+        }
     }
 
     public User findUserWithId(Long id) {
@@ -251,11 +254,16 @@ public class MethodHelper {
     }
 
 
-    private void createRow(Sheet sheet, int rowNum, Object... values) {
+    private void createRow(Sheet sheet, int rowNum,CellStyle style, Object... values) {
         Row row = sheet.createRow(rowNum);
         for (int i = 0; i < values.length; i++) {
 
-            row.createCell(i).setCellValue(values[i].toString());
+            Cell cell= row.createCell(i);
+            cell.setCellValue(values[i].toString());
+            if (style != null) {
+                cell.setCellStyle(style);
+            }
+
         }
     }
 
@@ -267,6 +275,20 @@ public class MethodHelper {
         return headers;
     }
 
+
+    private CellStyle createHeaderStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        return style;
+    }
+
     public <T> ResponseEntity<byte[]> excelResponse(List<T> list) {
 
         try {
@@ -274,23 +296,28 @@ public class MethodHelper {
             Sheet sheet = workbook.createSheet("AdvertReport");
             int rowNum = 0;
 
+            CellStyle headerStyle = createHeaderStyle(workbook);
+
+
             if (!list.isEmpty() && list.get(0) instanceof User) {
+                createRow(sheet, rowNum++, headerStyle,"ID", "Name", "Last Name","Email","Phone");
                 for (User fetchedUser : (List<User>) list) {
-                    createRow(sheet, rowNum++, fetchedUser.getId(), fetchedUser.getFirstName(), fetchedUser.getLastName());
+
+                    createRow(sheet, rowNum++,null, fetchedUser.getId(), fetchedUser.getFirstName(), fetchedUser.getLastName(),fetchedUser.getEmail(),fetchedUser.getPhone());
                 }
             } else if (!list.isEmpty() && list.get(0) instanceof TourRequest) {
                 for (TourRequest tourRequest : (List<TourRequest>) list) {
-                    createRow(sheet, rowNum++, tourRequest.getId(), tourRequest.getOwnerUserId().getFirstName(), tourRequest.getAdvertId().getTitle());
+                    createRow(sheet, rowNum++,null, tourRequest.getId(), tourRequest.getOwnerUserId().getFirstName(), tourRequest.getAdvertId().getTitle());
                 }
             } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
                 for (Advert advert : (List<Advert>) list) {
-                    createRow(sheet, rowNum++, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
+                    createRow(sheet, rowNum++,null, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
                 }
 
             } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
                 for (Advert advert : (Page<Advert>) list) {
 
-                    createRow(sheet, rowNum++, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
+                    createRow(sheet, rowNum++,null, advert.getId(), advert.getTitle(), advert.getStatus(), advert.getAdvertType().getTitle(), advert.getCategory().getTitle());
                 }
             }else{
                 throw new BadRequestException(ErrorMessages.EXCEL_COULD_NOT_BE_CREATED);
@@ -321,7 +348,7 @@ public class MethodHelper {
             }
 
             for (Advert advert : (Page<Advert>) page) {
-                createRow(sheet,rowNum++,advert.getId(),advert.getTitle(),advert.getStatus(),advert.getAdvertType().getTitle(),advert.getCategory().getTitle());
+                createRow(sheet,rowNum++,null, advert.getId(),advert.getTitle(),advert.getStatus(),advert.getAdvertType().getTitle(),advert.getCategory().getTitle());
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

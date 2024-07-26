@@ -4,7 +4,9 @@ import com.cossinest.homes.service.business.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 @RestController
@@ -16,7 +18,7 @@ public class ReportController {
 
 
     @GetMapping
-//@PreAuthorized(hasAnyAuthority('MANAGER','ADMIN')
+    @PreAuthorize("hasAnyAuthority('ADMIN,MANAGER')")
     public ResponseEntity<Map<String, Long>> getStaticts(HttpServletRequest request) {
 
         return logService.getStaticts(request);
@@ -25,7 +27,7 @@ public class ReportController {
 
 
     @GetMapping("/adverts")
-    //@PreAuthorized(hasAnyAuthority('MANAGER','ADMIN')
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<byte[]> getAdverts(@RequestParam(value = "date1", required = false) String date1,
                                              @RequestParam(value = "date2", required = false) String date2,
                                              @RequestParam(value = "category", required = false) String category,
@@ -33,12 +35,12 @@ public class ReportController {
                                              @RequestParam(value = "status", required = false) String status,
                                              HttpServletRequest request) {
 
-        return logService.getAdverts(request,date1, date2, category, type, status);
+        return logService.getAdverts(request, date1, date2, category, type, status);
     }
 
 
     @GetMapping("/most-popular-properties")
-    // @PreAthorized()
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<byte[]> getReportOfPopulerAdverts(@RequestParam(value = "amount") int amount, HttpServletRequest request) {
 
         return logService.getPopulerAdvertsReport(amount, request);
@@ -47,7 +49,7 @@ public class ReportController {
 
 
     @GetMapping("/users")
-    // @PreAthorized()
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<byte[]> getUsers(@RequestParam("rol") String rol, HttpServletRequest request) {
 
         return logService.getUsersWithRol(rol, request);
@@ -57,14 +59,14 @@ public class ReportController {
 
 
     @GetMapping("/tour-requests")
-    //@PreAuthorized(hasAnyAuthority('MANAGER','ADMIN')
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public ResponseEntity<byte[]> getTourRequest(@RequestParam(value = "date1", required = false) String date1,
                                                  @RequestParam(value = "date2", required = false) String date2,
                                                  @RequestParam(value = "status", required = false) String status,
                                                  HttpServletRequest request) {
 
 
-        return logService.getTourRequest(request,date1, date2, status);
+        return logService.getTourRequest(request, date1, date2, status);
 
     }
 

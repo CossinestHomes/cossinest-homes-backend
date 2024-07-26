@@ -21,6 +21,7 @@ public class UserDetailsImpl implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
+    private Boolean built_in;
     @JsonIgnore // password JSONla beraber gönderilmesin, hassas bilgi.
     private String passwordHash;
     private Collection<? extends GrantedAuthority> authorities;
@@ -30,15 +31,17 @@ public class UserDetailsImpl implements UserDetails {
 
     private Set<UserRole> roles; // Kullanıcı rolleri
 
-    public UserDetailsImpl(Long id, String firstName, String lastName, String email, Set<UserRole> role, String passwordHash,String phone, Boolean builtIn) {
+
+    public UserDetailsImpl(Long id, String firstName, String lastName, String email, Set<UserRole> role, String passwordHash, Boolean built_in) {
+
         this.id=id;
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
         this.passwordHash=passwordHash;
+        this.built_in=built_in;
         this.authorities = buildGrantedAuthorities(role);
-        this.phone= phone;
-        this.builtIn = builtIn;
+        this.builtIn = built_in;
 
     }
 

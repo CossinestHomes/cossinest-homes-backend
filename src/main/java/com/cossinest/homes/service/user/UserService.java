@@ -9,6 +9,7 @@ import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.LogEnum;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.exception.BadRequestException;
+import com.cossinest.homes.exception.MailServiceException;
 import com.cossinest.homes.payload.mappers.UserMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
@@ -27,6 +28,7 @@ import com.cossinest.homes.service.business.TourRequestService;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.UserRoleService;
+import com.cossinest.homes.utils.MailUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +53,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
-    //  private final PasswordEncoder passwordEncoder;
     private final PageableHelper pageableHelper;
     private final EmailService emailService;
     private final LogService logService;
@@ -100,7 +102,7 @@ public class UserService {
             throw new BadRequestException(ErrorMessages.PASSWORD_IS_INCCORECT);
         }
 
-        String password = passwordEncoder.encode(request.getPassword());
+        String password = passwordEncoder.encode(request.getNewPassword());
 
         user.setPasswordHash(password);
         userRepository.save(user);
@@ -117,8 +119,9 @@ public class UserService {
         methodHelper.checkRoles(user, RoleType.CUSTOMER);
         methodHelper.isRelatedToAdvertsOrTourRequest(user);
 
-        String requestPassword = passwordEncoder.encode(request.getPassword());
-        request.setPassword(requestPassword);
+        if(request.getEmail()==null){
+            throw new BadRequestException("EMAIL IS NULL");
+        }
 
         methodHelper.checkEmailAndPassword(user, request);
 
@@ -177,6 +180,13 @@ public class UserService {
         if (methodHelper.isBuiltIn(user)) throw new BadRequestException(ErrorMessages.BUILT_IN_USER_CAN_NOT_BE_UPDATED);
         User updatedUser = userMapper.usersUpdateRequestToUser(user, request);
 
+        Set<UserRole>roles=new HashSet<>();
+
+        for (String rol:request.getRoles()) {
+            roles.add( userRoleService.getUserRole(RoleType.valueOf(rol)));
+        }
+        updatedUser.setUserRole(roles);
+
 
         for (Advert advert : user.getAdvert()) {
 
@@ -187,7 +197,7 @@ public class UserService {
         return ResponseMessage.<UserResponse>builder()
                 .message(SuccesMessages.USER_UPDATED_SUCCESSFULLY)
                 .status(HttpStatus.OK)
-                .object(userMapper.userToUserResponse(updatedUser))
+                .object(userMapper.userToUserResponse( userRepository.save(updatedUser)))
                 .build();
 
 
@@ -239,7 +249,9 @@ public class UserService {
             resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
-            emailService.sendEmail(user.getEmail(), "Reset email", "Your reset email code is:" + resetCode);
+            MimeMessagePreparator resetPasswordEmail = MailUtil.buildResetPasswordEmail(user.getEmail(),resetCode );
+            emailService.sendEmail(resetPasswordEmail);
+
 
         } catch (BadRequestException e) {
             return ErrorMessages.THERE_IS_NO_USER_REGISTERED_WITH_THIS_EMAIL_ADRESS;
@@ -258,9 +270,11 @@ public class UserService {
         user.setPasswordHash(requestPassword);
         user.setResetPasswordCode(null);
         userRepository.save(user);
+
         return new ResponseEntity<>(SuccesMessages.PASSWORD_RESET_SUCCESSFULLY, HttpStatus.OK);
 
     }
+
 
     public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
@@ -391,7 +405,17 @@ public class UserService {
         User registeredUser = userRepository.save(newUser);
 
         // Başarılı yanıt döndürme
-        return ResponseEntity.ok(userMapper.userToSignInResponse(registeredUser));
+
+        try {
+            MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(registeredUser.getEmail());
+            emailService.sendEmail(registrationEmail);
+        } catch (Exception e) {
+            throw new MailServiceException(e.getMessage());
+        }
+
+        SignInResponse response= userMapper.userToSignInResponse(registeredUser);
+        return new ResponseEntity(response , HttpStatus.CREATED);
+
     }
 
 
