@@ -95,16 +95,4 @@ public class CategoryPropertyKeyService {
 
     }
 
-    //    public ResponseMessage<CategoryPropKeyssResponseDTO> findCategoryPropertyKeys(Long id) {
-//
-//        Category category = findCategoryById(id);
-//
-//        List<CategoryPropertyKey> categoryProperKeys = category.getCategoryPropertyKeys();
-//
-//        return ResponseMessage.<CategoryPropKeyssResponseDTO>builder()
-//                .object(categoryMapper.mapCategPropKeyssToCategPropKeyssResponseDTO(categoryProperKeys))
-//                .message(SuccesMessages.RETURNED_A_CATEGORY_PROPERTY_KEYS)
-//                .status(HttpStatus.OK)
-//                .build();
-//    }
 }

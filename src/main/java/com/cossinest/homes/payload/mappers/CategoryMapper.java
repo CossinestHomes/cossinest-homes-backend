@@ -53,33 +53,6 @@ public class CategoryMapper {
                 .build();
     }
 
-
-    // CategoryPropertyKeyENTITY ====> DTO:
-
-//    public CategoryPropKeyResponseDTO mapCategPropKeyToCategPropKeyResponseDTO(CategoryPropertyKey categoryPropertyKey){
-//
-//        return CategoryPropKeyResponseDTO.builder()
-//                .id(categoryPropertyKey.getId())
-//                .name(categoryPropertyKey.getPropertyName())
-//                .builtIn(false)
-//                .build();
-//    }
-
-
-   // CategoryPropertyKeyssENTITY ====> DTO:
-
-//    public CategoryPropKeyssResponseDTO mapCategPropKeyssToCategPropKeyssResponseDTO(Set<CategoryPropertyKey> categoryProperKeys){
-//
-//        CategoryPropKeyssResponseDTO dto = new CategoryPropKeyssResponseDTO();
-//        dto.setCategoryPropertyKeys(categoryProperKeys);
-//
-//        return dto;
-//    }
-
-
-
-
-
     //Property key pojo ---> Property key response
 
     public PropertyKeyResponse mapPropertyKeytoPropertyKeyResponse(CategoryPropertyKey categoryPropertyKey) {
@@ -91,13 +64,4 @@ public class CategoryMapper {
     }
 
 
-//    public CategoryPropKeyResponseDTO mapCategoryPropertyKeyToCategoryPropKeyResponseDTO(CategoryPropertyKey categoryPropertyKey) {
-//
-//        return CategoryPropKeyResponseDTO.builder()
-//                .id(categoryPropertyKey.getId())
-//                .name(categoryPropertyKey.getPropertyName())
-//                .builtIn(false)
-//                .build();
-//
-//    }
 }
