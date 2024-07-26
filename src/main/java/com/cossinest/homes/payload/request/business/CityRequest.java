@@ -20,7 +20,7 @@ public class CityRequest {
 
 
     @NotNull(message = "Country id can not be empty")
-    private Integer country_id;
+    private int country_id;
 
 
 
