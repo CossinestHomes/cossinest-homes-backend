@@ -5,27 +5,27 @@ import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.CategoryMapper;
+import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
-import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+import com.cossinest.homes.payload.request.business.PropertyKeyRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
-import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
+import com.cossinest.homes.payload.response.business.PropertyKeyResponse;
 import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
-import com.cossinest.homes.repository.business.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class CategoryPropertyKeyService {
 
-
-
     private final CategoryMapper categoryMapper;
-
     private final CategoryPropertyKeyRepository categoryPropertyKeyRepository;
+    private final CategoryService categoryService;
 
 
     public CategoryPropertyKey findPropertyKeyById(Long id) {
@@ -35,9 +35,9 @@ public class CategoryPropertyKeyService {
     }
 
 
-    public ResponseMessage<CategoryPropKeyResponseDTO> updatePropertyKey(Long id, CategoryRequestDTO categoryRequestDTO) {
+    public ResponseMessage<PropertyKeyResponse> updatePropertyKey(Long id, PropertyKeyRequest propertyKeyRequest) {
 
-        boolean existName = categoryPropertyKeyRepository.existsByName(categoryRequestDTO.getName());
+        boolean existName = categoryPropertyKeyRepository.existsByPropertyName(propertyKeyRequest.getPropertyName());
 
         CategoryPropertyKey categoryPropertyKey = findPropertyKeyById(id);
 
@@ -45,23 +45,23 @@ public class CategoryPropertyKeyService {
             throw new ResourceNotFoundException("This categoryPropertyKey cannot be updated");
         }
 
-        if( existName && ! categoryRequestDTO.getName().equals(categoryPropertyKey.getName()) ) {
+        if( existName && ! propertyKeyRequest.getPropertyName().equals(categoryPropertyKey.getPropertyName()) ) {
 
-            throw new ConflictException("Name is already exist ");
+            throw new ConflictException(ErrorMessages.PROPERTY_KEY_NAME_ALREADY_EXIST);
         }
 
-        categoryPropertyKey.setName(categoryRequestDTO.getName());
+        categoryPropertyKey.setPropertyName(propertyKeyRequest.getPropertyName());
         CategoryPropertyKey updatedPropertyKey = categoryPropertyKeyRepository.save(categoryPropertyKey);
 
 
-        return ResponseMessage.<CategoryPropKeyResponseDTO> builder()
-                .object(categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(updatedPropertyKey))
+        return ResponseMessage.<PropertyKeyResponse> builder()
+                .object(categoryMapper.mapPropertyKeytoPropertyKeyResponse(updatedPropertyKey))
                 .message(SuccesMessages.CATEGORY_PROPERTY_KEY_UPDATED_SUCCESS)
                 .status(HttpStatus.OK)
                 .build();
     }
 
-    public  ResponseMessage<CategoryPropKeyResponseDTO> deletePropertyKey(Long id) {
+    public  ResponseMessage<PropertyKeyResponse> deletePropertyKey(Long id) {
 
         CategoryPropertyKey categoryPropertyKey = findPropertyKeyById(id);
 
@@ -71,8 +71,8 @@ public class CategoryPropertyKeyService {
 
         categoryPropertyKeyRepository.delete(categoryPropertyKey);
 
-        return ResponseMessage.<CategoryPropKeyResponseDTO> builder()
-                .object(categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(categoryPropertyKey))
+        return ResponseMessage.<PropertyKeyResponse> builder()
+                .object(categoryMapper.mapPropertyKeytoPropertyKeyResponse(categoryPropertyKey))
                 .message(SuccesMessages.CATEGORY_PROPERTY_KEY_DELETED_SUCCESS)
                 .status(HttpStatus.OK)
                 .build();
@@ -83,4 +83,16 @@ public class CategoryPropertyKeyService {
     public void resetCategoryPropertyKeyTables() {
      //   categoryPropertyKeyRepository.deleteByBuiltIn(false);
     }
+
+
+    public Set<PropertyKeyResponse> findByCategoryIdEquals(Long id) {
+        Category category= categoryService.findCategoryById(id);
+        Set<CategoryPropertyKey> properKeysOfCategory= categoryPropertyKeyRepository.findByCategory_IdEquals(category.getId());
+
+        return  properKeysOfCategory.stream()
+                .map(categoryMapper::mapPropertyKeytoPropertyKeyResponse)
+                .collect(Collectors.toSet());
+
+    }
+
 }

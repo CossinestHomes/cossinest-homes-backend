@@ -1,6 +1,5 @@
 package com.cossinest.homes.service.business;
 
-import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyValue;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
@@ -27,7 +26,7 @@ public class CategoryPropertyValueService {
 
     public String getPropertyKeyNameByPropertyValue(Long id){
      CategoryPropertyValue categoryPropertyValue=categoryPropertyValueRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.PROPERTY_VALUE_NOT_FOUND));
-     return categoryPropertyValue.getCategoryPropertyKeys().getName();
+     return categoryPropertyValue.getCategoryPropertyKeys().getPropertyName();
 
     }
 
