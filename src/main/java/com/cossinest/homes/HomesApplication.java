@@ -6,11 +6,13 @@ import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.payload.request.business.CityRequest;
 import com.cossinest.homes.payload.request.business.CountryRequest;
+import com.cossinest.homes.payload.request.business.DistrictRequest;
 import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.repository.user.UserRoleRepository;
 import com.cossinest.homes.service.business.CategoryService;
 import com.cossinest.homes.service.business.CityService;
 import com.cossinest.homes.service.business.CountryService;
+import com.cossinest.homes.service.business.DistrictService;
 import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import org.springframework.boot.CommandLineRunner;
@@ -31,10 +33,11 @@ public class HomesApplication implements CommandLineRunner {
 
 	private final CategoryService categoryService;
 	private final CountryService countryService;
+	private final DistrictService districtService;
 
 	public HomesApplication (UserRoleService userRoleService,
 							 UserService userService,
-							 UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CountryService countryService) {
+							 UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CountryService countryService, DistrictService districtService) {
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.userRoleRepository = userRoleRepository;
@@ -42,6 +45,8 @@ public class HomesApplication implements CommandLineRunner {
 		this.passwordEncoder=passwordEncoder;
 		this.cityService = cityService;
 		this.countryService = countryService;
+
+		this.districtService = districtService;
 	}
 
 
@@ -117,6 +122,15 @@ public class HomesApplication implements CommandLineRunner {
 			cityRequest.setCountry_id(1);
 
 			cityService.saveCity(cityRequest);
+
+		}
+
+		if (districtService.countAllDistricts() == 0) {
+			DistrictRequest districtRequest = new DistrictRequest();
+			districtRequest.setName("Ay");
+			districtRequest.setCity_id(1);
+
+			districtService.save(districtRequest);
 
 		}
 

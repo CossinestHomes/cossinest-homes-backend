@@ -368,6 +368,11 @@ public class MethodHelper {
 
 
     public List<Images> getImagesForAdvert(MultipartFile[] files, List<Images> images) {
+
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+
         boolean isFirstImage = true;
         for (MultipartFile file : files) {
 
