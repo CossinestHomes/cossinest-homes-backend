@@ -4,20 +4,12 @@ package com.cossinest.homes.payload.mappers;
 import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
-
-import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
-import com.cossinest.homes.payload.response.business.CategoryPropKeyssResponseDTO;
 import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
-import com.cossinest.homes.service.helper.MethodHelper;
+import com.cossinest.homes.payload.response.business.PropertyKeyResponse;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import java.util.List;
-
 
 @Data
 @Component
@@ -61,27 +53,15 @@ public class CategoryMapper {
                 .build();
     }
 
+    //Property key pojo ---> Property key response
 
-    // CategoryPropertyKeyENTITY ====> DTO:
-
-    public CategoryPropKeyResponseDTO mapCategPropKeyToCategPropKeyResponseDTO(CategoryPropertyKey categoryPropertyKey){
-
-        return CategoryPropKeyResponseDTO.builder()
+    public PropertyKeyResponse mapPropertyKeytoPropertyKeyResponse(CategoryPropertyKey categoryPropertyKey) {
+        return PropertyKeyResponse.builder()
                 .id(categoryPropertyKey.getId())
-                .name(categoryPropertyKey.getName())
-                .builtIn(categoryPropertyKey.getBuiltIn())
+                .propertyName(categoryPropertyKey.getPropertyName())
+                .builtIn(false)
                 .build();
     }
 
-
-   // CategoryPropertyKeyssENTITY ====> DTO:
-
-    public CategoryPropKeyssResponseDTO mapCategPropKeyssToCategPropKeyssResponseDTO(List<CategoryPropertyKey> categoryProperKeys){
-
-        CategoryPropKeyssResponseDTO dto = new CategoryPropKeyssResponseDTO();
-        dto.setCategoryPropertyKeys(categoryProperKeys);
-
-        return dto;
-    }
 
 }

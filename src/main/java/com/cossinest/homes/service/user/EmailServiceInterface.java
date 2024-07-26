@@ -5,6 +5,5 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface EmailServiceInterface {
 
-    @Async
     void sendEmail(MimeMessagePreparator mimeMessagePreparator);
 }

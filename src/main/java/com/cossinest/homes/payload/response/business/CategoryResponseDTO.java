@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -46,7 +47,7 @@ public class CategoryResponseDTO {
     private LocalDateTime updatedAt;
 
 
-    private List<CategoryPropertyKey> categoryPropertyKeys;
+    private Set<CategoryPropertyKey> categoryPropertyKeys;
 
 
 

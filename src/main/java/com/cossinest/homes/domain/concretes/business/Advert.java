@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,7 +52,7 @@ public class Advert {
     private Boolean isActive=true;
 
     @Column(name = "view_count",nullable = false)
-    private Integer viewCount;
+    private Integer viewCount =0;
 
     private String location;
 
@@ -128,7 +129,7 @@ public class Advert {
 
     @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
-    private List<Images> imagesList;
+    private List<Images> imagesList = new ArrayList<>();
 
     @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore

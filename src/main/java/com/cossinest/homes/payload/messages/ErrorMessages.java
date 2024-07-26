@@ -80,5 +80,17 @@ public class ErrorMessages {
     //District
     public static final String DISTRICT_NOT_FOUND= "District not found";
 
+    //Category Property Key
+    public static final String PROPERTY_KEY_ALREADY_EXIST= "This property key is already exists on this category";
+    public static final String PROPERTY_KEY_NAME_ALREADY_EXIST= "This property key name is already exists on this category";
+
+    //Category
+    public static final String CATEGORY_CAN_NOT_UPDATE ="Error: This category is built in, it can not be updated";
+    public static final String CATEGORY_TITLE_ALREADY_EXIST= "This category title is already exists";
+    public static final String BUILT_IN_CATEGORY_CAN_NOT_BE_DELETED = "BuiltIn category can not be deleted";
+    public static final String THIS_CATEGORY_CAN_NOT_BE_DELETED = "You can not delete this category because there may be adverts related to this category";
+
+
+
 }
 

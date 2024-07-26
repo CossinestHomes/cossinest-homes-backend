@@ -1,16 +1,20 @@
 package com.cossinest.homes;
 
-import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.user.UserRole;
+import com.cossinest.homes.domain.enums.Cities;
 import com.cossinest.homes.domain.enums.RoleType;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
-import com.cossinest.homes.payload.request.user.UserRequest;
+import com.cossinest.homes.payload.request.business.CityRequest;
+import com.cossinest.homes.payload.request.business.CountryRequest;
+import com.cossinest.homes.payload.request.business.DistrictRequest;
 import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.repository.user.UserRoleRepository;
 import com.cossinest.homes.service.business.CategoryService;
+import com.cossinest.homes.service.business.CityService;
+import com.cossinest.homes.service.business.CountryService;
+import com.cossinest.homes.service.business.DistrictService;
 import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.UserRoleService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,27 +29,30 @@ public class HomesApplication implements CommandLineRunner {
 	private final UserRoleService userRoleService;
 	private final UserService userService;
 	private final UserRoleRepository userRoleRepository;
+	private  final CityService cityService;
 
 	private final CategoryService categoryService;
+	private final CountryService countryService;
+	private final DistrictService districtService;
 
 	public HomesApplication (UserRoleService userRoleService,
-										UserService userService,
-										UserRoleRepository userRoleRepository,CategoryService categoryService,PasswordEncoder passwordEncoder) {
+							 UserService userService,
+							 UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CountryService countryService, DistrictService districtService) {
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.userRoleRepository = userRoleRepository;
 		this.categoryService=categoryService;
 		this.passwordEncoder=passwordEncoder;
+		this.cityService = cityService;
+		this.countryService = countryService;
+
+		this.districtService = districtService;
 	}
 
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomesApplication.class, args);
 	}
-
-
-
-
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -96,5 +103,37 @@ public class HomesApplication implements CommandLineRunner {
 			categoryService.createCategory(category);
 
 		}
+
+		if (countryService.countAllCountries() == 0) {
+			CountryRequest countryRequest = new CountryRequest();
+			countryRequest.setName("Türkiye");
+
+			countryService.saveCountry(countryRequest);
+
+		}
+
+		if (cityService.countAllCities() == 0) {
+			CityRequest cityRequest = new CityRequest();
+			cityRequest.setName(Cities.ANKARA.getName());
+			cityRequest.setCountry_id(1);
+
+			cityService.saveCity(cityRequest);
+
+		}
+
+<<<<<<< HEAD
+		if (districtService.countAllDistricts() == 0) {
+			DistrictRequest districtRequest = new DistrictRequest();
+			districtRequest.setName("Ay");
+			districtRequest.setCity_id(1);
+
+			districtService.save(districtRequest);
+
+		}
+
+
+
+=======
+>>>>>>> 0100302e76f981c4dd322df49df1311796ca93aa
 	}
 }

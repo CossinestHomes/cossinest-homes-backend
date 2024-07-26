@@ -176,6 +176,12 @@ public class AdvertService {
 
         List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
         advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+
+        List<Images> imagesList = advert.getImagesList();
+        if (imagesList == null) {
+            imagesList = new ArrayList<>();
+        }
+
         advert.setImagesList(methodHelper.getImagesForAdvert(files,advert.getImagesList()));//TODO:image setleme kontrol et
 
         logService.createLogEvent(advert.getUser(),advert, LogEnum.CREATED);

@@ -11,7 +11,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -57,7 +59,6 @@ public class Category {
     private Boolean builtIn = Boolean.FALSE;
 
 
-
     @NotNull(message = "seq can not be null")
    // @NotBlank(message = "seq can not be white space")
     private Integer seq = 0;
@@ -96,11 +97,11 @@ public class Category {
 
 
 
-    @OneToMany(mappedBy = "category")
-    private List<CategoryPropertyKey> categoryPropertyKeys = new ArrayList<>();
+    @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<CategoryPropertyKey> categoryPropertyKeys = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Advert> adverts = new ArrayList<>();
 
 

@@ -11,29 +11,24 @@ import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 
 import com.cossinest.homes.payload.messages.SuccesMessages;
-import com.cossinest.homes.payload.request.business.AdvertRequest;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
+import com.cossinest.homes.payload.request.business.PropertyKeyRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
-import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.*;
 
-import com.cossinest.homes.payload.response.business.CategoryPropKeyResponseDTO;
-import com.cossinest.homes.payload.response.business.CategoryPropKeyssResponseDTO;
-import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import com.cossinest.homes.repository.business.AdvertRepository;
 import com.cossinest.homes.repository.business.CategoryPropertyKeyRepository;
 import com.cossinest.homes.repository.business.CategoryRepository;
-import jakarta.transaction.Transactional;
+import com.cossinest.homes.service.helper.PageableHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 
 @RequiredArgsConstructor
@@ -41,63 +36,53 @@ import java.util.Objects;
 public class CategoryService {
 
 
-
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final CategoryPropertyKeyRepository categoryPropertyKeyRepository;
     private final AdvertRepository advertRepository;
-
-
+    private final PageableHelper pageableHelper;
 
 
     //advert için yardımcı method
-    public List<Category> getAllCategory(){
+    public List<Category> getAllCategory() {
         return categoryRepository.findAll();
     }
 
-    public Category getCategoryById (Long id){
-        return categoryRepository.findById(id).orElseThrow(()->new RuntimeException(ErrorMessages.CATEGORY_NOT_FOUND));
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException(ErrorMessages.CATEGORY_NOT_FOUND));
     }
 
 
+    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(int page, int size, String sort, String type) {
 
+        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
+        return categoryRepository.findAllActiveCategories(pageable).map(categoryMapper::mapCategoryToCategoryResponseDTO);
 
-    public Page<CategoryResponseDTO> getActiveCategoriesWithPage( String q, int page, int size, String sort, String type) {
-
-
-        Pageable pageable= PageRequest.of(page, size, Sort.by(String.valueOf(sort)).ascending());
-
-        if(Objects.equals(type, "DESC")){
-            pageable=PageRequest.of(page, size, Sort.by(String.valueOf(sort)).descending());
-        }
-        return categoryRepository.findAllActiveCategories(pageable);
     }
 
 
-    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String q, int page, int size, String sort, String type) {
+    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String q , int page, int size, String sort, String type) {
 
-        Pageable pageable= PageRequest.of(page, size, Sort.by(String.valueOf(sort)).ascending());
+        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        if(Objects.equals(type, "DESC")){
-                                            pageable=PageRequest.of(page, size, Sort.by(String.valueOf(sort)).descending());
-                                            }
-        return categoryRepository.findAllCategories(pageable);
+        return categoryRepository.findAll(pageable)
+                .map(categoryMapper::mapCategoryToCategoryResponseDTO);
     }
 
 
-    public Category findCategoryById(Long id){
+    public Category findCategoryById(Long id) {
         return categoryRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Category not found with id :" + id));
+                () -> new ResourceNotFoundException(ErrorMessages.CATEGORY_NOT_FOUND + id));
     }
 
 
     public ResponseMessage<CategoryResponseDTO> findCategoryWithId(Long id) {
 
-       Category category = categoryRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Category not found with id :" + id));
+        Category category = categoryRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(ErrorMessages.CATEGORY_NOT_FOUND + id));
 
-        return ResponseMessage.<CategoryResponseDTO> builder()
+        return ResponseMessage.<CategoryResponseDTO>builder()
                 .object(categoryMapper.mapCategoryToCategoryResponseDTO(category))
                 .message(SuccesMessages.RETURNED_A_CATEGORY)
                 .status(HttpStatus.OK)
@@ -107,23 +92,23 @@ public class CategoryService {
 
     public ResponseMessage<CategoryResponseDTO> createCategory(CategoryRequestDTO categoryRequestDTO) {
 
-        if(categoryRepository.existsByTitle(categoryRequestDTO.getTitle())) {
+        if (categoryRepository.existsByTitle(categoryRequestDTO.getTitle())) {
 
-            throw new ConflictException("Category " +categoryRequestDTO.getTitle() +" is already exist " );
+            throw new ConflictException("Category " + categoryRequestDTO.getTitle() + " is already exist ");
         }
 
         Category category = categoryMapper.mapCategoryRequestDTOToCategory(categoryRequestDTO);
 
-      if(category.getTitle().equalsIgnoreCase("Arsa")){
-          category.setBuiltIn(true);
-      }
+        if (category.getTitle().equalsIgnoreCase("Arsa")) {
+            category.setBuiltIn(true);
+        }
 
 
         Category createdCategory = categoryRepository.save(category);
         createdCategory.generateSlug();
         Category categoryResponse = categoryRepository.save(createdCategory);
 
-        return ResponseMessage.<CategoryResponseDTO> builder()
+        return ResponseMessage.<CategoryResponseDTO>builder()
                 .object(categoryMapper.mapCategoryToCategoryResponseDTO(categoryResponse))
                 .message(SuccesMessages.CATEGORY_CREATED_SUCCESS)
                 .status(HttpStatus.CREATED)
@@ -131,21 +116,17 @@ public class CategoryService {
     }
 
 
-
     public ResponseMessage<CategoryResponseDTO> updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
 
+        Category category = findCategoryById(id);
         boolean existTitle = categoryRepository.existsByTitle(categoryRequestDTO.getTitle());  // categoryRequest ile gelen Title DB'de VAR mi?
 
-        Category category = findCategoryById(id);
-
-
-        if(category.getBuiltIn()){
-            throw new ResourceNotFoundException("This category cannot be updated");
+        if (category.getBuiltIn()) {
+            throw new ResourceNotFoundException(ErrorMessages.CATEGORY_CAN_NOT_UPDATE);
         }
 
-        if (existTitle && !categoryRequestDTO.getTitle().equals(category.getTitle())){
-
-            throw new ConflictException("Title is already exist");
+        if (existTitle) {
+            throw new ConflictException(ErrorMessages.CATEGORY_TITLE_ALREADY_EXIST);
 
 /*      1.senaryo: categoryRequest ile gelen Title Arsa,                 DB'de MEVCUT Title : Arsa            --> TRUE && FALSE    (UPDATE OLUR)
         2.senaryo: categoryRequest ile gelen Title Villa ve DB de VAR,   DB'de MEVCUT Title : Arsa            --> TRUE && TRUE     (UPDATE OLMAZ)
@@ -154,11 +135,17 @@ public class CategoryService {
 
         // DTO ===>>> POJO
 
-        category = categoryMapper.mapCategoryRequestDTOToCategory(categoryRequestDTO);
+        //category = categoryMapper.mapCategoryRequestDTOToCategory(categoryRequestDTO);
+
+        category.setTitle(categoryRequestDTO.getTitle());
+        category.setIcon(categoryRequestDTO.getIcon());
+        category.setSeq(categoryRequestDTO.getSeq());
+        category.setSlug(categoryRequestDTO.getSlug());
+        category.setActive(categoryRequestDTO.isActive());
 
         Category updatedCategory = categoryRepository.save(category);
 
-        return ResponseMessage.<CategoryResponseDTO> builder()
+        return ResponseMessage.<CategoryResponseDTO>builder()
                 .object(categoryMapper.mapCategoryToCategoryResponseDTO(updatedCategory))
                 .message(SuccesMessages.CATEGORY_UPDATED_SUCCESS)
                 .status(HttpStatus.OK)
@@ -169,20 +156,20 @@ public class CategoryService {
     public ResponseMessage<CategoryResponseDTO> deleteCategory(Long id) {
 
         Category category = categoryRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Category not found with id :" + id));
+                () -> new ResourceNotFoundException(ErrorMessages.CATEGORY_NOT_FOUND + id));
 
-        if(category.getBuiltIn()){
-            throw new ResourceNotFoundException("This category cannot be deleted");
+        if (category.getBuiltIn()) {
+            throw new ResourceNotFoundException(ErrorMessages.BUILT_IN_CATEGORY_CAN_NOT_BE_DELETED);
         }
 
-       Advert advert = advertRepository.findAdvertByCategory(id);
+        Advert advert = advertRepository.findAdvertByCategory(id);
 
-        if (advert!=null){
-            throw new RuntimeException("This category cannot be deleted");
+        if (advert != null) {
+            throw new RuntimeException(ErrorMessages.THIS_CATEGORY_CAN_NOT_BE_DELETED);
         }
         categoryRepository.deleteById(id);
 
-        return ResponseMessage.<CategoryResponseDTO> builder()
+        return ResponseMessage.<CategoryResponseDTO>builder()
                 .object(categoryMapper.mapCategoryToCategoryResponseDTO(category))
                 .message(SuccesMessages.CATEGORY_DELETED_SUCCESS)
                 .status(HttpStatus.OK)
@@ -190,49 +177,38 @@ public class CategoryService {
     }
 
 
-    public ResponseMessage<CategoryPropKeyssResponseDTO> findCategoryPropertyKeys(Long id) {
+    public ResponseMessage<PropertyKeyResponse> createPropertyKey(Long id, PropertyKeyRequest propertyKeyRequest) {
 
         Category category = findCategoryById(id);
 
-        List<CategoryPropertyKey> categoryProperKeys = category.getCategoryPropertyKeys();
+        Set<CategoryPropertyKey> existCategoryProperties = category.getCategoryPropertyKeys();
 
-        return ResponseMessage.<CategoryPropKeyssResponseDTO> builder()
-                .object(categoryMapper.mapCategPropKeyssToCategPropKeyssResponseDTO(categoryProperKeys))
-                .message(SuccesMessages.RETURNED_A_CATEGORY_PROPERTY_KEYS)
-                .status(HttpStatus.OK)
-                .build();
-    }
-
-
-
-
-    public  ResponseMessage<CategoryPropKeyResponseDTO> createPropertyKey(Long id, String... keys) {
-
-
-        Category category = findCategoryById(id);
-
-        List <CategoryPropertyKey> categoryProperties = category.getCategoryPropertyKeys();
-        CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
-
-        for ( String key : keys){
-
-            categoryPropertyKey.setName(key);
-            categoryProperties.add(categoryPropertyKey);
+        for (CategoryPropertyKey key : existCategoryProperties) {
+            if (key.getPropertyName().equals(propertyKeyRequest.getPropertyName())) {
+                throw new ConflictException(ErrorMessages.PROPERTY_KEY_ALREADY_EXIST);
+            }
         }
-        categoryPropertyKeyRepository.save(categoryPropertyKey);
+            CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
+            categoryPropertyKey.setPropertyName(propertyKeyRequest.getPropertyName());
+            categoryPropertyKey.setCategory(category);
 
-        return ResponseMessage.<CategoryPropKeyResponseDTO> builder()
-                .object(categoryMapper.mapCategPropKeyToCategPropKeyResponseDTO(categoryPropertyKey))
-                .message(SuccesMessages.CATEGORY_PROPERTY_KEY_CREATED_SUCCESS)
-                .status(HttpStatus.CREATED)
-                .build();
-    }
+            existCategoryProperties.add(categoryPropertyKey);
+
+           category.setCategoryPropertyKeys(existCategoryProperties);
+           categoryRepository.save(category);
+
+            return ResponseMessage.<PropertyKeyResponse>builder()
+                    .object(categoryMapper.mapPropertyKeytoPropertyKeyResponse(categoryPropertyKey))
+                    .message(SuccesMessages.CATEGORY_PROPERTY_KEY_CREATED_SUCCESS)
+                    .status(HttpStatus.CREATED)
+                    .build();
+        };
 
 
     public ResponseMessage<CategoryResponseDTO> findCategoryBySlug(String slug) {
 
         Category category = categoryRepository.findBySlug(slug).orElseThrow(
-                ()-> new ResourceNotFoundException("Category not found with Slug :" + slug));
+                ()-> new ResourceNotFoundException(ErrorMessages.CATEGORY_NOT_FOUND + slug));
 
         return ResponseMessage.<CategoryResponseDTO> builder()
                 .object(categoryMapper.mapCategoryToCategoryResponseDTO(category))
@@ -240,7 +216,6 @@ public class CategoryService {
                 .status(HttpStatus.OK)
                 .build();
     }
-
 
 
     public List<Category> getCategoryByTitle(String category) {
@@ -260,5 +235,6 @@ public class CategoryService {
     public void resetCategoryTables() {
         categoryRepository.deleteByBuiltIn(false);
     }*/
-}
 
+
+    }

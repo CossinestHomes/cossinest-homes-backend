@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,6 @@ public class District {
     private City city;
 
     @OneToMany(mappedBy = "district",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Advert> advertList;
+    private List<Advert> advertList = new ArrayList<>();
 
 }
