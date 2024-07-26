@@ -26,7 +26,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -107,15 +109,27 @@ public class ReportService {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
 
-        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter dateFormatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-        LocalDateTime begin = LocalDateTime.parse(date1+"T00:00:00",formatter);
-        LocalDateTime end = LocalDateTime.parse(date2+"T23:59:59",formatter);
-        dateTimeValidator.checkBeginTimeAndEndTime(begin, end);
+        LocalDateTime begin = null;
+        LocalDateTime end = null;
+        if (date1 != null && !date1.isEmpty()) {
+            LocalDate startDate = LocalDate.parse(date1, dateFormatter);
+            begin = startDate.atStartOfDay();
+        }
+        if (date2 != null && !date2.isEmpty()) {
+            LocalDate endDate = LocalDate.parse(date2, dateFormatter);
+            end = endDate.atTime(LocalTime.MAX);
+        }
+
+        if (begin != null && end != null) {
+            dateTimeValidator.checkBeginTimeAndEndTime(begin, end);
+        }
 
         StatusType statusType;
         try {
             statusType = StatusType.valueOf(status);
+
 
         } catch (BadRequestException e) {
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
