@@ -49,10 +49,6 @@ public class HomesApplication implements CommandLineRunner {
 		SpringApplication.run(HomesApplication.class, args);
 	}
 
-
-
-
-
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -119,8 +115,6 @@ public class HomesApplication implements CommandLineRunner {
 			cityService.saveCity(cityRequest);
 
 		}
-
-
 
 	}
 }

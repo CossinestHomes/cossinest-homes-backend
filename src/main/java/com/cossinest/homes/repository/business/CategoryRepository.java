@@ -2,7 +2,6 @@ package com.cossinest.homes.repository.business;
 
 
 import com.cossinest.homes.domain.concretes.business.Category;
-import com.cossinest.homes.payload.response.business.CategoryResponseDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,17 +17,17 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository <Category, Long> {
 
-
-
+    @Query("SELECT c FROM Category c WHERE c.slug=?1")
     Optional<Category> findBySlug(String slug);
 
     boolean existsByTitle(String title);
 
     @Query("SELECT c FROM Category c WHERE c.active = true")
-    Page<CategoryResponseDTO> findAllActiveCategories(Pageable pageable);
+    Page<Category> findAllActiveCategories(Pageable pageable);
 
-    @Query("SELECT c FROM Category c")
-    Page<CategoryResponseDTO> findAllCategories(Pageable pageable);
+    @Query("SELECT c FROM Category c WHERE :q IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%')) ")
+    Page<Category> findAll(@Param("q") String q,
+                                Pageable pageable);
 
 
     //boolean existsByName(String name);
@@ -46,4 +45,6 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
     @Query("SELECT COUNT(b) FROM  Category b WHERE b.builtIn=?1")
     int countBuiltIn(boolean b);
+
+
 }

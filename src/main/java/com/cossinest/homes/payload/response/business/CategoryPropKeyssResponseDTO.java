@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -17,6 +18,7 @@ public class CategoryPropKeyssResponseDTO {
 
 
 
-    private List<CategoryPropertyKey> categoryPropertyKeys;
+    private Long id;
+    private Set<CategoryPropertyKey> categoryPropertyKeys;
 
 }

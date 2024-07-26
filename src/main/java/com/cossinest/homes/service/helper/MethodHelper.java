@@ -186,7 +186,7 @@ public class MethodHelper {
 
     public List<CategoryPropertyValue> getPropertyValueList(Category category, AbstractAdvertRequest advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
         //adım:1==>Db den category e ait PropertyKeyleri getir
-        List<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
+        Set<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
         //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
         List<Long> cpkIds = categoryPropertyKeys.stream().map(CategoryPropertyKey::getId).toList();
         //adım:3==>requestten gelen properti ile map yapısı oluştur

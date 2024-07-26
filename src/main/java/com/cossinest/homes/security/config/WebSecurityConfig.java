@@ -120,6 +120,8 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/swagger-ui.html", // eklenecek
             "/swagger-ui/**", // eklenecek
             "/*",
+            "/*/*",
+            "/*/*/*",
             "/index.html",
             "/images/**",
             "/css/**",
