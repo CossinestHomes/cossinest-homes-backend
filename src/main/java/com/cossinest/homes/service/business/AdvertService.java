@@ -162,10 +162,9 @@ public class AdvertService {
     public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest, MultipartFile[] files) {
 
         Map<String, Object> detailsMap = new HashMap<>();
-        getAdvertDetails(advertRequest,httpServletRequest,detailsMap);
+        getAdvertDetails(advertRequest, httpServletRequest, detailsMap);
 
-
-        Advert advert =advertMapper.mapAdvertRequestToAdvert(
+        Advert advert = advertMapper.mapAdvertRequestToAdvert(
                 advertRequest,
                 (Category) detailsMap.get("category"),
                 (City) detailsMap.get("city"),
@@ -174,26 +173,32 @@ public class AdvertService {
                 (AdvertType) detailsMap.get("advertType"),
                 (District) detailsMap.get("district"));
 
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
+        List<CategoryPropertyValue> categoryPropertyValuesForDb = methodHelper.getPropertyValueList((Category) detailsMap.get("category"), advertRequest, categoryPropertyValueService);
         advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
 
-        List<Images> imagesList = advert.getImagesList();
-        if (imagesList == null) {
-            imagesList = new ArrayList<>();
+        // viewCount alanını varsayılan değere ayarlayın
+        if (advert.getViewCount() == null) {
+            advert.setViewCount(0); // Varsayılan değer olarak 0
         }
 
-        advert.setImagesList(methodHelper.getImagesForAdvert(files,advert.getImagesList()));//TODO:image setleme kontrol et
-
-        logService.createLogEvent(advert.getUser(),advert, LogEnum.CREATED);
-
-
+        // Advert'ı kaydedin ve ID'yi elde edin
         Advert savedAdvert = advertRepository.save(advert);
         savedAdvert.generateSlug();
         advertRepository.save(savedAdvert);
 
+        // Resimleri eklemeden önce advert_id'yi ayarlayın
+        List<Images> imagesList = methodHelper.getImagesForAdvert(files, savedAdvert.getImagesList());
+        for (Images image : imagesList) {
+            image.setAdvert(savedAdvert); // advert_id ayarlanıyor
+        }
+        savedAdvert.setImagesList(imagesList);
 
-        return advertMapper.mapAdvertToAdvertResponse(advert);
+        logService.createLogEvent(savedAdvert.getUser(), savedAdvert, LogEnum.CREATED);
 
+        // Advert'ı ve ilişkili resimleri tekrar kaydedin
+        savedAdvert = advertRepository.save(savedAdvert);
+
+        return advertMapper.mapAdvertToAdvertResponse(savedAdvert);
     }
 
     @Transactional
