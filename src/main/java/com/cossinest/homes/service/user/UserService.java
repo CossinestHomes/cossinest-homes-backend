@@ -249,7 +249,7 @@ public class UserService {
             resetCode = UUID.randomUUID().toString();
             user.setResetPasswordCode(resetCode);
             userRepository.save(user);
-            MimeMessagePreparator resetPasswordEmail = MailUtil.buildResetPasswordEmail(user.getEmail(),resetCode );
+            MimeMessagePreparator resetPasswordEmail = MailUtil.buildResetPasswordEmail(user.getEmail(),resetCode , user.getFirstName() );
             emailService.sendEmail(resetPasswordEmail);
 
 
@@ -407,7 +407,7 @@ public class UserService {
         // Başarılı yanıt döndürme
 
         try {
-            MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(registeredUser.getEmail());
+            MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(registeredUser.getEmail(), registeredUser.getFirstName());
             emailService.sendEmail(registrationEmail);
         } catch (Exception e) {
             throw new MailServiceException(e.getMessage());

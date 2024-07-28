@@ -97,11 +97,11 @@ public class Category {
 
 
 
-    @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CategoryPropertyKey> categoryPropertyKeys = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category")
     private List<Advert> adverts = new ArrayList<>();
 
 
