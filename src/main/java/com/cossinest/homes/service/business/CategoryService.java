@@ -103,13 +103,12 @@ public class CategoryService {
             category.setBuiltIn(true);
         }
 
+        category.generateSlug();
 
         Category createdCategory = categoryRepository.save(category);
-        createdCategory.generateSlug();
-        Category categoryResponse = categoryRepository.save(createdCategory);
 
         return ResponseMessage.<CategoryResponseDTO>builder()
-                .object(categoryMapper.mapCategoryToCategoryResponseDTO(categoryResponse))
+                .object(categoryMapper.mapCategoryToCategoryResponseDTO(createdCategory))
                 .message(SuccesMessages.CATEGORY_CREATED_SUCCESS)
                 .status(HttpStatus.CREATED)
                 .build();

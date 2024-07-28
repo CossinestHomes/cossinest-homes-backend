@@ -74,7 +74,7 @@ public class AuthenticationService {
 
 
         try {
-            MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(userDetails.getEmail());
+            MimeMessagePreparator registrationEmail = MailUtil.buildRegistrationEmail(userDetails.getEmail() , userDetails.getFirstName());
             emailServiceInterface.sendEmail(registrationEmail);
         } catch (Exception e) {
             throw new MailServiceException(e.getMessage());
