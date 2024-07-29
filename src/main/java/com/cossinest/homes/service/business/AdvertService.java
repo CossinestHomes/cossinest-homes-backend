@@ -20,12 +20,14 @@ import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 
 import com.cossinest.homes.repository.business.AdvertRepository;
+
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.DateTimeValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -180,6 +182,13 @@ public class AdvertService {
         if (advert.getViewCount() == null) {
             advert.setViewCount(0); // Varsayılan değer olarak 0
         }
+        if (advert.getBuiltIn() == null) {
+            advert.setBuiltIn(false);
+        }
+        if (advert.getIsActive() == null) {
+            advert.setIsActive(false);
+        }
+
 
         // Advert'ı kaydedin ve ID'yi elde edin
         Advert savedAdvert = advertRepository.save(advert);
@@ -319,7 +328,7 @@ public class AdvertService {
     }
 
     @Transactional
-    public ResponseEntity<AdvertResponse> trySave(CreateAdvertRequest createRequest, HttpServletRequest request) {
+    public ResponseEntity<AdvertResponse> trySave(CreateAdvertRequest createRequest, HttpServletRequest request,MultipartFile[] files) {
        methodHelper.getUserByHttpRequest(request);
 
         Advert advert=advertSet(createRequest);
@@ -335,7 +344,7 @@ public class AdvertService {
 
         Advert savedAdvert =advertRepository.save(advert);
 
-        List<Images> newImageList= methodHelper.getImagesForAdvert(createRequest.getFiles(),savedAdvert.getImagesList());
+        List<Images> newImageList= methodHelper.getImagesForAdvert(files,savedAdvert.getImagesList());
         savedAdvert.setImagesList(newImageList);
         savedAdvert.generateSlug();
 

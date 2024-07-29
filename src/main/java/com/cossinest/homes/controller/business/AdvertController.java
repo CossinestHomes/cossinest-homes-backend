@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -147,7 +148,7 @@ public class AdvertController {
 
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseMessage<AdvertResponse> createAdvert(@RequestPart("advertRequest") @Valid AdvertRequest advertRequest,
                                                         @RequestPart("files") MultipartFile[] files,
@@ -195,12 +196,14 @@ public class AdvertController {
 
 
 
-    @GetMapping("/trySave")
-    public ResponseEntity<AdvertResponse>trySave(@Valid @RequestBody CreateAdvertRequest createRequest, HttpServletRequest request){
+    @PostMapping(value = "/trySave", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AdvertResponse>trySave(@Valid @RequestPart CreateAdvertRequest createRequest,@RequestPart("files") MultipartFile[] files ,HttpServletRequest request){
 
-          return advertService.trySave(createRequest,request);
+          return advertService.trySave(createRequest,request,files);
 
     }
+
+
 
 
 
