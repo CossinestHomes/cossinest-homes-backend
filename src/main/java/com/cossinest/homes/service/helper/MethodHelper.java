@@ -44,8 +44,7 @@ public class MethodHelper {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
-    //private final AdvertService advertService;
-    //private final TourRequestService tourRequestService;
+
 
 
 

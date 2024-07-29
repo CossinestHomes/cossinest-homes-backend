@@ -35,7 +35,7 @@ private Double price;
 
 private String location;
 
-private MultipartFile[] files;
+//private MultipartFile[] files;
 
 private List<CreateAdvertPropertyRequest> advertPropertyRequest;
 }

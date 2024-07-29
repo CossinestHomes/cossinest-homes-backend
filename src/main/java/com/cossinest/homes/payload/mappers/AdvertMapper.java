@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AdvertMapper {
 
-    private CategoryPropertyValueService categoryPropertyValueService;
-    private MethodHelper methodHelper;
+    private final CategoryPropertyValueService categoryPropertyValueService;
+    private final MethodHelper methodHelper;
 
     //Advert==>DTO
     public AdvertResponse mapAdvertToAdvertResponse (Advert advert){
@@ -66,7 +66,7 @@ public class AdvertMapper {
                 //.builtIn(false) //default olarak advert entity de setlendi olacak mı kontrol et
                 //.status(Status.PENDING.getValue())//default olarak advert entity de setlendi olacak mı kontrol et
                 //.viewCount(advertRequest.getViewCount())//default olarak advert entity de setlendi olacak mı kontrol et
-                //.isActive(advertRequest.getIsActive())//default olarak advert entity de setlendi olacak mı kontrol et
+                //.isActive(true)//default olarak advert entity de setlendi olacak mı kontrol et
                 .location(advertRequest.getLocation())
                 .price(advertRequest.getPrice())
                 .slug(advertRequest.getSlug())
