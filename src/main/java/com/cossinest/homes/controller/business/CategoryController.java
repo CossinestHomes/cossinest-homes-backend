@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +40,16 @@ public class CategoryController {
 
 
     @GetMapping
-    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(
+    public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
+            @RequestParam(defaultValue = "") String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "sort", defaultValue = "id") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type) {
 
-            @RequestParam(value = "page") int page,
-            @RequestParam(value = "size") int size,
-            @RequestParam(value = "sort") String sort,
-            @RequestParam(value = "type") String type) {
+        Page<CategoryResponseDTO> categoryList= categoryService.getActiveCategoriesWithPage(q,page,size,sort,type);
 
-        return categoryService.getActiveCategoriesWithPage(page,size,sort,type);
+        return ResponseEntity.ok(categoryList) ;
 
 
     }
