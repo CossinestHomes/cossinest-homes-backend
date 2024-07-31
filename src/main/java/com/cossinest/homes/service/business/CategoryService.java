@@ -53,11 +53,13 @@ public class CategoryService {
     }
 
 
-    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(int page, int size, String sort, String type) {
+    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(String q, int page, int size, String sort, String type) {
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        return categoryRepository.findAllActiveCategories(pageable).map(categoryMapper::mapCategoryToCategoryResponseDTO);
+        Page<Category> categories= categoryRepository.findByTitleContainingAndIsActiveTrue(q, pageable);
+
+        return categories.map(categoryMapper::mapCategoryToCategoryResponseDTO);
 
     }
 
@@ -66,8 +68,14 @@ public class CategoryService {
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        return categoryRepository.findAll(pageable)
-                .map(categoryMapper::mapCategoryToCategoryResponseDTO);
+        Page<Category> categoryList;
+        if (q != null && !q.isEmpty()) {
+            categoryList = categoryRepository.findByTitleContaining(q, pageable);
+        } else {
+            categoryList = categoryRepository.findAll(pageable);
+        }
+
+        return categoryList.map(categoryMapper::mapCategoryToCategoryResponseDTO);
     }
 
 
