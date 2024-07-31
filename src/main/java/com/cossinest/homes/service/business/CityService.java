@@ -59,28 +59,37 @@ public class CityService {
       return cityRepository.countAllCities();
     }
 
-    public City saveCity(CityRequest cityRequest) {
+    public void setBuiltInForCity() {
 
-        City city = new City();
-        city.setName(cityRequest.getName());
+        Long cityId = 1L;
 
-        String cityName =cityRequest.getName();
-        city.setCities( fromName(cityName));
-
-        Country country = countryService.getById(cityRequest.getCountry_id());
-        city.setCountry(country);
-
-        return cityRepository.save(city);
+        City city = cityRepository.findById(cityId).orElseThrow(() -> new RuntimeException(ErrorMessages.CITY_NOT_FOUND));
+        city.setBuilt_in(Boolean.TRUE);
+        cityRepository.save(city);
     }
+//
+//    public City saveCity(CityRequest cityRequest) {
+//
+//        City city = new City();
+//        city.setName(cityRequest.getName());
+//
+//        String cityName =cityRequest.getName();
+//        city.setCities( fromName(cityName));
+//
+//        Country country = countryService.getById(cityRequest.getCountry_id());
+//        city.setCountry(country);
+//
+//        return cityRepository.save(city);
+//    }
 
-    public static Cities fromName(String name) {
-        for (Cities city : Cities.values()) {
-            if (city.getName().equalsIgnoreCase(name)) {
-                return city;
-            }
-        }
-        return null;
-    }
+//    public static Cities fromName(String name) {
+//        for (Cities city : Cities.values()) {
+//            if (city.getName().equalsIgnoreCase(name)) {
+//                return city;
+//            }
+//        }
+//        return null;
+//    }
 
 
 

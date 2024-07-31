@@ -1,6 +1,7 @@
 package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.City;
+import com.cossinest.homes.domain.concretes.business.Country;
 import com.cossinest.homes.domain.concretes.business.District;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.DistrictMapper;
@@ -43,21 +44,30 @@ public class DistrictService {
        return districtRepository.countAllDistricts();
     }
 
-    @Transactional
-    public District save(DistrictRequest districtRequest) {
-        District district = new District();
+    public void setBuiltInForDistrict() {
+        // Türkiye'nin ID'si 1 olduğundan emin olun
+        Long districtId = 1L;
 
-        City city = cityService.getCityById((long) districtRequest.getCity_id());
-
-        if (city != null) {
-            district.setCity(city);
-        } else {
-
-            throw new ResourceNotFoundException("City not found with id: " + districtRequest.getCity_id());
-        }
-
-        district.setName(districtRequest.getName());
-
-        return districtRepository.save(district);
+        District district = districtRepository.findById(districtId).orElseThrow(() -> new RuntimeException(ErrorMessages.DISTRICT_NOT_FOUND));
+        district.setBuilt_in(Boolean.TRUE);
+        districtRepository.save(district);
     }
+
+//    @Transactional
+//    public District save(DistrictRequest districtRequest) {
+//        District district = new District();
+//
+//        City city = cityService.getCityById((long) districtRequest.getCity_id());
+//
+//        if (city != null) {
+//            district.setCity(city);
+//        } else {
+//
+//            throw new ResourceNotFoundException("City not found with id: " + districtRequest.getCity_id());
+//        }
+//
+//        district.setName(districtRequest.getName());
+//
+//        return districtRepository.save(district);
+//    }
 }

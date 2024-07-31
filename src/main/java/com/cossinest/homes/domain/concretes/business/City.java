@@ -26,9 +26,11 @@ public class City {
     @Column(nullable = false, length = 30)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Cities cities;
+    private Boolean built_in;
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    private Cities cities;
 
     @ManyToOne
     @JsonIgnore

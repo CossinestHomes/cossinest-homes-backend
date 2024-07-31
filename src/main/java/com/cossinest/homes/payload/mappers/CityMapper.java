@@ -13,7 +13,7 @@ public class CityMapper {
     public CityForAdvertsResponse mapperCityToCityForAdvertsResponse(City city){
 
         return CityForAdvertsResponse.builder()
-                .cityName(city.getCities().name)
+                .cityName(city.getName())
                 .amount(city.getAdvertList().size())
                 .build();
 
