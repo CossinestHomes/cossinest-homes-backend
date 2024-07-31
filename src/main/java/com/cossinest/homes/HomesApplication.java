@@ -108,26 +108,24 @@ public class HomesApplication implements CommandLineRunner {
 			CountryRequest countryRequest = new CountryRequest();
 			countryRequest.setName("Türkiye");
 
-			countryService.saveCountry(countryRequest);
-
+			countryService.setBuiltInForCountry();
 		}
 
 		if (cityService.countAllCities() == 0) {
 			CityRequest cityRequest = new CityRequest();
-			cityRequest.setName(Cities.ANKARA.getName());
+			cityRequest.setName("Istanbul");
 			cityRequest.setCountry_id(1);
 
-			cityService.saveCity(cityRequest);
+			cityService.setBuiltInForCity();
 
 		}
 
 		if (districtService.countAllDistricts() == 0) {
 			DistrictRequest districtRequest = new DistrictRequest();
-			districtRequest.setName("Ay");
-			districtRequest.setCity_id(1);
+			districtRequest.setName("Bakırköy");
+			districtRequest.setDistrict_id(1);
 
-			districtService.save(districtRequest);
-
+			districtService.setBuiltInForDistrict();
 		}
 
 

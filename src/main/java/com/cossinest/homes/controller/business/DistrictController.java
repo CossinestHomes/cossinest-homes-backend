@@ -11,13 +11,13 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/districts")
+@RequestMapping("/district")
 @RequiredArgsConstructor
 public class DistrictController {
 
     private final DistrictService districtService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<DistrictResponse> getAllDistricts(){
         return districtService.getAllDistricts();
     }

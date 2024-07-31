@@ -25,9 +25,11 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+
     @Column(nullable = false, length = 30)
-    private com.cossinest.homes.domain.enums.Country name;
+    private String name;
+
+    private Boolean built_in;
 
 
     @OneToMany (mappedBy = "country",cascade = CascadeType.ALL)
