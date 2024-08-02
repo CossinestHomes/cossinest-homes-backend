@@ -27,7 +27,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -98,41 +100,77 @@ public class TourRequestService {
     }
 
 
-    public ResponseMessage<Page<TourRequestResponse>> getAllTourRequestByPageAuth(HttpServletRequest httpServletRequest, int page, int size, String sort, String type, String createAt, String tourTime, String status, String tourDate) {
+    public ResponseMessage<Page<TourRequestResponse>> getAllTourRequestByPageAuth(
+            HttpServletRequest httpServletRequest,
+            int page,
+            int size,
+            String sort,
+            String type,
+            String createAt,
+            String tourTime,
+            String status,
+            String tourDate) {
 
         String userEmail = (String) httpServletRequest.getAttribute("email");
         User userByEmail = methodHelper.findByUserByEmail(userEmail);
-               //Role kontrolü
-       methodHelper.controlRoles(userByEmail,RoleType.CUSTOMER);
 
-        Pageable pageable = pageableHelper.getPageableWithProperties(page,size,sort,type);
+        // Role kontrolü
+        methodHelper.checkRoles(userByEmail, RoleType.CUSTOMER, RoleType.ADMIN);
 
-        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQueryAuth(pageable,userByEmail.getId(),createAt,tourTime,status,tourDate);
+        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+
+        // Parametreleri uygun veri tiplerine dönüştür
+      //  LocalDateTime createAtDateTime = (createAt != null && !createAt.isEmpty()) ? LocalDateTime.parse(createAt) : null;
+       // LocalTime tourTimeParsed = (tourTime != null && !tourTime.isEmpty()) ? LocalTime.parse(tourTime) : null;
+       // StatusType statusType = (status != null && !status.isEmpty()) ? StatusType.valueOf(status) : null;
+       // LocalDate tourDateParsed = (tourDate != null && !tourDate.isEmpty()) ? LocalDate.parse(tourDate) : null;
+
+        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQueryAuth(
+                pageable,
+                userByEmail.getId(), // userId parametresi burada Long türündedir
+                createAt,
+                tourTime,
+                status,
+                tourDate
+        );
+
+        Page<TourRequestResponse> tourRequestResponses = tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse);
 
         return ResponseMessage.<Page<TourRequestResponse>>builder()
-                .object(tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse))
+                .object(tourRequestResponses)
                 .status(HttpStatus.OK)
-                .build();
-    }
-    
+                .build();}
+
         public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
             HttpServletRequest httpServletRequest, int page, int size, String sort, String type,String createAt,String tourTime,String status,String tourDate) {
 
-        String userEmail = (String) httpServletRequest.getAttribute("email");
-        User admin = methodHelper.findByUserByEmail(userEmail);
+            String userEmail = (String) httpServletRequest.getAttribute("email");
+            User admin = methodHelper.findByUserByEmail(userEmail);
 
-        //Role kontrolü
-        methodHelper.controlRoles(admin,RoleType.ADMIN,RoleType.MANAGER);
+            // Role kontrolü
+            methodHelper.controlRoles(admin, RoleType.ADMIN, RoleType.MANAGER);
 
-       Pageable pageable = pageableHelper.getPageableWithProperties(page,size,sort,type);
-        Page<TourRequest> allTourRequests = tourRequestRepository.findAllByQueryAdmin(pageable,createAt,tourTime,status,tourDate);
+            LocalDateTime createAtDate = (createAt != null && !createAt.isEmpty()) ? LocalDateTime.parse(createAt) : null;
+            LocalTime tourTimeParsed = (tourTime != null && !tourTime.isEmpty()) ? LocalTime.parse(tourTime) : null;
+            String statusType = (status != null && !status.isEmpty()) ? status : null;
+            LocalDate tourDateParsed = (tourDate != null && !tourDate.isEmpty()) ? LocalDate.parse(tourDate) : null;
+            StatusType statusType1 = null;
 
-        return ResponseEntity.ok(allTourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse));
+            for (StatusType statusType2 :StatusType.values()  ) {
+                if(statusType2.name.equalsIgnoreCase(status)){
+                    statusType1 = statusType2;
+                }
+            }
+
+            Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+            Page<TourRequest> allTourRequests = tourRequestRepository.findAllByQueryAdmin(pageable, createAtDate, tourTimeParsed, statusType1, tourDateParsed);
+
+            return ResponseEntity.ok(allTourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse));
     }
 
 
 
- 
+
 
 
 
@@ -189,6 +227,8 @@ public class TourRequestService {
         updatedTourRequest.setStatus(StatusType.PENDING);
         updatedTourRequest.setGuestUserId(guestUser);
         updatedTourRequest.setOwnerUserId(advert.getUser());
+        updatedTourRequest.setCreateAt(LocalDateTime.now());
+
 
         logService.createLogEvent(guestUser,advert, LogEnum.TOUR_REQUEST_ACCEPTED);
 

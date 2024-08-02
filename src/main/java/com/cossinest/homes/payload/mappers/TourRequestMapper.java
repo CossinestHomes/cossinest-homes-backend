@@ -8,11 +8,13 @@ import com.cossinest.homes.payload.response.business.TourRequestResponse;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Data
 @Component
 public class TourRequestMapper {
-
-    public TourRequestResponse tourRequestToTourRequestResponse(TourRequest tourRequest){
+    public TourRequestResponse tourRequestToTourRequestResponse(TourRequest tourRequest) {
         return TourRequestResponse.builder()
                 .tourDate(tourRequest.getTourDate())
                 .tourTime(tourRequest.getTourTime())
@@ -25,12 +27,11 @@ public class TourRequestMapper {
                 .build();
     }
 
-    public TourRequest tourRequestRequestToTourRequest(TourRequestRequest tourRequestRequest, Advert advert){
+    public TourRequest tourRequestRequestToTourRequest(TourRequestRequest tourRequestRequest, Advert advert) {
         return TourRequest.builder()
                 .tourDate(tourRequestRequest.getTourDate())
                 .tourTime(tourRequestRequest.getTourTime())
                 .advertId(advert)
                 .build();
     }
-
 }
