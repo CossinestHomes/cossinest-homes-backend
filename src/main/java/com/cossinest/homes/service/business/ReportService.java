@@ -141,7 +141,7 @@ public class ReportService {
 
     }
 
-    public ResponseEntity<byte[]> getAdverts(HttpServletRequest request, String date1, String date2, String category, String type, String status) {
+    public ResponseEntity<byte[]> getAdverts(HttpServletRequest request, String date1, String date2, String category, String type, int status) {
 
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
