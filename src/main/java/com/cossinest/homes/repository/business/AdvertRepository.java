@@ -70,7 +70,7 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                                        @Param(value = "date2") LocalDateTime date2,
                                        @Param(value = "category")String category,
                                        @Param(value = "type") String type,
-                                       @Param(value = "enumStatus") Status enumStatus);
+                                       @Param(value = "enumStatus") int enumStatus);
 
 
     @Query("SELECT a FROM Advert a WHERE SIZE(a.tourRequestList) > :amount ORDER BY SIZE(a.tourRequestList) DESC")

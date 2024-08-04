@@ -370,7 +370,7 @@ public class AdvertService {
 
         advertTypesService.findByTitle(type);
 
-       return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
+       return advertRepository.findByQuery(begin,end,category,type,enumStatus.getValue()).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 
