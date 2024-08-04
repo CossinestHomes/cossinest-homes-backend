@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +65,8 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     @Query("SELECT a FROM Advert a WHERE (:date1 IS NULL OR :date2 IS NULL OR  a.createdAt BETWEEN:date1 AND :date2) AND " +
             "(:category IS NULL OR a.category.title =:category) AND (:type IS NULL OR a.advertType.title=:type) AND " +
             "(:enumStatus IS NULL OR a.status=:enumStatus)")
-    Optional<List<Advert>> findByQuery(@Param(value = "date1") LocalDateTime date1,
-                                       @Param(value = "date2") LocalDateTime date2,
+    Optional<List<Advert>> findByQuery(@Param(value = "date1") LocalDate date1,
+                                       @Param(value = "date2") LocalDate date2,
                                        @Param(value = "category")String category,
                                        @Param(value = "type") String type,
                                        @Param(value = "enumStatus") Status enumStatus);

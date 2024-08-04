@@ -34,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -300,10 +301,10 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-       LocalDateTime begin =LocalDateTime.parse(date1+" 00:00:00",formatter);
-       LocalDateTime end =LocalDateTime.parse(date2+" 23:59:59",formatter);
-       dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
+       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
+       LocalDate begin = LocalDate.parse(date1,formatter);
+       LocalDate end =LocalDate.parse(date2,formatter);
+       dateTimeValidator.checkBeginTimeAndEndTimeLocalTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
 
