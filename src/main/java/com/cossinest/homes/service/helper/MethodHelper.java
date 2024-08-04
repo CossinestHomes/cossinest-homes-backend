@@ -49,6 +49,9 @@ public class MethodHelper {
 
 
     public User findByUserByEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            throw new ResourceNotFoundException("Email cannot be null or empty");
+        }
 
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.NOT_FOUND_USER_EMAIL, email)));
@@ -185,24 +188,6 @@ public class MethodHelper {
         return resultMap;
     }
 
-
-    public List<CategoryPropertyValue> getPropertyValueList(Category category, AbstractAdvertRequest advertRequest, CategoryPropertyValueService categoryPropertyValueService) {
-        //adım:1==>Db den category e ait PropertyKeyleri getir
-        Set<CategoryPropertyKey> categoryPropertyKeys = category.getCategoryPropertyKeys();
-        //adım:2==>gelen PropertyKeyleri idleri ile yeni bir liste oluştur
-        List<Long> cpkIds = categoryPropertyKeys.stream().map(CategoryPropertyKey::getId).toList();
-        //adım:3==>requestten gelen properti ile map yapısı oluştur
-        List<Object> propertyKeys = advertRequest.getProperties().stream().map(t -> t.get("keyId")).collect(Collectors.toList());
-        List<Object> propertyValues = advertRequest.getProperties().stream().map(t -> t.get("value")).collect(Collectors.toList());
-        Map<Object, Object> propertyKeyAndPropertyValue = mapTwoListToOneMap(propertyKeys, propertyValues);
-        //adım:4==>yeni bir liste oluştur ve dbden kelen keylerin içerisinde requestten gelen key varsa mapten o objenin valuesunu yeni listeye koy
-        List<Object> propertyForAdvert = new ArrayList<>();
-        propertyKeys.stream().map(t -> cpkIds.contains(t) ? propertyForAdvert.add(propertyKeyAndPropertyValue.get(t)) : null);//value birden fazla gelebilir
-
-        //adım:5==>artık elimde valuelar olan bir dizi var bu dizinin elamanlarını kullanarak db den propertyvalue ları çağır advertın içine ata
-        return propertyForAdvert.stream()
-                .map(t -> categoryPropertyValueService.getCategoryPropertyValueForAdvert(t)).collect(Collectors.toList());
-    }
 
 
     public void getPropertiesForAdvertResponse(CategoryPropertyValue categoryPropertyValue, CategoryPropertyValueService categoryPropertyValueService, Map<String, String> propertyNameAndValue) {
@@ -405,7 +390,13 @@ public class MethodHelper {
     public List<Long> getImagesIdsListForAdvert(List<Images> imagesList) {
         List<Long> imagesIdsList = new ArrayList<>();
 
-        imagesList.stream().map(t -> imagesIdsList.add(t.getId())).collect(Collectors.toList());
+        if (imagesList != null) {
+            imagesList.stream()
+                    .filter(Objects::nonNull)
+                    .map(Images::getId)
+                    .forEach(imagesIdsList::add);
+        }
+
         return imagesIdsList;
     }
 
