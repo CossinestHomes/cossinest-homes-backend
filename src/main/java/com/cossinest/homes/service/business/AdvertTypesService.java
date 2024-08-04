@@ -1,6 +1,7 @@
 package com.cossinest.homes.service.business;
 
 import com.cossinest.homes.domain.concretes.business.AdvertType;
+import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.AdvertTypeMapper;
@@ -102,5 +103,11 @@ public class AdvertTypesService {
     @Transactional
     public void resetAdvertTypesTables() {
    //     advertTypesRepository.deleteByBuiltIn(false);
+    }
+
+    public AdvertType findByTitle(String type) {
+
+      return   advertTypesRepository.findByTitle(type).orElseThrow(()-> new BadRequestException("AdvertType is not found."));
+
     }
 }

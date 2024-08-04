@@ -68,6 +68,8 @@ public class AdvertService {
 
     private final DistrictService districtService;
 
+
+
     //private final ImagesService imagesService;
 
 
@@ -365,6 +367,8 @@ public class AdvertService {
         }catch (BadRequestException e){
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
         }
+
+        advertTypesService.findByTitle(type);
 
        return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
