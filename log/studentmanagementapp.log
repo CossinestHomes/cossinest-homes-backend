@@ -1,3 +1,4 @@
+
 "2024-08-03 14:18:32,987 INFO  [restartedMain] com.cossinest.homes.HomesApplication:Starting HomesApplication using Java 17.0.8 with PID 18900 (C:\Users\mavic\Desktop\bitirmeProje\target\classes started by mavic in C:\Users\mavic\Desktop\bitirmeProje)
 ""2024-08-03 14:18:33,001 INFO  [restartedMain] com.cossinest.homes.HomesApplication:No active profile set, falling back to 1 default profile: "default"
 ""2024-08-03 14:18:33,143 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
@@ -62,4 +63,5 @@
 ""2024-08-03 14:59:38,655 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
 ""2024-08-03 14:59:38,665 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
 ""2024-08-03 14:59:38,670 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
+
 "

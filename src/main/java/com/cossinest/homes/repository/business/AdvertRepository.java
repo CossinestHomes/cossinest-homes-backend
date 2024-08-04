@@ -56,6 +56,7 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                                      Pageable pageable);
 
 
+
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")
     Page<Advert> findAdvertsForUser(Long id, Pageable pageable);
 
