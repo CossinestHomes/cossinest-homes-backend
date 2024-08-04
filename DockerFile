@@ -1,0 +1,13 @@
+# Base image olarak OpenJDK kullanın
+
+FROM openjdk:17-jdk
+
+WORKDIR /app
+
+
+# Uygulama JAR dosyasını konteyner içine kopyalayın
+COPY target/homes-0.0.1-SNAPSHOT.jar /app.jar
+COPY src/main/resources/static /app/static
+
+# Uygulamayı başlatın
+CMD ["java", "-jar", "/app.jar"]

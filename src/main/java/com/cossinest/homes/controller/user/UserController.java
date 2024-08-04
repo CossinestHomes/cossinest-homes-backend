@@ -27,7 +27,7 @@ public class UserController {
 
 
 
-    @PostMapping("/register") //http://localhost:8080/users/register ++
+    @PostMapping("/register") //http://localhost:8080/users/register
     public ResponseEntity<SignInResponse> registerUser (@RequestBody @Valid SignInRequest signInRequest){
        return userService.registerUser(signInRequest);
 
