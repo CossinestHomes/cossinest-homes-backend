@@ -78,13 +78,7 @@ public class DateTimeValidator {
 
     }
 
-    public void checkBeginTimeAndEndTimeLocalTime(LocalDate begin, LocalDate end) {
 
-        if(begin.isAfter(end)){
-            throw new BadRequestException(ErrorMessages.BEGIN_TIME_CAN_NOT_BE_AFTER_END_TIME);
-        }
-
-    }
 }
 
 

@@ -353,10 +353,10 @@ public class AdvertService {
 
     public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
 
-       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
-       LocalDate begin = LocalDate.parse(date1,formatter);
-       LocalDate end =LocalDate.parse(date2,formatter);
-       dateTimeValidator.checkBeginTimeAndEndTimeLocalTime(begin,end);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+       LocalDateTime begin = LocalDateTime.parse(date1,formatter);
+       LocalDateTime end =LocalDateTime.parse(date2,formatter);
+       dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
 
