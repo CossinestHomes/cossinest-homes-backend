@@ -351,7 +351,7 @@ public class AdvertService {
     }
 
 
-    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
+    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, int status) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
        LocalDateTime begin = LocalDateTime.parse(date1,formatter);
@@ -360,17 +360,19 @@ public class AdvertService {
 
        categoryService.getCategoryByTitle(category);
 
-        Status enumStatus;
+       /* Status enumStatus;
         try {
             enumStatus= Status.valueOf(status);
 
         }catch (BadRequestException e){
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
-        }
+        }*/
+
+       int advertStatus =Status.fromValue(status);
 
         advertTypesService.findByTitle(type);
 
-       return advertRepository.findByQuery(begin,end,category,type,enumStatus.getValue()).orElseThrow(
+       return advertRepository.findByQuery(begin,end,category,type,advertStatus).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 
