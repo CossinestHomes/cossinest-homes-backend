@@ -115,7 +115,7 @@ public class CategoryController {
      //C07 id ile bir category'nin property key'lerini getirme (Path Variable ile) :
 
     @GetMapping("/{id}/properties")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public Set<PropertyKeyResponse> getCategoryPropertyKeys(@PathVariable("id") Long id){
 
         return categoryPropertyKeyService.findByCategoryIdEquals(id);
