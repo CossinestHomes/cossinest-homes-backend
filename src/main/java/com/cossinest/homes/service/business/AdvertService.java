@@ -85,14 +85,14 @@ public class AdvertService {
     }
 
 
-    public Page<AdvertResponse> getAllAdvertsByPage(String query, Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, String location, Integer status, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPage(String query, Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
         if (methodHelper.priceControl(priceStart, priceEnd)) {
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
 
-        return advertRepository.findByAdvertByQuery(categoryId, advertTypeId, priceStart, priceEnd, status, location, query, pageable)
+        return advertRepository.findByAdvertByQuery(categoryId, advertTypeId, priceStart, priceEnd, query, pageable)
                 .map(advertMapper::mapAdvertToAdvertResponse);
     }
 
@@ -128,7 +128,7 @@ public class AdvertService {
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
-    public Page<AdvertResponse> getAllAdvertsByPageForAdmin(HttpServletRequest request,String query ,Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, String location, int status, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPageForAdmin(HttpServletRequest request,String query ,Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd,int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
@@ -137,7 +137,7 @@ public class AdvertService {
         if(methodHelper.priceControl(priceStart,priceEnd)){
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
-        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,status,location,query,pageable).map(advertMapper::mapAdvertToAdvertResponse);
+        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,query,pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
     public AdvertResponse getAdvertBySlug(String slug) {
