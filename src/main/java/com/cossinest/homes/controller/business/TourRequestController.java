@@ -27,7 +27,7 @@ public class TourRequestController {
         return tourRequestService.saveTourRequest(tourRequestRequest,httpServletRequest);
     }
 
-    @GetMapping("/auth") // http://localhost:8080/tour-requests/auth?page=0&size=7&sort=tour_date&type=asc  + GET
+    @GetMapping("/auth") // http://localhost:8080/tour-requests/auth?page=0&size=7&sort=tourDate&type=asc  + GET
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseMessage<Page<TourRequestResponse>> getAllTourRequestByPageAuth(
             HttpServletRequest httpServletRequest,
@@ -43,7 +43,7 @@ public class TourRequestController {
         return tourRequestService.getAllTourRequestByPageAuth(httpServletRequest,page, size,sort,type,createAt,tourTime,status,tourDate);
     }
 
-    @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=tour_date&type=asc + GET
+    @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=createAt&type=asc + GET
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
             HttpServletRequest httpServletRequest,
@@ -60,7 +60,7 @@ public class TourRequestController {
     }
 
     @GetMapping("/{id}/auth") // http://localhost:8080/tour-requests/3/auth + GET
-    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(@PathVariable Long id,
                                                                       HttpServletRequest httpServletRequest){
         return tourRequestService.getTourRequestByIdAuth(id,httpServletRequest);

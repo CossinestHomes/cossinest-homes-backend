@@ -199,6 +199,8 @@ public class AdvertService {
         }
 
 
+
+
         // Advert'ı kaydedin ve ID'yi elde edin
         Advert savedAdvert = advertRepository.save(advert);
         savedAdvert.generateSlug();
@@ -210,6 +212,7 @@ public class AdvertService {
             image.setAdvert(savedAdvert); // advert_id ayarlanıyor
         }
         savedAdvert.setImagesList(imagesList);
+
 
         logService.createLogEvent(savedAdvert.getUser(), savedAdvert, LogEnum.CREATED);
 

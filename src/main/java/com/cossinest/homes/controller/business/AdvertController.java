@@ -185,7 +185,7 @@ public class AdvertController {
 
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage<AdvertResponse> updateAdvertById(@PathVariable Long id,HttpServletRequest httpServletRequest){
+    public ResponseMessage<AdvertResponse> deleteAdvertById(@PathVariable Long id,HttpServletRequest httpServletRequest){
         AdvertResponse advertResponse= advertService.deleteAdvert(id,httpServletRequest);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_DELETED_SUCCESS)
@@ -194,19 +194,12 @@ public class AdvertController {
                 .build();
     }
 
-
-
-
     @PostMapping(value = "/trySave", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdvertResponse>trySave(@Valid @RequestPart CreateAdvertRequest createRequest,@RequestPart("files") MultipartFile[] files ,HttpServletRequest request){
 
           return advertService.trySave(createRequest,request,files);
 
     }
-
-
-
-
 
 
 
