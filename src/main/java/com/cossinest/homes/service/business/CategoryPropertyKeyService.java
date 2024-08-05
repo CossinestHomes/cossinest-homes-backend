@@ -29,12 +29,9 @@ public class CategoryPropertyKeyService {
 
 
     public CategoryPropertyKey findPropertyKeyById(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id must not be null??");
-        }
 
         return categoryPropertyKeyRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Category not found with id :" + id));
+                ()-> new ResourceNotFoundException("Category property key is not found with id :" + id));
     }
 
 
