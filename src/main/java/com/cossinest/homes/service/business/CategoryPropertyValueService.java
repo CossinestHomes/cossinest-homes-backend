@@ -5,6 +5,7 @@ import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.repository.business.CategoryPropertyValueRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +39,10 @@ public class CategoryPropertyValueService {
 
     public void resetCategoryPropertyValueTables() {
         categoryPropertyValueRepository.deleteAll();
+    }
+
+    @Transactional
+    public CategoryPropertyValue saveCategoryPropertyValue(CategoryPropertyValue categoryPropertyValue) {
+        return categoryPropertyValueRepository.save(categoryPropertyValue);
     }
 }

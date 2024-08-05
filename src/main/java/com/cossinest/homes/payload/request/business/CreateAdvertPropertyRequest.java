@@ -17,4 +17,6 @@ public class CreateAdvertPropertyRequest {
 
     @NotNull(message = "value can not be null")
     private String value;
+
+
 }

@@ -59,6 +59,8 @@ public class AdvertService {
 
     private final CategoryPropertyValueService categoryPropertyValueService;
 
+    private final CategoryPropertyKeyService categoryPropertyKeyService;
+
     private final AdvertTypesService advertTypesService;
 
     private final DateTimeValidator dateTimeValidator;
@@ -175,12 +177,40 @@ public class AdvertService {
                 (AdvertType) detailsMap.get("advertType"),
                 (District) detailsMap.get("district"));
 
-        List<CategoryPropertyValue>advertValueList=new ArrayList<>();
+        List<CategoryPropertyValue> advertValueList = new ArrayList<>();
 
-        for (CreateAdvertPropertyRequest request1 :advertRequest.getProperties()) {
+        for (CreateAdvertPropertyRequest request1 : advertRequest.getProperties()) {
+            // Request'ten gelen categoryPropertyKey'i al
+            Long categoryPropertyKeyFromRequest = request1.getKeyId();
 
-            advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+            CategoryPropertyKey categoryPropertyKeyFromDb = categoryPropertyKeyService.findPropertyKeyById(categoryPropertyKeyFromRequest);
+            if (categoryPropertyKeyFromDb != null) {
+                System.out.println("Found CategoryPropertyKey: " + categoryPropertyKeyFromDb.getId());
+
+                // Yeni CategoryPropertyValue nesnesi oluştur
+                CategoryPropertyValue categoryPropertyValue = new CategoryPropertyValue();
+
+                // Request'ten gelen değeri categoryPropertyValue'ya setle
+                categoryPropertyValue.setValue(request1.getValue());
+                System.out.println("Setting value: " + request1.getValue());
+
+                // CategoryPropertyKey'i categoryPropertyValue'ya setle
+                categoryPropertyValue.setCategoryPropertyKeys(categoryPropertyKeyFromDb);
+
+                // CategoryPropertyValue nesnesini kaydet
+                categoryPropertyValue = categoryPropertyValueService.saveCategoryPropertyValue(categoryPropertyValue);
+                System.out.println("Saved CategoryPropertyValue with ID: " + categoryPropertyValue.getId());
+
+                // advertValueList'e ekle
+                advertValueList.add(categoryPropertyValue);
+                System.out.println("Added to advertValueList");
+            } else {
+                // Hata durumunu yönet, örneğin logla veya hata fırlat
+                System.out.println("CategoryPropertyKey bulunamadı: " + categoryPropertyKeyFromRequest);
+            }
         }
+
+
 
         advert.setCategoryPropertyValuesList(advertValueList);
 
@@ -194,7 +224,6 @@ public class AdvertService {
         if (advert.getIsActive() == null) {
             advert.setIsActive(false);
         }
-
 
         // Advert'ı kaydedin ve ID'yi elde edin
         Advert savedAdvert = advertRepository.save(advert);
@@ -215,6 +244,7 @@ public class AdvertService {
 
         return advertMapper.mapAdvertToAdvertResponse(savedAdvert);
     }
+
 
     @Transactional
     public AdvertResponse updateUsersAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request, MultipartFile[] files) {
