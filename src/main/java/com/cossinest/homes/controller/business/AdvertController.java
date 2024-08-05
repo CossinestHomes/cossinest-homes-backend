@@ -36,7 +36,7 @@ public class AdvertController {
     @GetMapping
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q", required = false) String query,
-            @RequestParam(value = "category_id") Long categoryId,
+            @RequestParam(value = "category.id") Long categoryId,
             @RequestParam(value = "advert_type_id") Long advertTypeId,
             @RequestParam(value = "price_start", required = false) Double priceStart,
             @RequestParam(value = "price_end", required = false) Double priceEnd,
@@ -44,7 +44,7 @@ public class AdvertController {
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
-            @RequestParam(value = "sort", defaultValue = "create_at") String sort,
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
         return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, location, status, page, size, sort, type);
@@ -94,7 +94,7 @@ public class AdvertController {
             HttpServletRequest request,
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
+            @RequestParam(value = "sort",required = false,defaultValue = "category.id") String sort,
             @RequestParam(value = "type",required = false,defaultValue = "asc") String type){
 
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
