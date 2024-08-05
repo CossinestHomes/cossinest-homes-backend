@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -32,7 +33,7 @@ public class ReportController {
                                              @RequestParam(value = "date2", required = false) String date2,
                                              @RequestParam(value = "category", required = false) String category,
                                              @RequestParam(value = "type", required = false) String type,
-                                             @RequestParam(value = "status", required = false) String status,
+                                             @RequestParam(value = "status", required = false) int status,
                                              HttpServletRequest request) {
 
         return logService.getAdverts(request, date1, date2, category, type, status);

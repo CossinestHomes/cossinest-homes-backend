@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AdvertTypesRepository extends JpaRepository<AdvertType , Long> {
 
-    boolean findByTitle(String title);
+  
 
 
 
@@ -21,4 +23,6 @@ public interface AdvertTypesRepository extends JpaRepository<AdvertType , Long> 
     void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
 
     boolean existsByTitle(String title);
+
+    Optional<AdvertType>  findByTitle(String type);
 }

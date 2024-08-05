@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -22,32 +23,35 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     List<TourRequest> findAllByTourDate(LocalDate tourDate);
 
 
-    @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId=:userId OR t.ownerUserId=:userId) OR" +
-            "(:createAt IS NULL OR t.createAt=:createAt) OR " +
-            "(:tourTime IS NULL OR t.tourTime=:tourTime) OR" +
-            "(:status IS NULL OR t.status=:status) OR" +
-            "(:tourDate IS NULL OR t.tourDate=:tourDate)")
-    Page<TourRequest> findAllByQueryAuth(Pageable pageable,
-                                     @Param("userId") Long userId,
-                                     @Param("createAt") String createAt,
-                                     @Param("tourTime") String tourTime,
-                                     @Param("status") String status,
-                                     @Param("tourDate") String tourDate
-                                    );
-
-    @Query("SELECT t FROM TourRequest t WHERE (:createAt IS NULL OR t.createAt=:createAt) OR " +
-            "(:tourTime IS NULL OR t.tourTime=:tourTime) OR" +
-            "(:status IS NULL OR t.status=:status) OR" +
-            "(:tourDate IS NULL OR t.tourDate=:tourDate)")
-    Page<TourRequest> findAllByQueryAdmin(Pageable pageable,
-                                     @Param("createAt") String createAt,
-                                     @Param("tourTime") String tourTime,
-                                     @Param("status") String status,
-                                     @Param("tourDate") String tourDate
+    @Query("SELECT t FROM TourRequest t WHERE ((t.guestUserId.id = :userId OR t.ownerUserId.id = :userId) " +
+            "AND (:createAt IS NULL OR t.createAt = :createAt) " +
+            "AND (:tourTime IS NULL OR t.tourTime = :tourTime) " +
+            "AND (:status IS NULL OR t.status = :status) " +
+            "AND (:tourDate IS NULL OR t.tourDate = :tourDate))")
+    Page<TourRequest> findAllByQueryAuth(
+            Pageable pageable,
+            @Param("userId") Long userId,
+            @Param("createAt") String createAt,
+            @Param("tourTime") String tourTime,
+            @Param("status") String status,
+            @Param("tourDate") String tourDate
     );
 
+    @Query("SELECT t FROM TourRequest t WHERE " +
+            "(:createAt IS NULL OR t.createAt = :createAt) " +
+            "AND (:tourTime IS NULL OR t.tourTime = :tourTime) " +
+            "AND (:status IS NULL OR t.status = :status) " +
+            "AND (:tourDate IS NULL OR t.tourDate = :tourDate) " +
+            "ORDER BY t.tourDate ASC")
+    Page<TourRequest> findAllByQueryAdmin(
+            Pageable pageable,
+            @Param("createAt") LocalDateTime createAt,
+            @Param("tourTime") LocalTime tourTime,
+            @Param("status") StatusType status,
+            @Param("tourDate") LocalDate tourDate
+    );
 
-    @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId=?1 OR  t.ownerUserId=?1) AND t.id=?2")
+    @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId.id=?1 OR  t.ownerUserId.id=?1) AND t.id=?2")
     TourRequest findByIdByCustomer(Long userId, Long tourRequestId);
 
 

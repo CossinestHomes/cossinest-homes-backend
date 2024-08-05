@@ -34,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -68,6 +69,8 @@ public class AdvertService {
     private final LogService logService;
 
     private final DistrictService districtService;
+
+
 
     //private final ImagesService imagesService;
 
@@ -225,6 +228,7 @@ public class AdvertService {
             advert.setIsActive(false);
         }
 
+
         // Advert'ı kaydedin ve ID'yi elde edin
         Advert savedAdvert = advertRepository.save(advert);
         savedAdvert.generateSlug();
@@ -236,6 +240,7 @@ public class AdvertService {
             image.setAdvert(savedAdvert); // advert_id ayarlanıyor
         }
         savedAdvert.setImagesList(imagesList);
+
 
         logService.createLogEvent(savedAdvert.getUser(), savedAdvert, LogEnum.CREATED);
 
@@ -378,24 +383,28 @@ public class AdvertService {
     }
 
 
-    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
+    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, int status) {
 
-       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-       LocalDateTime begin =LocalDateTime.parse(date1+" 00:00:00",formatter);
-       LocalDateTime end =LocalDateTime.parse(date2+" 23:59:59",formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+       LocalDateTime begin = LocalDateTime.parse(date1,formatter);
+       LocalDateTime end =LocalDateTime.parse(date2,formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
 
-        Status enumStatus;
+       /* Status enumStatus;
         try {
             enumStatus= Status.valueOf(status);
 
         }catch (BadRequestException e){
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
-        }
+        }*/
 
-       return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
+       int advertStatus =Status.fromValue(status);
+
+        advertTypesService.findByTitle(type);
+
+       return advertRepository.findByQuery(begin,end,category,type,advertStatus).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 

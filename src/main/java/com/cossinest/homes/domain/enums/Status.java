@@ -20,4 +20,14 @@ public enum Status {
     public String getDescription() {
         return description;
     }
+
+
+    public static int fromValue(int value) {
+        for (Status status : Status.values()) {
+            if (status.getValue() == value) {
+                return status.getValue();
+            }
+        }
+        throw new IllegalArgumentException("Invalid status value: " + value);
+    }
 }

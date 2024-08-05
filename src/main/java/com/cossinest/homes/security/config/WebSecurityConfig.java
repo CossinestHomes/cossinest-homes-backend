@@ -139,6 +139,7 @@ anyRequest().authenticated() ifadesi, diğer tüm isteklerin kimlik doğrulamas�
             "/categories",
             "/popular/*",
             "/trySave",
+            "/users/register",
             "/users/*",
             "/auth/forgot-password"
 
