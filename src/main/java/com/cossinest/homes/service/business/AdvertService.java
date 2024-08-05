@@ -169,7 +169,7 @@ public class AdvertService {
     public AdvertResponse saveAdvert(AdvertRequest advertRequest, HttpServletRequest httpServletRequest, MultipartFile[] files) {
 
         Map<String, Object> detailsMap = new HashMap<>();
-        getAdvertDetails(advertRequest, httpServletRequest, detailsMap);
+     getAdvertDetails(advertRequest, httpServletRequest, detailsMap);
 
         Advert advert = advertMapper.mapAdvertRequestToAdvert(
                 advertRequest,
