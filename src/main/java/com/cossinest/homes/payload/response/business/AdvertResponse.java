@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.response.business;
 
+import com.cossinest.homes.domain.concretes.business.Images;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,7 +54,7 @@ public class AdvertResponse {
 
     private Map<String,String > properties;
 
-    private List<Long> imagesIdsList;
+    private List<Images> imagesIdsList;
 
 
 

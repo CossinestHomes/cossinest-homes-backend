@@ -247,6 +247,9 @@ public class AdvertService {
         // Advert'ı ve ilişkili resimleri tekrar kaydedin
         savedAdvert = advertRepository.save(savedAdvert);
 
+
+
+
         return advertMapper.mapAdvertToAdvertResponse(savedAdvert);
     }
 
