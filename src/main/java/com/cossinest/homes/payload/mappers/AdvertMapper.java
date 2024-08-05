@@ -41,7 +41,7 @@ public class AdvertMapper {
                 .cityId(advert.getCity().getId())
                 .properties(methodHelper.getAdvertResponseProperties(advert, categoryPropertyValueService))
                 .districtId(advert.getDistrict().getId())
-                .imagesIdsList(methodHelper.getImagesIdsListForAdvert(advert.getImagesList()))
+                .imagesIdsList(advert.getImagesList())
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId());
 
