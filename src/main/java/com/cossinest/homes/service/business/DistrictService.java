@@ -53,6 +53,10 @@ public class DistrictService {
         districtRepository.save(district);
     }
 
+    public List<District> getByDistrict(Long cityId) {
+        return districtRepository.getByDistrict(cityId);
+    }
+
 //    @Transactional
 //    public District save(DistrictRequest districtRequest) {
 //        District district = new District();

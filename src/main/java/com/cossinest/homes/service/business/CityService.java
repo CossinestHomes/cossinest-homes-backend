@@ -67,6 +67,10 @@ public class CityService {
         city.setBuilt_in(Boolean.TRUE);
         cityRepository.save(city);
     }
+
+    public List<City> getByCity(Long countryId) {
+        return cityRepository.getByCity(countryId);
+    }
 //
 //    public City saveCity(CityRequest cityRequest) {
 //
