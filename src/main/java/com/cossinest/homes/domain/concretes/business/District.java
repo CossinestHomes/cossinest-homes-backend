@@ -31,6 +31,8 @@ public class District {
     @JoinColumn(name = "city_id")
     private City city;
 
+    private Boolean built_in;
+
     @OneToMany(mappedBy = "district",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Advert> advertList = new ArrayList<>();
 

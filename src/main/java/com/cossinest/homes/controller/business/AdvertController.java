@@ -33,23 +33,21 @@ public class AdvertController {
     private final CityService cityService;
     private final ReportService logService;
 
-    @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
-                 //status=1;page=1&size=10&sort=date&type=asc
+    @GetMapping
     public Page<AdvertResponse> getAllAdvertsByPage(
-            @RequestParam(value = "q",required = false) String query,
+            @RequestParam(value = "q", required = false) String query,
             @RequestParam(value = "category_id") Long categoryId,
             @RequestParam(value = "advert_type_id") Long advertTypeId,
-            @RequestParam(value = "price_start",required = false) Double priceStart,
-            @RequestParam(value = "price_end",required = false) Double priceEnd,
-            @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) Integer status,
-            @RequestParam(value = "page",required = false,defaultValue = "0") int page,
-            @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
-            @RequestParam(value = "type",required = false,defaultValue = "asc") String type
-    ){
-
-           return advertService.getAllAdvertsByPage(query,categoryId,advertTypeId,priceStart,priceEnd,location,status,page,size,sort,type);
+            @RequestParam(value = "price_start", required = false) Double priceStart,
+            @RequestParam(value = "price_end", required = false) Double priceEnd,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "status", required = false) Integer status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "sort", defaultValue = "create_at") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, location, status, page, size, sort, type);
     }
 
     @GetMapping("/cities")
@@ -163,8 +161,11 @@ public class AdvertController {
 
     @PutMapping("/auth/{id}")
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseMessage<AdvertResponse> updateUsersAdvertById(@RequestBody @Valid AdvertRequest advertRequest,@PathVariable Long id,HttpServletRequest httpServletRequest){
-        AdvertResponse advertResponse= advertService.updateUsersAdvert(advertRequest,id,httpServletRequest);
+    public ResponseMessage<AdvertResponse> updateUsersAdvertById(@RequestPart("advertRequest") @Valid AdvertRequest advertRequest,
+                                                                 @RequestPart("files") MultipartFile[] files,
+                                                                 HttpServletRequest httpServletRequest,
+                                                                 @PathVariable Long id){
+        AdvertResponse advertResponse= advertService.updateUsersAdvert(advertRequest,id,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_UPDATED_SUCCESS)
                 .status(HttpStatus.OK)
@@ -173,8 +174,8 @@ public class AdvertController {
     }
     @PutMapping("/admin/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage<AdvertResponse> updateAdvertById(@RequestBody @Valid AdvertRequestForAdmin advertRequest, @PathVariable Long id, HttpServletRequest httpServletRequest){
-        AdvertResponse advertResponse= advertService.updateAdvert(advertRequest,id,httpServletRequest);
+    public ResponseMessage<AdvertResponse> updateAdvertById(@RequestPart @Valid AdvertRequestForAdmin advertRequest, @RequestPart("files") MultipartFile[] files, @PathVariable Long id, HttpServletRequest httpServletRequest){
+        AdvertResponse advertResponse= advertService.updateAdvert(advertRequest,id,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_UPDATED_SUCCESS)
                 .status(HttpStatus.OK)

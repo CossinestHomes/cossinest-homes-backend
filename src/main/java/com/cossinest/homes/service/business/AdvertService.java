@@ -34,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -66,6 +67,8 @@ public class AdvertService {
     private final LogService logService;
 
     private final DistrictService districtService;
+
+
 
     //private final ImagesService imagesService;
 
@@ -175,8 +178,14 @@ public class AdvertService {
                 (AdvertType) detailsMap.get("advertType"),
                 (District) detailsMap.get("district"));
 
-        List<CategoryPropertyValue> categoryPropertyValuesForDb = methodHelper.getPropertyValueList((Category) detailsMap.get("category"), advertRequest, categoryPropertyValueService);
-        advert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+        List<CategoryPropertyValue>advertValueList=new ArrayList<>();
+
+        for (CreateAdvertPropertyRequest request1 :advertRequest.getProperties()) {
+
+            advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        }
+
+        advert.setCategoryPropertyValuesList(advertValueList);
 
         // viewCount alanını varsayılan değere ayarlayın
         if (advert.getViewCount() == null) {
@@ -214,32 +223,53 @@ public class AdvertService {
     }
 
     @Transactional
-    public AdvertResponse updateUsersAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request) {
+    public AdvertResponse updateUsersAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request, MultipartFile[] files) {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
         Advert advert=isAdvertExistById(id);
-        if(advert.getUser().getId() != user.getId()){
-            throw new ResourceNotFoundException(String.format(ErrorMessages.ADVERT_IS_NOT_FOUND_FOR_USER,user.getId()));
-        }
+
+
+
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
         Map<String, Object> detailsMap = new HashMap<>();
         getAdvertDetails(advertRequest,request,detailsMap);
 
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
+        List<CategoryPropertyValue>advertValueList=new ArrayList<>();
+
+        for (CreateAdvertPropertyRequest request1 :advertRequest.getProperties()) {
+
+            advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        }
+        List<Images> imagesList = methodHelper.getImagesForAdvert(files, advert != null ? advert.getImagesList() : null);
+        if (imagesList != null && advert != null) {
+            for (Images image : imagesList) {
+                if (image != null) {
+                    image.setAdvert(advert);
+                }
+            }
+        }
 
         Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,
                 (Category) detailsMap.get("category"),
                 (City) detailsMap.get("city"),
                 (Country) detailsMap.get("country"),
                 (AdvertType) detailsMap.get("advertType"),
-                (District) detailsMap.get("district"));
-        updateAdvert.setUser(user);
-        updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+                (District) detailsMap.get("district"),
+                (User) detailsMap.get("user"));
+        updateAdvert.setCategoryPropertyValuesList(advertValueList);
 
-        Advert returnedAdvert=advertRepository.save(updateAdvert); //TODO Entitye PostUpdate Anatasyon eklendi
-      //  returnedAdvert.generateSlug();
-      //  Advert updatedAdvert = advertRepository.save(returnedAdvert);
+        if (updateAdvert.getCreatedAt() == null) {
+            updateAdvert.setCreatedAt(LocalDateTime.now());
+        }
+        updateAdvert.setUpdatedAt(LocalDateTime.now());
+
+        updateAdvert.setIsActive(advert.getIsActive());
+        updateAdvert.setSlug(advert.getSlug());
+        updateAdvert.setImagesList(advert.getImagesList());
+
+        Advert returnedAdvert=advertRepository.save(updateAdvert);
+
 
 
         logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
@@ -248,10 +278,11 @@ public class AdvertService {
     }
 
     @Transactional
-    public AdvertResponse updateAdvert(AdvertRequestForAdmin advertRequest, Long id, HttpServletRequest request) {
+    public AdvertResponse updateAdvert(AdvertRequestForAdmin advertRequest, Long id, HttpServletRequest request, MultipartFile[] files) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
         Advert advert=isAdvertExistById(id);
+
 
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
@@ -260,20 +291,42 @@ public class AdvertService {
         Map<String, Object> detailsMap = new HashMap<>();
         getAdvertDetails(advertRequest,request,detailsMap);
 
-        List<CategoryPropertyValue> categoryPropertyValuesForDb =methodHelper.getPropertyValueList((Category) detailsMap.get("category"),advertRequest,categoryPropertyValueService);
+        List<CategoryPropertyValue>advertValueList=new ArrayList<>();
+
+        for (CreateAdvertPropertyRequest request1 :advertRequest.getProperties()) {
+
+            advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        }
+
+        List<Images> imagesList = methodHelper.getImagesForAdvert(files, advert != null ? advert.getImagesList() : null);
+        if (imagesList != null && advert != null) {
+            for (Images image : imagesList) {
+                if (image != null) {
+                    image.setAdvert(advert);
+                }
+            }
+        }
 
         Advert updateAdvert =advertMapper.mapAdvertRequestToUpdateAdvert(id,advertRequest,
                 (Category) detailsMap.get("category"),
                 (City) detailsMap.get("city"),
                 (Country) detailsMap.get("country"),
                 (AdvertType) detailsMap.get("advertType"),
-                (District) detailsMap.get("district"));
+                (District) detailsMap.get("district"),
+                (User) detailsMap.get("user"));
 
-        updateAdvert.setCategoryPropertyValuesList(categoryPropertyValuesForDb);
+        updateAdvert.setCategoryPropertyValuesList(advertValueList);
+
+        if (updateAdvert.getCreatedAt() == null) {
+            updateAdvert.setCreatedAt(LocalDateTime.now());
+        }
+        updateAdvert.setUpdatedAt(LocalDateTime.now());
+
+        updateAdvert.setIsActive(advert.getIsActive());
+        updateAdvert.setSlug(advert.getSlug());
+        updateAdvert.setImagesList(advert.getImagesList());
 
         Advert returnedAdvert=advertRepository.save(updateAdvert);
-       // returnedAdvert.generateSlug();
-       // Advert updatedAdvert = advertRepository.save(returnedAdvert);
 
         logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
 
@@ -290,7 +343,7 @@ public class AdvertService {
         }
         advertRepository.deleteById(id);
 
-        logService.createLogEvent(advert.getUser(),advert, LogEnum.DELETED);
+        //logService.createLogEvent(advert.getUser(),advert, LogEnum.DELETED);
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
     }
@@ -301,24 +354,28 @@ public class AdvertService {
     }
 
 
-    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, String status) {
+    public List<Advert> getAdvertsReport(String date1, String date2, String category, String type, int status) {
 
-       DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-       LocalDateTime begin =LocalDateTime.parse(date1+" 00:00:00",formatter);
-       LocalDateTime end =LocalDateTime.parse(date2+" 23:59:59",formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+       LocalDateTime begin = LocalDateTime.parse(date1,formatter);
+       LocalDateTime end =LocalDateTime.parse(date2,formatter);
        dateTimeValidator.checkBeginTimeAndEndTime(begin,end);
 
        categoryService.getCategoryByTitle(category);
 
-        Status enumStatus;
+       /* Status enumStatus;
         try {
             enumStatus= Status.valueOf(status);
 
         }catch (BadRequestException e){
             throw new BadRequestException(ErrorMessages.ADVERT_STATUS_NOT_FOUND);
-        }
+        }*/
 
-       return advertRepository.findByQuery(begin,end,category,type,enumStatus ).orElseThrow(
+       int advertStatus =Status.fromValue(status);
+
+        advertTypesService.findByTitle(type);
+
+       return advertRepository.findByQuery(begin,end,category,type,advertStatus).orElseThrow(
                 ()-> new BadRequestException(ErrorMessages.NOT_FOUND_ADVERT)
         );
 

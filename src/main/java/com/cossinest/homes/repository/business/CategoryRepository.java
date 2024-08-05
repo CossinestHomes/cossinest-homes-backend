@@ -22,8 +22,8 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
     boolean existsByTitle(String title);
 
-    @Query("SELECT c FROM Category c WHERE c.active = true")
-    Page<Category> findAllActiveCategories(Pageable pageable);
+//    @Query("SELECT c FROM Category c WHERE c.active = true")
+//    Page<Category> findAllActiveCategories(Pageable pageable);
 
     @Query("SELECT c FROM Category c WHERE :q IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%')) ")
     Page<Category> findAll(@Param("q") String q,
@@ -35,8 +35,6 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
     Optional<List<Category>> findByTitle(String title);
 
-
-
     @Modifying
     @Transactional
     @Query("DELETE FROM Category c WHERE c.builtIn = :builtIn")
@@ -46,5 +44,9 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     @Query("SELECT COUNT(b) FROM  Category b WHERE b.builtIn=?1")
     int countBuiltIn(boolean b);
 
+    @Query("SELECT c FROM Category c WHERE c.title LIKE %:q% AND c.active = TRUE")
+    Page<Category> findByTitleContainingAndIsActiveTrue(String q, Pageable pageable);
 
+    @Query("SELECT c FROM Category c WHERE c.title LIKE %:q%")
+    Page<Category> findByTitleContaining(String q, Pageable pageable);
 }

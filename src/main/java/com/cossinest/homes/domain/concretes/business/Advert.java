@@ -35,7 +35,7 @@ public class Advert {
     @Column(length = 300)
     private String description;
 
-    private String slug;//TODO:Tekrar bakılacak
+    private String slug;
 
     @Column(nullable = false)
     private Double price= 0.0;
@@ -58,23 +58,22 @@ public class Advert {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(name = "create_at", nullable = false)
-    @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(name = "update_at")
-    @Setter(AccessLevel.NONE)
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    private void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = LocalDateTime.now();
+  }
 
-    @PreUpdate
-    private void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 
     @ManyToOne
     @JsonIgnore
@@ -104,16 +103,19 @@ public class Advert {
         }
     }
 
-
-    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    //,orphanRemoval = true
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Favorites> favoritesList;
 
-    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
+    //,orphanRemoval = true
+    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<TourRequest> tourRequestList;
 
-    @OneToMany(mappedBy = "adverts",cascade = CascadeType.ALL,orphanRemoval = true)
+
+    //,orphanRemoval = true
+    @OneToMany(mappedBy = "adverts",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CategoryPropertyValue> categoryPropertyValuesList;
 
@@ -127,11 +129,14 @@ public class Advert {
     @JoinColumn(name = "district_id")
     private District district;
 
-    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL,orphanRemoval = true)
+    //,orphanRemoval = true
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Images> imagesList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL,orphanRemoval = true)
+
+    //,orphanRemoval = true
+    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Log> logList;
 
