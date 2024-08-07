@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.request.abstracts;
 
+import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -29,9 +30,6 @@ public abstract class AbstractAdvertRequest {
     private String description;
 
 
-    @NotNull(message = "Slug must not be empty")
-    @Size(min = 5, max = 200, message = "Slug url should be at least 5 chars")
-    private String slug;
 
     @NotNull(message = "Price must not be empty")
     @Min(value = 1)
@@ -65,7 +63,12 @@ public abstract class AbstractAdvertRequest {
     private Long categoryId;
 
     @NotNull
-    private List<Map<String, Object>> properties;
+    //private List<Map<String, Object>> properties;
+
+    @NotNull
+    private List<CreateAdvertPropertyRequest> properties;
+
+
 
 
 

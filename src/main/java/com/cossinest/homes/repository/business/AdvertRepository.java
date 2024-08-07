@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,7 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                                      Pageable pageable);
 
 
+
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")
     Page<Advert> findAdvertsForUser(Long id, Pageable pageable);
 
@@ -64,7 +66,7 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
                                        @Param(value = "date2") LocalDateTime date2,
                                        @Param(value = "category")String category,
                                        @Param(value = "type") String type,
-                                       @Param(value = "enumStatus") Status enumStatus);
+                                       @Param(value = "enumStatus") int enumStatus);
 
 
     @Query("SELECT a FROM Advert a WHERE SIZE(a.tourRequestList) > :amount ORDER BY SIZE(a.tourRequestList) DESC")

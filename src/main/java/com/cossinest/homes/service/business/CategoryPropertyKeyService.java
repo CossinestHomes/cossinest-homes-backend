@@ -35,7 +35,7 @@ public class CategoryPropertyKeyService {
     public CategoryPropertyKey findPropertyKeyById(Long id) {
 
         return categoryPropertyKeyRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Category not found with id :" + id));
+                ()-> new ResourceNotFoundException("Category property key is not found with id :" + id));
     }
 
 
@@ -97,6 +97,7 @@ public class CategoryPropertyKeyService {
                 .map(categoryMapper::mapPropertyKeytoPropertyKeyResponse)
                 .collect(Collectors.toSet());
     }
+
 
     public void generateCategoryPropertyKeys() {
         if (categoryPropertyKeyRepository.findAll().isEmpty()) {
@@ -336,6 +337,7 @@ public class CategoryPropertyKeyService {
         }
 
     }
+
 }
 
 

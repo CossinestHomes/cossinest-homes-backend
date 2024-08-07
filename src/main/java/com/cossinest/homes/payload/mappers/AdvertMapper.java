@@ -24,10 +24,11 @@ public class AdvertMapper {
 
     //Advert==>DTO
     public AdvertResponse mapAdvertToAdvertResponse (Advert advert){
-        return AdvertResponse.builder()
+        AdvertResponse.AdvertResponseBuilder builder = AdvertResponse.builder()
                 .id(advert.getId())
                 .price(advert.getPrice())
                 .slug(advert.getSlug())
+                .builtIn(advert.getBuiltIn())
                 .description(advert.getDescription())
                 .title(advert.getTitle())
                 .status(getStatusName(advert.getStatus()))
@@ -38,14 +39,20 @@ public class AdvertMapper {
                 .viewCount(advert.getViewCount())
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
-                .properties(methodHelper.getAdvertResponseProperties(advert,categoryPropertyValueService))
+                .properties(methodHelper.getAdvertResponseProperties(advert, categoryPropertyValueService))
                 .districtId(advert.getDistrict().getId())
-                .imagesIdsList(methodHelper.getImagesIdsListForAdvert(advert.getImagesList()))//TODO:return image control
+                .imagesIdsList(advert.getImagesList())
                 .advertTypeId(advert.getAdvertType().getId())
-                .categoryId(advert.getCategory().getId())
-                .userId(advert.getUser().getId())
-                .build();
+                .categoryId(advert.getCategory().getId());
+
+        // Only set userId if it's not null
+        if (advert.getUser() != null && advert.getUser().getId() != null) {
+            builder.userId(advert.getUser().getId());
+        }
+
+        return builder.build();
     }
+
     //status response için yardımcı method
     public String getStatusName(int statusNumber){
         if(statusNumber==0){
@@ -63,13 +70,9 @@ public class AdvertMapper {
         return Advert.builder()
                 .title(advertRequest.getTitle())
                 .description(advertRequest.getDescription())
-                //.builtIn(false) //default olarak advert entity de setlendi olacak mı kontrol et
-                //.status(Status.PENDING.getValue())//default olarak advert entity de setlendi olacak mı kontrol et
-                //.viewCount(advertRequest.getViewCount())//default olarak advert entity de setlendi olacak mı kontrol et
-                //.isActive(true)//default olarak advert entity de setlendi olacak mı kontrol et
                 .location(advertRequest.getLocation())
                 .price(advertRequest.getPrice())
-                .slug(advertRequest.getSlug())
+                .viewCount(0)
                 .district(district)
                 .category(category)
                 .status(Status.PENDING.getValue())
@@ -80,13 +83,15 @@ public class AdvertMapper {
                 .build();
     }
 
-    public Advert mapAdvertRequestToUpdateAdvert(Long id,AbstractAdvertRequest advertRequest,Category category, City city, Country country, AdvertType advertType,District district){
+    public Advert mapAdvertRequestToUpdateAdvert(Long id,AbstractAdvertRequest advertRequest,Category category, City city, Country country, AdvertType advertType,District district,User user){
         return Advert.builder()
                 .id(id)
+                .user(user)
                 .country(country)
+                .builtIn(false)
+                .viewCount(0)
                 .city(city)
                 .advertType(advertType)
-                .slug(advertRequest.getSlug())
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
                 .description(advertRequest.getDescription())
@@ -94,8 +99,6 @@ public class AdvertMapper {
                 .status(Status.PENDING.getValue())//update de status u tekrardan pending e çek
                 .category(category)
                 .location(advertRequest.getLocation())
-                //.isActive(advertRequest.getIsActive())
-                //.viewCount(advertRequest.getViewCount())
                 .build();
     }
     public Advert mapAdvertRequestToUpdateAdvertForAdmin(Long id, AdvertRequestForAdmin advertRequest, Category category, City city, Country country, AdvertType advertType, District district){
@@ -103,8 +106,8 @@ public class AdvertMapper {
                 .id(id)
                 .country(country)
                 .city(city)
+                .viewCount(0)
                 .advertType(advertType)
-                .slug(advertRequest.getSlug())
                 .price(advertRequest.getPrice())
                 .title(advertRequest.getTitle())
                 .description(advertRequest.getDescription())

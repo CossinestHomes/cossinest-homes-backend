@@ -36,13 +36,13 @@ public class AdvertController {
     @GetMapping  //http://localhost:8080/adverts?category.id=1&advert_type_id=2&price_start=100.0&price_end=500.0&q=something&page=0&size=20&sort=category.id&type=asc
     public Page<AdvertResponse> getAllAdvertsByPage(
             @RequestParam(value = "q", required = false) String query,
-            @RequestParam(value = "category_id") Long categoryId,
+            @RequestParam(value = "category.id") Long categoryId,
             @RequestParam(value = "advert_type_id") Long advertTypeId,
             @RequestParam(value = "price_start", required = false) Double priceStart,
             @RequestParam(value = "price_end", required = false) Double priceEnd,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
-            @RequestParam(value = "sort", defaultValue = "category_id") String sort,
+            @RequestParam(value = "sort", defaultValue = "category.id") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
         return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, page, size, sort, type);
@@ -92,7 +92,7 @@ public class AdvertController {
             HttpServletRequest request,
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
+            @RequestParam(value = "sort",required = false,defaultValue = "category.id") String sort,
             @RequestParam(value = "type",required = false,defaultValue = "asc") String type){
 
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
@@ -157,8 +157,11 @@ public class AdvertController {
 
     @PutMapping("/auth/{id}")
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
-    public ResponseMessage<AdvertResponse> updateUsersAdvertById(@RequestBody @Valid AdvertRequest advertRequest,@PathVariable Long id,HttpServletRequest httpServletRequest){
-        AdvertResponse advertResponse= advertService.updateUsersAdvert(advertRequest,id,httpServletRequest);
+    public ResponseMessage<AdvertResponse> updateUsersAdvertById(@RequestPart("advertRequest") @Valid AdvertRequest advertRequest,
+                                                                 @RequestPart("files") MultipartFile[] files,
+                                                                 HttpServletRequest httpServletRequest,
+                                                                 @PathVariable Long id){
+        AdvertResponse advertResponse= advertService.updateUsersAdvert(advertRequest,id,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_UPDATED_SUCCESS)
                 .status(HttpStatus.OK)
@@ -167,8 +170,8 @@ public class AdvertController {
     }
     @PutMapping("/admin/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage<AdvertResponse> updateAdvertById(@RequestBody @Valid AdvertRequestForAdmin advertRequest, @PathVariable Long id, HttpServletRequest httpServletRequest){
-        AdvertResponse advertResponse= advertService.updateAdvert(advertRequest,id,httpServletRequest);
+    public ResponseMessage<AdvertResponse> updateAdvertById(@RequestPart @Valid AdvertRequestForAdmin advertRequest, @RequestPart("files") MultipartFile[] files, @PathVariable Long id, HttpServletRequest httpServletRequest){
+        AdvertResponse advertResponse= advertService.updateAdvert(advertRequest,id,httpServletRequest,files);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_UPDATED_SUCCESS)
                 .status(HttpStatus.OK)
@@ -178,7 +181,7 @@ public class AdvertController {
 
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage<AdvertResponse> updateAdvertById(@PathVariable Long id,HttpServletRequest httpServletRequest){
+    public ResponseMessage<AdvertResponse> deleteAdvertById(@PathVariable Long id,HttpServletRequest httpServletRequest){
         AdvertResponse advertResponse= advertService.deleteAdvert(id,httpServletRequest);
         return ResponseMessage.<AdvertResponse>builder()
                 .message(SuccesMessages.ADVERT_DELETED_SUCCESS)
@@ -187,19 +190,12 @@ public class AdvertController {
                 .build();
     }
 
-
-
-
     @PostMapping(value = "/trySave", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdvertResponse>trySave(@Valid @RequestPart CreateAdvertRequest createRequest,@RequestPart("files") MultipartFile[] files ,HttpServletRequest request){
 
           return advertService.trySave(createRequest,request,files);
 
     }
-
-
-
-
 
 
 
