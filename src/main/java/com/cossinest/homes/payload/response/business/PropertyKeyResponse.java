@@ -15,5 +15,6 @@ public class PropertyKeyResponse {
 
     private Long id;
     private String propertyName;
-    private Boolean builtIn = false;
+    private Boolean builtIn;
+
 }

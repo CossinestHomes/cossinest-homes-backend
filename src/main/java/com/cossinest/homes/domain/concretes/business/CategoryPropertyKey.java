@@ -1,6 +1,7 @@
 package com.cossinest.homes.domain.concretes.business;
 
 
+import com.cossinest.homes.domain.enums.CategoryPropertyKeyType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -9,15 +10,14 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder(toBuilder = true)
 @Table(name="category_property_keys")
 public class CategoryPropertyKey {
 
@@ -35,9 +35,12 @@ public class CategoryPropertyKey {
     @Column(name = "built_in")
     private Boolean builtIn = false;
 
+    @Enumerated
+    private CategoryPropertyKeyType keyType;
+
 
     @JsonIgnore // sonsuz döngüye girilmesin diye @JsonIgnore eklendi
-    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name="category_id") // Bu anotasyon ile CategoryPropertyKeys table'ina ismi "category_id" olan bir Sutun ( FK ???) ekliyoruz
     private Category category;
 

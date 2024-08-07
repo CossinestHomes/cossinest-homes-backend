@@ -33,23 +33,19 @@ public class AdvertController {
     private final CityService cityService;
     private final ReportService logService;
 
-    @GetMapping  //adverts?q=beyoğlu&category_id=12&advert_type_id=3&price_start=500&price_end=1500 location=34 &
-                 //status=1;page=1&size=10&sort=date&type=asc
+    @GetMapping  //http://localhost:8080/adverts?category.id=1&advert_type_id=2&price_start=100.0&price_end=500.0&q=something&page=0&size=20&sort=category.id&type=asc
     public Page<AdvertResponse> getAllAdvertsByPage(
-            @RequestParam(value = "q",required = false) String query,
+            @RequestParam(value = "q", required = false) String query,
             @RequestParam(value = "category_id") Long categoryId,
             @RequestParam(value = "advert_type_id") Long advertTypeId,
-            @RequestParam(value = "price_start",required = false) Double priceStart,
-            @RequestParam(value = "price_end",required = false) Double priceEnd,
-            @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) Integer status,
-            @RequestParam(value = "page",required = false,defaultValue = "0") int page,
-            @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
-            @RequestParam(value = "type",required = false,defaultValue = "asc") String type
-    ){
-
-           return advertService.getAllAdvertsByPage(query,categoryId,advertTypeId,priceStart,priceEnd,location,status,page,size,sort,type);
+            @RequestParam(value = "price_start", required = false) Double priceStart,
+            @RequestParam(value = "price_end", required = false) Double priceEnd,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "sort", defaultValue = "category_id") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, page, size, sort, type);
     }
 
     @GetMapping("/cities")
@@ -107,18 +103,16 @@ public class AdvertController {
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
             HttpServletRequest request,
             @RequestParam(value = "q",required = false, defaultValue = "") String query,
-            @RequestParam(value = "category_id") Long categoryId,
+            @RequestParam(value = "category.id") Long categoryId,
             @RequestParam(value = "advert_type_id") Long advertTypeId,
             @RequestParam(value = "price_start",required = false) Double priceStart,
             @RequestParam(value = "price_end",required = false) Double priceEnd,
-            @RequestParam(value = "location",required = false) String location,
-            @RequestParam(value = "status",required = false) int status,
             @RequestParam(value = "page",required = false,defaultValue = "0") int page,
             @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "sort",required = false,defaultValue = "category_id") String sort,
+            @RequestParam(value = "sort",required = false,defaultValue = "category.id") String sort,
             @RequestParam(value = "type",required = false,defaultValue = "asc") String type
     ){
-        return advertService.getAllAdvertsByPageForAdmin(request,query,categoryId,advertTypeId,priceStart,priceEnd,location,status,page,size,sort,type);
+        return advertService.getAllAdvertsByPageForAdmin(request,query,categoryId,advertTypeId,priceStart,priceEnd,page,size,sort,type);
     }
 
     @GetMapping("/{slug}")

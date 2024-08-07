@@ -423,7 +423,7 @@ public class MethodHelper {
     }
 
 
-    // CategoryPropertyKey
+    // CategoryPropertyKeyType
 
     public boolean builtIn(CategoryPropertyKey categoryPropertyKey) {
 

@@ -26,5 +26,5 @@ public interface CategoryPropertyKeyRepository extends JpaRepository<CategoryPro
 
 
     @Query("SELECT c FROM CategoryPropertyKey c WHERE c.category.id= ?1")
-    Set<CategoryPropertyKey> findByCategory_IdEquals(Long id);
+    Set<CategoryPropertyKey> findByCategory_Id(Long id);
 }

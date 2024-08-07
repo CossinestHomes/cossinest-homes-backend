@@ -56,7 +56,7 @@ public class Category {
 
 
     @Column(name = "built_in")
-    private Boolean builtIn = Boolean.FALSE;
+    private Boolean builtIn=Boolean.FALSE;
 
 
     @NotNull(message = "seq can not be null")
@@ -74,12 +74,12 @@ public class Category {
     @NotNull(message = "is_active can not be null")
   //  @NotBlank(message = "is_active can not be white space")
     @Column(name = "is_active")
-    private Boolean active;
+    private Boolean active= true;
 
 
     @NotNull(message = "create_at can not be null")
    // @NotBlank(message = "create_at can not be white space")
-    @Setter(AccessLevel.NONE)
+    //@Setter(AccessLevel.NONE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Turkey")
     @Column(nullable = false, name="create_at")
     private LocalDateTime createdAt;
@@ -93,11 +93,12 @@ public class Category {
 
     @PrePersist                 // !!! Create ve Update edilme tarihinin persist edildigi (kalıcı hale getirildiği)  zaman olsun
     public void prePersistCreate()
-    { createdAt = LocalDateTime.now();   updatedAt = LocalDateTime.now();  }
+    { createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();  }
 
 
 
-    @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category" , cascade=CascadeType.ALL, orphanRemoval = true)
     private Set<CategoryPropertyKey> categoryPropertyKeys = new HashSet<>();
 
 
@@ -114,5 +115,15 @@ public class Category {
         }
     }
 
-
+    public Category(Long id, String title, String icon, Boolean built_in, Integer seq, String slug, Boolean active) {
+        this.id = id;
+        this.title = title;
+        this.icon = icon;
+        this.builtIn=built_in;
+        this.seq = seq;
+        this.slug = slug;
+        this.active = active;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 }

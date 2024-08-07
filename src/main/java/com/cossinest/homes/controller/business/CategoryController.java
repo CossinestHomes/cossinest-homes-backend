@@ -25,29 +25,22 @@ import java.util.Set;
 @RequestMapping("/categories")
 public class CategoryController {
 
-
-
-
     Logger logger = LoggerFactory.getLogger(CategoryController.class);
-
 
     private final CategoryService categoryService;
     private final CategoryPropertyKeyService categoryPropertyKeyService;
 
-
-
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
-
 
     @GetMapping
     public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
-            @RequestParam(defaultValue = "") String q,
+            @RequestParam(defaultValue = "") String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
-            @RequestParam(value = "sort", defaultValue = "id") String sort,
+            @RequestParam(value = "sort", defaultValue = "catId") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type) {
 
-        Page<CategoryResponseDTO> categoryList= categoryService.getActiveCategoriesWithPage(q,page,size,sort,type);
+        Page<CategoryResponseDTO> categoryList= categoryService.getActiveCategoriesWithPage(query,page,size,sort,type);
 
         return ResponseEntity.ok(categoryList) ;
 
@@ -59,14 +52,13 @@ public class CategoryController {
     @GetMapping("/getCategoriesForManagers")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public Page<CategoryResponseDTO> getAllCategoriesWithPage(
-
-            @RequestParam(value = "q") String q,
+            @RequestParam(value = "q") String query,
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
             @RequestParam(value = "sort") String sort,
             @RequestParam(value = "type") String type){
 
-        return categoryService.getAllCategoriesWithPage(q ,page,  size, sort,  type);
+        return categoryService.getAllCategoriesWithPage(query ,page,  size, sort,  type);
 
 
     }
@@ -160,5 +152,6 @@ public class CategoryController {
         return categoryService.findCategoryBySlug(slug);
 
     }
+
 
 }
