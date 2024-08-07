@@ -25,8 +25,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -53,24 +56,28 @@ public class CategoryService {
     }
 
 
-    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(String q, int page, int size, String sort, String type) {
+    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(String query, int page, int size, String sort, String type) {
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        Page<Category> categories= categoryRepository.findByTitleContainingAndIsActiveTrue(q, pageable);
+        if (query == null || query.isEmpty()) {
+            return categoryRepository.findAll(pageable).map(categoryMapper::mapCategoryToCategoryResponseDTO);
+        }
+
+        Page<Category> categories = categoryRepository.findByTitleContainingAndActiveTrue(query, pageable);
 
         return categories.map(categoryMapper::mapCategoryToCategoryResponseDTO);
 
     }
 
 
-    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String q , int page, int size, String sort, String type) {
+    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String query, int page, int size, String sort, String type) {
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
         Page<Category> categoryList;
-        if (q != null && !q.isEmpty()) {
-            categoryList = categoryRepository.findByTitleContaining(q, pageable);
+        if (query != null && !query.isEmpty()) {
+            categoryList = categoryRepository.findByTitleContaining(query, pageable);
         } else {
             categoryList = categoryRepository.findAll(pageable);
         }
@@ -195,29 +202,31 @@ public class CategoryService {
                 throw new ConflictException(ErrorMessages.PROPERTY_KEY_ALREADY_EXIST);
             }
         }
-            CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
-            categoryPropertyKey.setPropertyName(propertyKeyRequest.getPropertyName());
-            categoryPropertyKey.setCategory(category);
+        CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
+        categoryPropertyKey.setPropertyName(propertyKeyRequest.getPropertyName());
+        categoryPropertyKey.setCategory(category);
 
-            existCategoryProperties.add(categoryPropertyKey);
+        categoryPropertyKey = categoryPropertyKeyRepository.save(categoryPropertyKey);
 
-           category.setCategoryPropertyKeys(existCategoryProperties);
-           categoryRepository.save(category);
+        existCategoryProperties.add(categoryPropertyKey);
 
-            return ResponseMessage.<PropertyKeyResponse>builder()
-                    .object(categoryMapper.mapPropertyKeytoPropertyKeyResponse(categoryPropertyKey))
-                    .message(SuccesMessages.CATEGORY_PROPERTY_KEY_CREATED_SUCCESS)
-                    .status(HttpStatus.CREATED)
-                    .build();
-        };
+        category.setCategoryPropertyKeys(existCategoryProperties);
+        categoryRepository.save(category);
+
+        return ResponseMessage.<PropertyKeyResponse>builder()
+                .object(categoryMapper.mapPropertyKeytoPropertyKeyResponse(categoryPropertyKey))
+                .message(SuccesMessages.CATEGORY_PROPERTY_KEY_CREATED_SUCCESS)
+                .status(HttpStatus.CREATED)
+                .build();
+    };
 
 
     public ResponseMessage<CategoryResponseDTO> findCategoryBySlug(String slug) {
 
         Category category = categoryRepository.findBySlug(slug).orElseThrow(
-                ()-> new ResourceNotFoundException(ErrorMessages.CATEGORY_NOT_FOUND + slug));
+                () -> new ResourceNotFoundException(ErrorMessages.CATEGORY_NOT_FOUND + slug));
 
-        return ResponseMessage.<CategoryResponseDTO> builder()
+        return ResponseMessage.<CategoryResponseDTO>builder()
                 .object(categoryMapper.mapCategoryToCategoryResponseDTO(category))
                 .message(SuccesMessages.RETURNED_CATEGORY_BY_SLUG_SUCCESS)
                 .status(HttpStatus.OK)
@@ -227,15 +236,18 @@ public class CategoryService {
 
     public List<Category> getCategoryByTitle(String category) {
 
-   return categoryRepository.findByTitle(category).orElseThrow(
-              ()-> new BadRequestException(ErrorMessages.CATEGORY_NOT_FOUND)
-      );
+        return categoryRepository.findByTitle(category).orElseThrow(
+                () -> new BadRequestException(ErrorMessages.CATEGORY_NOT_FOUND)
+        );
     }
 
     public int countBuiltInTrue() {
+        return categoryRepository.countBuiltIn(true);
 
-      return   categoryRepository.countBuiltIn(true);
+    }
 
+    public List<Category> saveAll(List<Category> categories) {
+        return categoryRepository.saveAll(categories);
     }
 
   /*  @Transactional
@@ -245,3 +257,4 @@ public class CategoryService {
 
 
     }
+

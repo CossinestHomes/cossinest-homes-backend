@@ -1,5 +1,6 @@
 package com.cossinest.homes;
 
+import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.Cities;
 import com.cossinest.homes.domain.enums.RoleType;
@@ -9,16 +10,16 @@ import com.cossinest.homes.payload.request.business.CountryRequest;
 import com.cossinest.homes.payload.request.business.DistrictRequest;
 import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.repository.user.UserRoleRepository;
-import com.cossinest.homes.service.business.CategoryService;
-import com.cossinest.homes.service.business.CityService;
-import com.cossinest.homes.service.business.CountryService;
-import com.cossinest.homes.service.business.DistrictService;
+import com.cossinest.homes.service.business.*;
 import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @SpringBootApplication
@@ -30,21 +31,23 @@ public class HomesApplication implements CommandLineRunner {
 	private final UserService userService;
 	private final UserRoleRepository userRoleRepository;
 	private  final CityService cityService;
+	private final CategoryPropertyKeyService categoryPropertyKeyService;
 
 	private final CategoryService categoryService;
 	private final CountryService countryService;
 	private final DistrictService districtService;
 
 	public HomesApplication (UserRoleService userRoleService,
-							 UserService userService,
-							 UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CountryService countryService, DistrictService districtService) {
+                             UserService userService,
+                             UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CategoryPropertyKeyService categoryPropertyKeyService, CountryService countryService, DistrictService districtService) {
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.userRoleRepository = userRoleRepository;
 		this.categoryService=categoryService;
 		this.passwordEncoder=passwordEncoder;
 		this.cityService = cityService;
-		this.countryService = countryService;
+        this.categoryPropertyKeyService = categoryPropertyKeyService;
+        this.countryService = countryService;
 
 		this.districtService = districtService;
 	}
@@ -87,22 +90,30 @@ public class HomesApplication implements CommandLineRunner {
 			adminRequest.setPhone("123-123-123-4444");
 			adminRequest.setBuiltIn(true);
 
-
 			userService.saveUserWithoutRequest(adminRequest);
 
 		}
 
+
 		if (categoryService.countBuiltInTrue() == 0) {
-			CategoryRequestDTO category=new CategoryRequestDTO();
-			category.setActive(true);
-			category.setIcon("icon1");
-			category.setSlug("slug1");
-			category.setTitle("Arsa");
-			category.setSeq(0);
+			List<Category> categories = List.of(
+					new Category(1L, "Müstakil Ev", "ev_icon", true,0, "mustakil-ev", true),
+					new Category(2L, "Apartman Dairesi", "dairesi_icon",true, 0, "apartman-dairesi", true),
+					new Category(3L, "Ofis", "ofis_icon",true, 0, "kelepir-ofis", true),
+					new Category(4L, "Villa", "villa_icon",true, 0, "kelepir-villa", true),
+					new Category(5L, "Arsa", "arsa_icon",true, 0, "kelepir-arsa", true)
+			);
 
-			categoryService.createCategory(category);
+			for (Category category : categories) {
+				category.setCreatedAt(LocalDateTime.now());
+				category.setUpdatedAt(LocalDateTime.now());
+			}
 
+			categoryService.saveAll(categories);
 		}
+
+		categoryPropertyKeyService.generateCategoryPropertyKeys();
+
 
 		if (countryService.countAllCountries() == 0) {
 			CountryRequest countryRequest = new CountryRequest();

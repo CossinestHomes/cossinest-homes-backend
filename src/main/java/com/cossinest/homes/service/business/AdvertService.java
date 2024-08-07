@@ -96,6 +96,7 @@ public class AdvertService {
                 .map(advertMapper::mapAdvertToAdvertResponse);
     }
 
+
     //category
     public List<CategoryForAdvertResponse> getCategoryWithAmountForAdvert(){
 

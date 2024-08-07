@@ -41,11 +41,11 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, Integer status, String location, String query, Pageable pageable);
 */
     @Query("SELECT a FROM Advert a WHERE " +
-            "a.category.id = :categoryId AND " +
+            "a.category.id = :category AND " +
             "a.advertType.id = :advertTypeId AND " +
             "(:priceStart IS NULL OR :priceEnd IS NULL OR a.price BETWEEN :priceStart AND :priceEnd) AND " +
             "(:query IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(a.description) LIKE LOWER(CONCAT('%', :query, '%')))")
-    Page<Advert> findByAdvertByQuery(@Param("categoryId") Long categoryId,
+    Page<Advert> findByAdvertByQuery(@Param("category") Long category,
                                      @Param("advertTypeId") Long advertTypeId,
                                      @Param("priceStart") Double priceStart,
                                      @Param("priceEnd") Double priceEnd,
