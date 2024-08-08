@@ -60,11 +60,7 @@ public class CategoryService {
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        if (query == null || query.isEmpty()) {
-            return categoryRepository.findAll(pageable).map(categoryMapper::mapCategoryToCategoryResponseDTO);
-        }
-
-        Page<Category> categories = categoryRepository.findByTitleContainingAndActiveTrue(query, pageable);
+        Page<Category> categories = categoryRepository.findByActiveTrue(query, pageable);
 
         return categories.map(categoryMapper::mapCategoryToCategoryResponseDTO);
 

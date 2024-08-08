@@ -23,7 +23,7 @@ public class CategoryMapper {
     public CategoryResponseDTO mapCategoryToCategoryResponseDTO(Category category){
 
         return CategoryResponseDTO.builder()
-                .catId(category.getId())
+                .id(category.getId())
                 .title(category.getTitle())
                 .icon(category.getIcon())
                 .builtIn(category.getBuiltIn())

@@ -37,7 +37,7 @@ public class CategoryController {
             @RequestParam(defaultValue = "") String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
-            @RequestParam(value = "sort", defaultValue = "catId") String sort,
+            @RequestParam(value = "sort", defaultValue = "id") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type) {
 
         Page<CategoryResponseDTO> categoryList= categoryService.getActiveCategoriesWithPage(query,page,size,sort,type);
