@@ -20,7 +20,7 @@ public class CategoryResponseDTO {
 
 
 
-    private Long catId;
+    private Long id;
 
 
     private String title;
