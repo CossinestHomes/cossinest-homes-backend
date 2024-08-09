@@ -8,6 +8,7 @@ import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.mappers.CategoryMapper;
 import com.cossinest.homes.payload.messages.ErrorMessages;
 import com.cossinest.homes.payload.messages.SuccesMessages;
+import com.cossinest.homes.payload.request.business.JsonCategoryPropertyKeyRequest;
 import com.cossinest.homes.payload.request.business.PropertyKeyRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.PropertyKeyResponse;
@@ -35,7 +36,7 @@ public class CategoryPropertyKeyService {
     public CategoryPropertyKey findPropertyKeyById(Long id) {
 
         return categoryPropertyKeyRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Category property key is not found with id :" + id));
+                () -> new ResourceNotFoundException("Category property key is not found with id :" + id));
     }
 
 
@@ -102,7 +103,70 @@ public class CategoryPropertyKeyService {
     public void generateCategoryPropertyKeys() {
         if (categoryPropertyKeyRepository.findAll().isEmpty()) {
 
-            Category ev = categoryService.getCategoryById(1L);
+            String[] evPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Bahçe", "Garaj", "Min.Fiyat", "Max.Fiyat"};
+            String[] apartmanPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Balkon", "Garaj", "Min.Fiyat", "Max.Fiyat"};
+            String[] ofisPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Depo", "Garaj", "Min.Fiyat", "Max.Fiyat"};
+            String[] villaPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Depo", "Garaj", "Min.Fiyat", "Max.Fiyat"};
+            String[] arsaPropertyName = {"Metrekare", "Min.Fiyat", "Max.Fiyat"};
+            CategoryPropertyKeyType[] propertyTypes1 = {CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.BOOLEAN, CategoryPropertyKeyType.BOOLEAN, CategoryPropertyKeyType.DOUBLE, CategoryPropertyKeyType.DOUBLE};
+            CategoryPropertyKeyType[] propertyTypes2 = {CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.DOUBLE, CategoryPropertyKeyType.DOUBLE};
+
+            JsonCategoryPropertyKeyRequest[] arr = new JsonCategoryPropertyKeyRequest[5];
+            arr[0] = new JsonCategoryPropertyKeyRequest(1L, evPropertyName, true);
+            arr[1] = new JsonCategoryPropertyKeyRequest(2L, apartmanPropertyName, true);
+            arr[2] = new JsonCategoryPropertyKeyRequest(3L, ofisPropertyName, true);
+            arr[3] = new JsonCategoryPropertyKeyRequest(4L, villaPropertyName, true);
+            arr[4] = new JsonCategoryPropertyKeyRequest(5L, arsaPropertyName, true);
+
+            for (JsonCategoryPropertyKeyRequest request : arr) {
+
+                String[] propertyName = {};
+                CategoryPropertyKeyType[] propertyTypes = {};
+
+
+                switch (request.getId().intValue()) {
+                    case 1:
+                        propertyName = evPropertyName;
+                        propertyTypes = propertyTypes1;
+                        break;
+                    case 2:
+                        propertyName = apartmanPropertyName;
+                        propertyTypes = propertyTypes1;
+                        break;
+                    case 3:
+                        propertyName = ofisPropertyName;
+                        propertyTypes = propertyTypes1;
+                        break;
+                    case 4:
+                        propertyName = villaPropertyName;
+                        propertyTypes = propertyTypes1;
+                        break;
+                    case 5:
+                        propertyName = arsaPropertyName;
+                        propertyTypes = propertyTypes2;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid category ID");
+                }
+
+
+                Category category = categoryService.getCategoryById(request.getId());
+
+                for (int i = 0; i < propertyName.length; i++) {
+                    CategoryPropertyKey props = CategoryPropertyKey.builder()
+                            .propertyName(propertyName[i])
+                            .builtIn(request.getBuiltIn())
+                            .keyType(propertyTypes[i])
+                            .category(category)
+                            .build();
+                    categoryPropertyKeyRepository.save(props);
+
+                }
+
+            }
+
+
+           /* Category ev = categoryService.getCategoryById(1L);
 
             CategoryPropertyKey evProps1 = CategoryPropertyKey.builder()
                     .propertyName("Oda Salon Sayısı")
@@ -328,14 +392,14 @@ public class CategoryPropertyKeyService {
                     .build();
 
 
-            categoryPropertyKeyRepository.saveAll(List.of(evProps1, evProps2,evProps3,evProps4,evProps5,evProps6,evProps7,evProps8,
-                    apartmanProps1, apartmanProps2, apartmanProps3,apartmanProps4,apartmanProps5,apartmanProps6,apartmanProps7,apartmanProps8,
-                    ofisProps1,ofisProps2,ofisProps3,ofisProps4,ofisProps5,ofisProps6,ofisProps7,ofisProps8,
-                    villaProps1,villaProps2,villaProps3,villaProps4,villaProps5,villaProps6,villaProps7,villaProps8,
-                    arsaProps1,arsaProps2,arsaProps3
-                    ));
+            categoryPropertyKeyRepository.saveAll(List.of(evProps1, evProps2, evProps3, evProps4, evProps5, evProps6, evProps7, evProps8,
+                    apartmanProps1, apartmanProps2, apartmanProps3, apartmanProps4, apartmanProps5, apartmanProps6, apartmanProps7, apartmanProps8,
+                    ofisProps1, ofisProps2, ofisProps3, ofisProps4, ofisProps5, ofisProps6, ofisProps7, ofisProps8,
+                    villaProps1, villaProps2, villaProps3, villaProps4, villaProps5, villaProps6, villaProps7, villaProps8,
+                    arsaProps1, arsaProps2, arsaProps3
+            ));
+        }*/
         }
-
     }
 
 }
