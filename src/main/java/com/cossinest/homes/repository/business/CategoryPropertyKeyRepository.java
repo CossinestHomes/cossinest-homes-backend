@@ -17,10 +17,10 @@ import java.util.Set;
 public interface CategoryPropertyKeyRepository extends JpaRepository<CategoryPropertyKey, Long> {
 
 
-    @Modifying
     @Transactional
-    @Query("DELETE FROM CategoryPropertyKey c WHERE c.builtIn = :builtIn")
-    void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
+    @Modifying
+    @Query("DELETE FROM CategoryPropertyKey c WHERE c.builtIn = ?1")
+    void deleteByBuiltIn(boolean b);
 
     boolean existsByPropertyName(String propertyName);
 
