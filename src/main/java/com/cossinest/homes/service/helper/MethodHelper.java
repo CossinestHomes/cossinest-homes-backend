@@ -50,7 +50,7 @@ public class MethodHelper {
 
     public User findByUserByEmail(String email) {
         if (email == null || email.isEmpty()) {
-            throw new ResourceNotFoundException("Email cannot be null or empty");
+            throw new ResourceNotFoundException("Email can not be null or empty");
         }
 
         return userRepository.findByEmail(email).orElseThrow(() ->
