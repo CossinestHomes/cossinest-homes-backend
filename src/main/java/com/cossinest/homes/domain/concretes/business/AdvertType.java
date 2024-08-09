@@ -26,7 +26,7 @@ public class AdvertType {
     private String title;
 
 
-    private Boolean builtIn;
+    private Boolean builtIn=false;
 
     @OneToMany(mappedBy = "advertType",cascade = CascadeType.ALL)
     private List<Advert> advertList;

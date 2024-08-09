@@ -13,14 +13,10 @@ import java.util.Optional;
 @Repository
 public interface AdvertTypesRepository extends JpaRepository<AdvertType , Long> {
 
-  
-
-
-
-    @Modifying
     @Transactional
-    @Query("DELETE FROM AdvertType a WHERE a.builtIn = :builtIn")
-    void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
+    @Modifying
+    @Query("DELETE FROM AdvertType a WHERE a.builtIn = ?1")
+    void deleteByBuiltIn(boolean b);
 
     boolean existsByTitle(String title);
 

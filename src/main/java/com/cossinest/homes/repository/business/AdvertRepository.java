@@ -2,6 +2,7 @@ package com.cossinest.homes.repository.business;
 
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.enums.Status;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -98,4 +99,11 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     Advert findAdvertByCategory(Long categoryId);
 
     Set<Advert> findByIdIn(Set<Long> advertIdList);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Advert a WHERE a.builtIn = ?1")
+    void deleteByBuiltIn(boolean b);
+
+
 }

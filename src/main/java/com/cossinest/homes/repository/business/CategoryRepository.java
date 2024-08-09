@@ -35,10 +35,10 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
 
     Optional<List<Category>> findByTitle(String title);
 
-    @Modifying
     @Transactional
-    @Query("DELETE FROM Category c WHERE c.builtIn = :builtIn")
-    void deleteByBuiltIn(@Param("builtIn") boolean builtIn);
+    @Modifying
+    @Query("DELETE FROM Category c WHERE c.builtIn = ?1")
+    void deleteByBuiltIn(boolean b);
 
 
     @Query("SELECT COUNT(b) FROM  Category b WHERE b.builtIn=?1")
