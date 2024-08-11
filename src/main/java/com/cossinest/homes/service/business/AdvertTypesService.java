@@ -110,4 +110,8 @@ public class AdvertTypesService {
       return   advertTypesRepository.findByTitle(type).orElseThrow(()-> new BadRequestException("AdvertType is not found."));
 
     }
+
+    public void saveAdvertTypeRunner(AdvertType advertType) {
+        advertTypesRepository.save(advertType);
+    }
 }

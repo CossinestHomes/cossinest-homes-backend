@@ -488,4 +488,8 @@ public class AdvertService {
     public Set<Advert> getAdvertsByIdList(Set<Long> advertIdList) {
         return advertRepository.findByIdIn(advertIdList);
     }
+
+    public void saveRunner(Advert advert) {
+    advertRepository.save(advert);
+    }
 }
