@@ -103,20 +103,26 @@ public class CategoryPropertyKeyService {
     public void generateCategoryPropertyKeys() {
         if (categoryPropertyKeyRepository.findAll().isEmpty()) {
 
-            String[] evPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Bahçe", "Garaj", "Min.Fiyat", "Max.Fiyat"};
+            /*String[] evPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Bahçe", "Garaj", "Min.Fiyat", "Max.Fiyat"};
             String[] apartmanPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Balkon", "Garaj", "Min.Fiyat", "Max.Fiyat"};
             String[] ofisPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Depo", "Garaj", "Min.Fiyat", "Max.Fiyat"};
             String[] villaPropertyName = {"Oda Salon Sayısı", "Banyo Sayısı", "Bina Yaşı", "Brüt Metrekare", "Depo", "Garaj", "Min.Fiyat", "Max.Fiyat"};
-            String[] arsaPropertyName = {"Metrekare", "Min.Fiyat", "Max.Fiyat"};
+            String[] arsaPropertyName = {"Metrekare", "Min.Fiyat", "Max.Fiyat"};*/
+            String[] housePropertyName = {"Number of Rooms and Living Rooms", "Number of Bathrooms", "Building Age", "Gross Square Meters", "Garden", "Garage", "Min. Price", "Max. Price"};
+            String[] apartmentPropertyName = {"Number of Rooms and Living Rooms", "Number of Bathrooms", "Building Age", "Gross Square Meters", "Balcony", "Garage", "Min. Price", "Max. Price"};
+            String[] officePropertyName = {"Number of Rooms and Living Rooms", "Number of Bathrooms", "Building Age", "Gross Square Meters", "Storage", "Garage", "Min. Price", "Max. Price"};
+            String[] villaPropertyName = {"Number of Rooms and Living Rooms", "Number of Bathrooms", "Building Age", "Gross Square Meters", "Storage", "Garage", "Min. Price", "Max. Price"};
+            String[] landPropertyName = {"Square Meters", "Min. Price", "Max. Price"};
+
             CategoryPropertyKeyType[] propertyTypes1 = {CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.BOOLEAN, CategoryPropertyKeyType.BOOLEAN, CategoryPropertyKeyType.DOUBLE, CategoryPropertyKeyType.DOUBLE};
             CategoryPropertyKeyType[] propertyTypes2 = {CategoryPropertyKeyType.NUMBER, CategoryPropertyKeyType.DOUBLE, CategoryPropertyKeyType.DOUBLE};
 
             JsonCategoryPropertyKeyRequest[] arr = new JsonCategoryPropertyKeyRequest[5];
-            arr[0] = new JsonCategoryPropertyKeyRequest(1L, evPropertyName, true);
-            arr[1] = new JsonCategoryPropertyKeyRequest(2L, apartmanPropertyName, true);
-            arr[2] = new JsonCategoryPropertyKeyRequest(3L, ofisPropertyName, true);
+            arr[0] = new JsonCategoryPropertyKeyRequest(1L, housePropertyName, true);
+            arr[1] = new JsonCategoryPropertyKeyRequest(2L, apartmentPropertyName, true);
+            arr[2] = new JsonCategoryPropertyKeyRequest(3L, officePropertyName, true);
             arr[3] = new JsonCategoryPropertyKeyRequest(4L, villaPropertyName, true);
-            arr[4] = new JsonCategoryPropertyKeyRequest(5L, arsaPropertyName, true);
+            arr[4] = new JsonCategoryPropertyKeyRequest(5L, landPropertyName, true);
 
             for (JsonCategoryPropertyKeyRequest request : arr) {
 
@@ -126,15 +132,15 @@ public class CategoryPropertyKeyService {
 
                 switch (request.getId().intValue()) {
                     case 1:
-                        propertyName = evPropertyName;
+                        propertyName = housePropertyName;
                         propertyTypes = propertyTypes1;
                         break;
                     case 2:
-                        propertyName = apartmanPropertyName;
+                        propertyName = apartmentPropertyName;
                         propertyTypes = propertyTypes1;
                         break;
                     case 3:
-                        propertyName = ofisPropertyName;
+                        propertyName = officePropertyName;
                         propertyTypes = propertyTypes1;
                         break;
                     case 4:
@@ -142,7 +148,7 @@ public class CategoryPropertyKeyService {
                         propertyTypes = propertyTypes1;
                         break;
                     case 5:
-                        propertyName = arsaPropertyName;
+                        propertyName = landPropertyName;
                         propertyTypes = propertyTypes2;
                         break;
                     default:

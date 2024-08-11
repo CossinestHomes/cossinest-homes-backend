@@ -1,6 +1,6 @@
 package com.cossinest.homes;
 
-import com.cossinest.homes.domain.concretes.business.Category;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.Cities;
 import com.cossinest.homes.domain.enums.RoleType;
@@ -19,7 +19,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 @SpringBootApplication
@@ -32,12 +35,13 @@ public class HomesApplication implements CommandLineRunner {
 	private final UserRoleRepository userRoleRepository;
 	private  final CityService cityService;
 	private final CategoryPropertyKeyService categoryPropertyKeyService;
-
+	private final AdvertTypesService advertTypesService;
 	private final CategoryService categoryService;
 	private final CountryService countryService;
 	private final DistrictService districtService;
+	private final AdvertService advertService;
 
-	public HomesApplication (UserRoleService userRoleService,
+	public HomesApplication (AdvertService advertService,AdvertTypesService advertTypesService,UserRoleService userRoleService,
                              UserService userService,
                              UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CategoryPropertyKeyService categoryPropertyKeyService, CountryService countryService, DistrictService districtService) {
 		this.userRoleService = userRoleService;
@@ -48,8 +52,9 @@ public class HomesApplication implements CommandLineRunner {
 		this.cityService = cityService;
         this.categoryPropertyKeyService = categoryPropertyKeyService;
         this.countryService = countryService;
-
+		this.advertTypesService=advertTypesService;
 		this.districtService = districtService;
+		this.advertService=advertService;
 	}
 
 
@@ -139,6 +144,42 @@ public class HomesApplication implements CommandLineRunner {
 			districtService.setBuiltInForDistrict();
 		}
 
+		if (advertTypesService.getAllAdvertTypes().size()==0){
+			AdvertType advertType=new AdvertType();
+			advertType.setBuiltIn(true);
+			advertType.setTitle("rent");
+		//	advertType.setAdvertList();
+			advertTypesService.saveAdvertTypeRunner(advertType);
+
+			AdvertType advertType2=new AdvertType();
+			advertType2.setBuiltIn(true);
+			advertType2.setTitle("sell");
+			//	advertType2.setAdvertList();
+			advertTypesService.saveAdvertTypeRunner(advertType2);
+		}
+
+		if(advertService.getAllAdverts().size()==0){
+			Object[]arr1={"title","description","location",10.10,1L,1L};
+			Object[]arr2={"title","description","location",10.10,1L,1L};
+			Object[]arr3={"title","description","location",10.10,1L,1L};
+			Object[]arr4={"title","description","location",10.10,1L,1L};
+
+			List<Object[]> array = new ArrayList<>(new ArrayList<>(Arrays.asList(arr1, arr2, arr3, arr4)));
+
+			for (Object[] o:array) {
+				Advert advert=new Advert();
+				advert.setTitle((String) o[0]);
+				advert.setDescription((String) o[1]);
+				advert.setLocation((String) o[2]);
+				advert.setPrice((Double) o[3]);
+				advert.setDistrict(districtService.getDistrictByIdForAdvert((Long) o[4]));
+				advert.setCity(cityService.getCityById((Long) o[5]));
+				advertService.saveRunner(advert);
+			}
+
+
+
+		}
 
 	}
 }

@@ -87,6 +87,7 @@ public class ResetDbService {
         imageRepository.deleteAll();
         tourRequestRepository.deleteAll();
 
+
         List<Advert> alladverts= advertRepository.findAll();
         for(Advert advert : alladverts){
             if(!advert.getBuiltIn()){
