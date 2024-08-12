@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -72,4 +73,5 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     Set<TourRequest> findByIdIn(Set<Long> tourRequestIdList);
 
 
+    Optional<TourRequest> findByIdAndGuestUserId_Id(Long id, Long id1);
 }
