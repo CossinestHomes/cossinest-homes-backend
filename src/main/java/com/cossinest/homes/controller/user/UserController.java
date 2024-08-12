@@ -78,9 +78,9 @@ public class UserController {
             @RequestParam(value = "surname", required = false) String surname,
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "phone", required = false) String phone,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "0") int size,
-            @RequestParam(value = "sort", defaultValue = "firstName") String sort,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
             @RequestParam(value = "type", defaultValue = "desc") String type
     ) {
         return userService.getAllAdminAndManagerQueriesByPage(request, name, surname, email, phone, page, size, sort, type);
@@ -90,14 +90,14 @@ public class UserController {
 
     @GetMapping("/admin") //http://localhost:8080/users/admin?q=John&page=0&size=10&sort=firstName&type=desc ++
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
-    public ResponseEntity<Page<UserPageableResponse>>getAllUsersByPage(
+    public Page<UserPageableResponse>getAllUsersByPage(
             HttpServletRequest request,
-            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(defaultValue = "") String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "0") int size,
-            @RequestParam(value = "sort", defaultValue = "name") String sort,
-            @RequestParam(value = "type", defaultValue = "desc") String type
-    ){
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type)
+    {
         return userService.getAllUsersByPage(request,q,page,size,sort,type);
     }
 
