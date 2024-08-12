@@ -33,7 +33,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -147,7 +149,7 @@ public class UserService {
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
-        Page<User> users = userRepository.findAll(name, surname, email, phone, pageable);
+        Page<User> users = userRepository.findAllByPage(name, surname, email, phone, pageable);
 
         Page<UserPageableResponse> pageableUsers = users.map(userMapper::usersToUserPageableResponse);
 
@@ -276,16 +278,21 @@ public class UserService {
     }
 
 
-    public ResponseEntity<Page<UserPageableResponse>> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
+    public Page<UserPageableResponse> getAllUsersByPage(HttpServletRequest request, String q, int page, int size, String sort, String type) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
-        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, "asc");
-        String query = q != null ? "%" + q.toLowerCase() + "%" : null;
-        Page<User> users = userRepository.findAll(query, pageable);
+        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+      //  String query = q != null ? "%" + q.toLowerCase() + "%" : null;
 
-        Page<UserPageableResponse> responsePage = users.map(userMapper::usersToUserPageableResponse);
+        Page<User> userPage;
+        if (q != null && !q.isEmpty()) {
+            userPage = userRepository.findByTitleContaining(q, pageable);
+        } else {
+            userPage = userRepository.findAll(pageable);
+        }
 
-        return new ResponseEntity<>(responsePage, HttpStatus.OK);
+        return userPage.map(userMapper::usersToUserPageableResponse);
+
     }
 
     public List<User> getUsersByRoleType(RoleType roleType) {
