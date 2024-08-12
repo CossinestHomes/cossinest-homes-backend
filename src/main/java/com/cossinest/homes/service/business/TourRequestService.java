@@ -197,12 +197,13 @@ public class TourRequestService {
 
 
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(Long id, HttpServletRequest httpServletRequest) {
+
         //Rol kontrolü
         User guestUser =methodHelper.getUserByHttpRequest(httpServletRequest);
         methodHelper.controlRoles(guestUser,RoleType.CUSTOMER);
 
-
-       TourRequest tourRequest = tourRequestRepository.findByIdByCustomer(guestUser.getId(),id);
+        TourRequest tourRequest = tourRequestRepository.findByIdAndGuestUserId_Id(id, guestUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tour request is not found for this user"));
 
        return ResponseEntity.ok(tourRequestMapper.tourRequestToTourRequestResponse(tourRequest));
     }
