@@ -39,10 +39,9 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
 
     @Query("SELECT t FROM TourRequest t WHERE t.guestUserId.id = :userId AND " +
             "(LOWER(t.advertId.title) LIKE LOWER(CONCAT('%', :query, '%')))")
-    Page<TourRequest> findAllByGuestUser_IdAndQuery(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
+    Page<TourRequest> findAllByGuestUserId_IdAndQuery(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
 
-    @Query("SELECT t FROM TourRequest t WHERE t.guestUserId = :userId")
-    Page<TourRequest> findAllByGuestUser_Id(Long userId, Pageable pageable);
+    Page<TourRequest> findAllByGuestUserId_Id(Long userId, Pageable pageable);
 
     @Query("SELECT t FROM TourRequest t WHERE " +
             "(:createAt IS NULL OR t.createAt = :createAt) " +

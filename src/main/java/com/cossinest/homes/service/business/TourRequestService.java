@@ -152,11 +152,11 @@ public class TourRequestService {
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
         if (query != null && !query.isEmpty()) {
-            return tourRequestRepository.findAllByGuestUser_IdAndQuery(userByEmail.getId(), query, pageable)
+            return tourRequestRepository.findAllByGuestUserId_IdAndQuery(userByEmail.getId(), query, pageable)
                     .map(tourRequestMapper::tourRequestToTourRequestResponse);
         }else {
 
-        return tourRequestRepository.findAllByGuestUser_Id(userByEmail.getId(), pageable)
+        return tourRequestRepository.findAllByGuestUserId_Id(userByEmail.getId(), pageable)
                 .map(tourRequestMapper::tourRequestToTourRequestResponse);
     }
     }
