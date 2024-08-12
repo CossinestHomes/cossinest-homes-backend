@@ -65,9 +65,12 @@ public class TourRequestService {
         //UserOwner için çakışma kontrolü //TODO burayi anlayamadim. id zaten var ve advert id neden ownerId oldu
         Advert advert = advertService.getAdvertForFavorites(tourRequestRequest.getAdvertId());
         User ownerUser = advert.getUser();
-      //  User ownerUser = methodHelper.findUserWithId(ownerId);
+       // User ownerUser = methodHelper.findUserWithId(ownerId);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForOwner(ownerUser,tourRequestRequest);
 
+        if (userGuest.getId().equals(ownerUser.getId())) {
+            throw new  BadRequestException("Can not book your own advert");
+        }
 
         TourRequest mappedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest,advert);
         mappedTourRequest.setStatus(StatusType.PENDING);
