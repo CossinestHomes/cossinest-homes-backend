@@ -92,9 +92,9 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .userRole(user.getUserRole().stream().map(UserRole::getRoleName).collect(Collectors.toSet()))
-                .tourRequest(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
-                .favorities(user.getFavoritesList().stream().map(Favorites::getId).collect(Collectors.toSet()))
-                .advert(user.getAdvert().stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toSet()))
+              //  .tourRequest(user.getTourRequests().stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toSet()))
+              //  .favorities(user.getFavoritesList().stream().map(Favorites::getId).collect(Collectors.toSet()))
+              //  .advert(user.getAdvert().stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toSet()))
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.cossinest.homes.repository.user;
 
+import com.cossinest.homes.domain.concretes.business.Category;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
@@ -28,7 +29,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
             "(:surname IS NULL OR u.lastName=:surname)OR" +
             "(:email IS NULL OR u.email=:email)OR" +
             "(:phone IS NULL OR u.phone=:phone)")
-    Page<User> findAll(@Param(value = "name") String name,
+    Page<User> findAllByPage(@Param(value = "name") String name,
                        @Param(value = "surname") String surname,
                        @Param(value = "email") String email,
                        @Param(value = "phone") String phone,
@@ -37,13 +38,13 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u WHERE u.resetPasswordCode=:resetPasswordCode")
     Optional<User>resetPasswordWithCode(@Param(value ="resetPasswordCode" ) String resetPasswordCode);
 
-    @Query("SELECT u FROM User u WHERE " +
-            "(:query IS NULL OR LOWER(u.firstName) LIKE :query OR " +
-            "LOWER(u.lastName) LIKE :query OR " +
-            "LOWER(u.email) LIKE :query OR " +
-            "LOWER(u.phone) LIKE :query)")
-
-    Page<User> findAll(@Param("query") String query, Pageable pageable);
+//    @Query("SELECT u FROM User u WHERE " +
+//            "(:query IS NULL OR LOWER(u.firstName) LIKE :query OR " +
+//            "LOWER(u.lastName) LIKE :query OR " +
+//            "LOWER(u.email) LIKE :query OR " +
+//            "LOWER(u.phone) LIKE :query)")
+//
+//    Page<User> findAll(@Param("query") String query, Pageable pageable);
 
  /*   @Query("SELECT u FROM User u WHERE u.userRole=?1")
     List<User> findByUserRole(UserRole userRole);*/
@@ -62,4 +63,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
     Optional<User> findByResetPasswordCode(String code);
+
+    @Query("SELECT u FROM User u WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :q, '%')) " +
+            "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :q, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :q, '%')) " +
+            "OR LOWER(u.phone) LIKE LOWER(CONCAT('%', :q, '%'))")
+    Page<User> findByTitleContaining(@Param("q") String q, Pageable pageable);
+
 }
