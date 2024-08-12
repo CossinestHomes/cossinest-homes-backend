@@ -32,35 +32,45 @@ public class CategoryController {
 
     // C 01     Tum AKTiF kategorileri Pageable yapida cagirma :
 
+//    @GetMapping
+//    public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
+//            @RequestParam(defaultValue = "") String query,
+//            @RequestParam(value = "page", defaultValue = "0") int page,
+//            @RequestParam(value = "size", defaultValue = "20") int size,
+//            @RequestParam(value = "sort", defaultValue = "id") String sort,
+//            @RequestParam(value = "type", defaultValue = "asc") String type) {
+//
+//        Page<CategoryResponseDTO> categoryList= categoryService.getActiveCategoriesWithPage(query,page,size,sort,type);
+//
+//        return ResponseEntity.ok(categoryList) ;
+//
+//
+//    }
+
     @GetMapping
-    public ResponseEntity<Page<CategoryResponseDTO>> getActiveCategoriesWithPage(
+    public ResponseEntity<Page<CategoryResponseDTO>> getCategories(
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "sort", defaultValue = "id") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type) {
+        Page<CategoryResponseDTO> categories = categoryService.getCategories(query, page, size, sort, type);
+        return ResponseEntity.ok(categories);
+    }
+
+    // C 02     Tum kategorileri Pageable yapida cagirma :
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    public ResponseEntity<Page<CategoryResponseDTO>> getAllCategories(
             @RequestParam(defaultValue = "") String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "sort", defaultValue = "id") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type) {
 
-        Page<CategoryResponseDTO> categoryList= categoryService.getActiveCategoriesWithPage(query,page,size,sort,type);
-
-        return ResponseEntity.ok(categoryList) ;
-
-
-    }
-
-    // C 02     Tum kategorileri Pageable yapida cagirma :
-
-    @GetMapping("/getCategoriesForManagers")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public Page<CategoryResponseDTO> getAllCategoriesWithPage(
-            @RequestParam(value = "q") String query,
-            @RequestParam(value = "page") int page,
-            @RequestParam(value = "size") int size,
-            @RequestParam(value = "sort") String sort,
-            @RequestParam(value = "type") String type){
-
-        return categoryService.getAllCategoriesWithPage(query ,page,  size, sort,  type);
-
-
+        Page<CategoryResponseDTO> categories = categoryService.getAllCategories(query, page, size, sort, type);
+        return ResponseEntity.ok(categories);
     }
 
 

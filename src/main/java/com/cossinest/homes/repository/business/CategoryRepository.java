@@ -45,9 +45,13 @@ public interface CategoryRepository extends JpaRepository <Category, Long> {
     int countBuiltIn(boolean b);
 
 
-    @Query("SELECT c FROM Category c WHERE (:query IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%')))")
-    Page<Category> findByActiveTrue(@Param("query") String query, Pageable pageable);
+//    @Query("SELECT c FROM Category c WHERE (:query IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%')))")
+//    Page<Category> findByActiveTrue(@Param("query") String query, Pageable pageable);
 
-    @Query("SELECT c FROM Category c WHERE c.title LIKE %:q%")
-    Page<Category> findByTitleContaining(String q, Pageable pageable);
+    @Query("SELECT c FROM Category c WHERE LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<Category> findByTitleContaining(@Param("query") String query, Pageable pageable);
+
+    @Query("SELECT c FROM Category c WHERE LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%')) AND c.active = TRUE")
+    Page<Category> findByTitleContainingAndIsActiveTrue(@Param("query") String query, Pageable pageable);
+
 }

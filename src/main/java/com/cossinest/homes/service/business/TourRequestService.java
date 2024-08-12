@@ -103,46 +103,64 @@ public class TourRequestService {
     }
 
 
-    public ResponseMessage<Page<TourRequestResponse>> getAllTourRequestByPageAuth(
-            HttpServletRequest httpServletRequest,
-            int page,
-            int size,
-            String sort,
-            String type,
-            String createAt,
-            String tourTime,
-            String status,
-            String tourDate) {
+//    public ResponseMessage<Page<TourRequestResponse>> getAllTourRequestByPageAuth(
+//            HttpServletRequest httpServletRequest,
+//            int page,
+//            int size,
+//            String sort,
+//            String type,
+//            String createAt,
+//            String tourTime,
+//            String status,
+//            String tourDate) {
+//
+//        String userEmail = (String) httpServletRequest.getAttribute("email");
+//        User userByEmail = methodHelper.findByUserByEmail(userEmail);
+//
+//        // Role kontrolü
+//        methodHelper.checkRoles(userByEmail, RoleType.CUSTOMER, RoleType.ADMIN);
+//
+//        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+//
+//        // Parametreleri uygun veri tiplerine dönüştür
+//      //  LocalDateTime createAtDateTime = (createAt != null && !createAt.isEmpty()) ? LocalDateTime.parse(createAt) : null;
+//       // LocalTime tourTimeParsed = (tourTime != null && !tourTime.isEmpty()) ? LocalTime.parse(tourTime) : null;
+//       // StatusType statusType = (status != null && !status.isEmpty()) ? StatusType.valueOf(status) : null;
+//       // LocalDate tourDateParsed = (tourDate != null && !tourDate.isEmpty()) ? LocalDate.parse(tourDate) : null;
+//
+//        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQueryAuth(
+//                pageable,
+//                userByEmail.getId(), // userId parametresi burada Long türündedir
+//                createAt,
+//                tourTime,
+//                status,
+//                tourDate
+//        );
+//
+//        Page<TourRequestResponse> tourRequestResponses = tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse);
+//
+//        return ResponseMessage.<Page<TourRequestResponse>>builder()
+//                .object(tourRequestResponses)
+//                .status(HttpStatus.OK)
+//                .build();}
 
+    public Page<TourRequestResponse> getAllTourRequestByPageForCustomer(HttpServletRequest httpServletRequest, String query, int page, int size, String sort, String type) {
         String userEmail = (String) httpServletRequest.getAttribute("email");
         User userByEmail = methodHelper.findByUserByEmail(userEmail);
-
-        // Role kontrolü
         methodHelper.checkRoles(userByEmail, RoleType.CUSTOMER, RoleType.ADMIN);
 
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-        // Parametreleri uygun veri tiplerine dönüştür
-      //  LocalDateTime createAtDateTime = (createAt != null && !createAt.isEmpty()) ? LocalDateTime.parse(createAt) : null;
-       // LocalTime tourTimeParsed = (tourTime != null && !tourTime.isEmpty()) ? LocalTime.parse(tourTime) : null;
-       // StatusType statusType = (status != null && !status.isEmpty()) ? StatusType.valueOf(status) : null;
-       // LocalDate tourDateParsed = (tourDate != null && !tourDate.isEmpty()) ? LocalDate.parse(tourDate) : null;
+        if (query != null && !query.isEmpty()) {
+            return tourRequestRepository.findAllByGuestUser_IdAndQuery(userByEmail.getId(), query, pageable)
+                    .map(tourRequestMapper::tourRequestToTourRequestResponse);
+        }else {
 
-        Page<TourRequest> tourRequests = tourRequestRepository.findAllByQueryAuth(
-                pageable,
-                userByEmail.getId(), // userId parametresi burada Long türündedir
-                createAt,
-                tourTime,
-                status,
-                tourDate
-        );
+        return tourRequestRepository.findAllByGuestUser_Id(userByEmail.getId(), pageable)
+                .map(tourRequestMapper::tourRequestToTourRequestResponse);
+    }
+    }
 
-        Page<TourRequestResponse> tourRequestResponses = tourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse);
-
-        return ResponseMessage.<Page<TourRequestResponse>>builder()
-                .object(tourRequestResponses)
-                .status(HttpStatus.OK)
-                .build();}
 
         public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
             HttpServletRequest httpServletRequest, int page, int size, String sort, String type,String createAt,String tourTime,String status,String tourDate) {
@@ -350,4 +368,6 @@ public class TourRequestService {
       return   tourRequestRepository.findByIdIn(tourRequestIdList);
 
     }
+
+
 }

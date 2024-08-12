@@ -22,7 +22,9 @@ import com.cossinest.homes.repository.business.CategoryRepository;
 import com.cossinest.homes.service.helper.PageableHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,29 +58,49 @@ public class CategoryService {
     }
 
 
-    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(String query, int page, int size, String sort, String type) {
+//    public Page<CategoryResponseDTO> getActiveCategoriesWithPage(String query, int page, int size, String sort, String type) {
+//
+//        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+//
+//        Page<Category> categories = categoryRepository.findByActiveTrue(query, pageable);
+//
+//        return categories.map(categoryMapper::mapCategoryToCategoryResponseDTO);
+//
+//    }
 
-        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+    public Page<CategoryResponseDTO> getCategories(String query, int page, int size, String sort, String type) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(type), sort));
 
-        Page<Category> categories = categoryRepository.findByActiveTrue(query, pageable);
-
-        return categories.map(categoryMapper::mapCategoryToCategoryResponseDTO);
-
+        Page<Category> categoryPage = categoryRepository.findByTitleContainingAndIsActiveTrue(query, pageable);
+        return  categoryPage.map(categoryMapper::mapCategoryToCategoryResponseDTO);
     }
 
 
-    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String query, int page, int size, String sort, String type) {
 
-        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+//    public Page<CategoryResponseDTO> getAllCategoriesWithPage(String query, int page, int size, String sort, String type) {
+//
+//        Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+//
+//        Page<Category> categoryList;
+//        if (query != null && !query.isEmpty()) {
+//            categoryList = categoryRepository.findByTitleContaining(query, pageable);
+//        } else {
+//            categoryList = categoryRepository.findAll(pageable);
+//        }
+//
+//        return categoryList.map(categoryMapper::mapCategoryToCategoryResponseDTO);
+//    }
 
-        Page<Category> categoryList;
+    public Page<CategoryResponseDTO> getAllCategories(String query, int page, int size, String sort, String type) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(type), sort));
+        Page<Category> categoryPage;
+
         if (query != null && !query.isEmpty()) {
-            categoryList = categoryRepository.findByTitleContaining(query, pageable);
+            categoryPage = categoryRepository.findByTitleContaining(query, pageable);
         } else {
-            categoryList = categoryRepository.findAll(pageable);
+            categoryPage = categoryRepository.findAll(pageable);
         }
-
-        return categoryList.map(categoryMapper::mapCategoryToCategoryResponseDTO);
+        return categoryPage.map(categoryMapper::mapCategoryToCategoryResponseDTO);
     }
 
 

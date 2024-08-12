@@ -23,19 +23,26 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     List<TourRequest> findAllByTourDate(LocalDate tourDate);
 
 
-    @Query("SELECT t FROM TourRequest t WHERE ((t.guestUserId.id = :userId OR t.ownerUserId.id = :userId) " +
-            "AND (:createAt IS NULL OR t.createAt = :createAt) " +
-            "AND (:tourTime IS NULL OR t.tourTime = :tourTime) " +
-            "AND (:status IS NULL OR t.status = :status) " +
-            "AND (:tourDate IS NULL OR t.tourDate = :tourDate))")
-    Page<TourRequest> findAllByQueryAuth(
-            Pageable pageable,
-            @Param("userId") Long userId,
-            @Param("createAt") String createAt,
-            @Param("tourTime") String tourTime,
-            @Param("status") String status,
-            @Param("tourDate") String tourDate
-    );
+//    @Query("SELECT t FROM TourRequest t WHERE ((t.guestUserId.id = :userId OR t.ownerUserId.id = :userId) " +
+//            "AND (:createAt IS NULL OR t.createAt = :createAt) " +
+//            "AND (:tourTime IS NULL OR t.tourTime = :tourTime) " +
+//            "AND (:status IS NULL OR t.status = :status) " +
+//            "AND (:tourDate IS NULL OR t.tourDate = :tourDate))")
+//    Page<TourRequest> findAllByQueryAuth(
+//            Pageable pageable,
+//            @Param("userId") Long userId,
+//            @Param("createAt") String createAt,
+//            @Param("tourTime") String tourTime,
+//            @Param("status") String status,
+//            @Param("tourDate") String tourDate
+//    );
+
+    @Query("SELECT t FROM TourRequest t WHERE t.guestUserId.id = :userId AND " +
+            "(LOWER(t.advertId.title) LIKE LOWER(CONCAT('%', :query, '%')))")
+    Page<TourRequest> findAllByGuestUser_IdAndQuery(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
+
+    @Query("SELECT t FROM TourRequest t WHERE t.guestUserId = :userId")
+    Page<TourRequest> findAllByGuestUser_Id(Long userId, Pageable pageable);
 
     @Query("SELECT t FROM TourRequest t WHERE " +
             "(:createAt IS NULL OR t.createAt = :createAt) " +
@@ -63,4 +70,6 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
                                      @Param("statusType") StatusType statusType);
 
     Set<TourRequest> findByIdIn(Set<Long> tourRequestIdList);
+
+
 }
