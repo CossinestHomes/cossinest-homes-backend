@@ -99,7 +99,6 @@ public class HomesApplication implements CommandLineRunner {
 
 		}
 
-
 		if (categoryService.countBuiltInTrue() == 0) {
 			List<Category> categories = List.of(
 					new Category(1L, "Müstakil Ev", "ev_icon", true,0, "mustakil-ev", true),
