@@ -64,8 +64,8 @@ public class TourRequestService {
 
         //UserOwner için çakışma kontrolü //TODO burayi anlayamadim. id zaten var ve advert id neden ownerId oldu
         Advert advert = advertService.getAdvertForFavorites(tourRequestRequest.getAdvertId());
-        Long ownerId = advert.getId();
-        User ownerUser = methodHelper.findUserWithId(ownerId);
+        User ownerUser = advert.getUser();
+      //  User ownerUser = methodHelper.findUserWithId(ownerId);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForOwner(ownerUser,tourRequestRequest);
 
 

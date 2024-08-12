@@ -21,7 +21,7 @@ public class TourRequestController {
     private final TourRequestService tourRequestService;
 
     @PostMapping // http://localhost:8080/tour-requests  + POST + JSON
-    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER','MANAGER','ADMIN')")
     public ResponseMessage<TourRequestResponse> save(@Valid @RequestBody TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest){
 
         return tourRequestService.saveTourRequest(tourRequestRequest,httpServletRequest);
