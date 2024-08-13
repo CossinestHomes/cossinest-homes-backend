@@ -14,6 +14,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Data
 @Component
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class AdvertMapper {
 
     private final CategoryPropertyValueService categoryPropertyValueService;
     private final MethodHelper methodHelper;
+    private final ImageMapper imageMapper;
 
     //Advert==>DTO
     public AdvertResponse mapAdvertToAdvertResponse (Advert advert){
@@ -144,5 +147,32 @@ public class AdvertMapper {
                 .category(category)
                 .location(createRequest.getLocation())
                 .build();
+    }
+
+    private Images getFeaturedImage(List<Images> images) {
+        return images.stream()
+                .filter(Images::getFeatured)
+                .findFirst()
+                .orElse(images.get(0));
+    }
+
+    public AdvertResponse mapAdvertToAdvertResponseForAll (Advert advert){
+        AdvertResponse.AdvertResponseBuilder builder = AdvertResponse.builder()
+                .id(advert.getId())
+                .price(advert.getPrice())
+                .slug(advert.getSlug())
+                .builtIn(advert.getBuiltIn())
+                .description(advert.getDescription())
+                .title(advert.getTitle())
+                .status(getStatusName(advert.getStatus()))
+                .countryId(advert.getCountry().getId())
+                .cityId(advert.getCity().getId())
+                .districtId(advert.getDistrict().getId())
+               // .imagesIdsList(advert.getImagesList())
+                .advertTypeId(advert.getAdvertType().getId())
+                .categoryId(advert.getCategory().getId());
+               // .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())));
+
+        return builder.build();
     }
 }

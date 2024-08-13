@@ -71,9 +71,7 @@ public class AdvertService {
     private final DistrictService districtService;
 
 
-
     //private final ImagesService imagesService;
-
 
 
     public List<Advert> getAllAdverts(){
@@ -91,9 +89,9 @@ public class AdvertService {
         if (methodHelper.priceControl(priceStart, priceEnd)) {
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
+        Page<Advert> advertsPage = advertRepository.findByAdvertByQuery(query, categoryId, advertTypeId, priceStart, priceEnd, pageable);
 
-        return advertRepository.findByAdvertByQuery(categoryId, advertTypeId, priceStart, priceEnd, query, pageable)
-                .map(advertMapper::mapAdvertToAdvertResponse);
+        return advertsPage.map(advertMapper::mapAdvertToAdvertResponseForAll);
     }
 
 
@@ -129,17 +127,6 @@ public class AdvertService {
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
-    public Page<AdvertResponse> getAllAdvertsByPageForAdmin(HttpServletRequest request,String query ,Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd,int page, int size, String sort, String type) {
-        User user = methodHelper.getUserByHttpRequest(request);
-        methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
-        Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
-
-
-        if(methodHelper.priceControl(priceStart,priceEnd)){
-            throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
-        }
-        return advertRepository.findByAdvertByQuery(categoryId,advertTypeId,priceStart,priceEnd,query,pageable).map(advertMapper::mapAdvertToAdvertResponse);
-    }
 
     public AdvertResponse getAdvertBySlug(String slug) {
         Advert advert = advertRepository.findBySlug(slug).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
@@ -492,4 +479,6 @@ public class AdvertService {
     public void saveRunner(Advert advert) {
     advertRepository.save(advert);
     }
+
+
 }

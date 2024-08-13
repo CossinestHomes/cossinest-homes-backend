@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,13 +34,14 @@ public class AdvertController {
     private final CityService cityService;
     private final ReportService logService;
 
+    @Transactional
     @GetMapping  //http://localhost:8080/adverts?category.id=1&advert_type_id=2&price_start=100.0&price_end=500.0&q=something&page=0&size=20&sort=category.id&type=asc
     public Page<AdvertResponse> getAllAdvertsByPage(
-            @RequestParam(value = "q", required = false) String query,
-            @RequestParam(value = "category.id") Long categoryId,
-            @RequestParam(value = "advert_type_id") Long advertTypeId,
-            @RequestParam(value = "price_start", required = false) Double priceStart,
-            @RequestParam(value = "price_end", required = false) Double priceEnd,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "category_id", required = false) Long categoryId,
+            @RequestParam(value = "advert_type_id", required = false) Long advertTypeId,
+            @RequestParam(value = "priceStart", required = false) Double priceStart,
+            @RequestParam(value = "priceEnd", required = false) Double priceEnd,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "sort", defaultValue = "category.id") String sort,
@@ -98,21 +100,21 @@ public class AdvertController {
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
     }
 
+    @Transactional
     @GetMapping("/admin")
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
-            HttpServletRequest request,
-            @RequestParam(value = "q",required = false, defaultValue = "") String query,
-            @RequestParam(value = "category.id") Long categoryId,
-            @RequestParam(value = "advert_type_id") Long advertTypeId,
-            @RequestParam(value = "price_start",required = false) Double priceStart,
-            @RequestParam(value = "price_end",required = false) Double priceEnd,
-            @RequestParam(value = "page",required = false,defaultValue = "0") int page,
-            @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "sort",required = false,defaultValue = "category.id") String sort,
-            @RequestParam(value = "type",required = false,defaultValue = "asc") String type
-    ){
-        return advertService.getAllAdvertsByPageForAdmin(request,query,categoryId,advertTypeId,priceStart,priceEnd,page,size,sort,type);
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "category_id", required = false) Long categoryId,
+            @RequestParam(value = "advert_type_id", required = false) Long advertTypeId,
+            @RequestParam(value = "priceStart", required = false) Double priceStart,
+            @RequestParam(value = "priceEnd", required = false) Double priceEnd,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "sort", defaultValue = "category.id") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, page, size, sort, type);
     }
 
     @GetMapping("/{slug}")

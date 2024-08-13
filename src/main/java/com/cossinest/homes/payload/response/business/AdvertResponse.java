@@ -56,6 +56,8 @@ public class AdvertResponse {
 
     private List<Images> imagesIdsList;
 
+    private ImagesResponse images;
+
 
 
     //TODO: favourites
