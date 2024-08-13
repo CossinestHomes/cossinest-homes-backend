@@ -2,7 +2,6 @@ package com.cossinest.homes.payload.mappers;
 
 import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.payload.response.business.ImagesResponse;
-import com.cossinest.homes.utils.ImageUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,8 +19,8 @@ public class ImageMapper {
                 .id(savedImage.getId())
                 .name(savedImage.getName())
                 .type(savedImage.getType())
-                .featured(savedImage.getFeatured())
-                .data(encodeImage(ImageUtil.decompressImage(savedImage.getData())))
+                .featured(savedImage.isFeatured())
+                .data(encodeImage(savedImage.getData()))
                 .advertId(savedImage.getAdvert().getId())
                 .build();
     }

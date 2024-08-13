@@ -44,7 +44,7 @@ public class AdvertMapper {
                 .cityId(advert.getCity().getId())
                 .properties(methodHelper.getAdvertResponseProperties(advert, categoryPropertyValueService))
                 .districtId(advert.getDistrict().getId())
-                .imagesIdsList(advert.getImagesList())
+                .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId());
 
@@ -151,7 +151,7 @@ public class AdvertMapper {
 
     private Images getFeaturedImage(List<Images> images) {
         return images.stream()
-                .filter(Images::getFeatured)
+                .filter(Images::isFeatured)
                 .findFirst()
                 .orElse(images.get(0));
     }
@@ -168,10 +168,9 @@ public class AdvertMapper {
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
                 .districtId(advert.getDistrict().getId())
-               // .imagesIdsList(advert.getImagesList())
                 .advertTypeId(advert.getAdvertType().getId())
-                .categoryId(advert.getCategory().getId());
-               // .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())));
+                .categoryId(advert.getCategory().getId())
+                .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())));
 
         return builder.build();
     }

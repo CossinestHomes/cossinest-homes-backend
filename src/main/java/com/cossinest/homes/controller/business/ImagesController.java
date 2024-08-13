@@ -46,13 +46,20 @@ public class ImagesController {
     }
 
 
-    @PostMapping("/{advertId}") // http://localhost:8080/images/1
+//    @PostMapping("/{advertId}") // http://localhost:8080/images/1
+//    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
+//    public ResponseEntity<List<Long>> uploadImages(@PathVariable("id") Long advertId, @RequestParam("files") MultipartFile[] files) {
+//
+//        return ResponseEntity.ok(imagesService.uploadImages(advertId,files));
+//
+//    }
+
+    @PostMapping("/{advertId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
-    public ResponseEntity<List<Long>> uploadImages(@PathVariable("id") Long advertId, @RequestParam("files") MultipartFile[] files) {
-
-        return ResponseEntity.ok(imagesService.uploadImages(advertId,files));
-
+    public ResponseEntity<List<ImagesResponse>> uploadImages(@PathVariable("advertId") Long advertId, @RequestParam("files") MultipartFile[] files) {
+        return ResponseEntity.ok(imagesService.uploadImages(advertId, files));
     }
+
 
     @DeleteMapping("/{image_ids}")  // http://localhost:8080/images/5,56,22,56,7
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
