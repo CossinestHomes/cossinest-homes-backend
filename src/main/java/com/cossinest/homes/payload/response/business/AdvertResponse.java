@@ -54,7 +54,7 @@ public class AdvertResponse {
 
     private Map<String,String > properties;
 
-    private List<Images> imagesIdsList;
+  //  private List<Images> imagesIdsList;
 
     private ImagesResponse images;
 

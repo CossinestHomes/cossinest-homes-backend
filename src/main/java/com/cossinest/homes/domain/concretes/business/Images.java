@@ -25,7 +25,7 @@ public class Images {
     private String type;
 
     @Column(nullable = false)
-    private Boolean featured;
+    private boolean featured;
 
     @ManyToOne
     @JoinColumn(name = "advert_id", nullable = false)

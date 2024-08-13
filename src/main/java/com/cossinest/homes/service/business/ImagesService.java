@@ -5,6 +5,7 @@ import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.exception.NotLoadingCompleted;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
+import com.cossinest.homes.payload.response.business.ImagesResponse;
 import com.cossinest.homes.repository.business.ImagesRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,15 +47,52 @@ public class ImagesService {
     }
 
 
-    public List<Long> uploadImages(Long advertId, MultipartFile[] files){
+//    public List<Long> uploadImages(Long advertId, MultipartFile[] files){
+//
+//       Advert advert =advertService.getAdvertForFavorites(advertId);
+//
+//        List<Long> imageIds = new ArrayList<>();
+//        boolean isFirstImage = true;
+//
+//        for (MultipartFile file:files) {
+//            try{
+//                Images image = new Images();
+//
+//                image.setData(file.getBytes());
+//                image.setName(file.getOriginalFilename());
+//                image.setType(file.getContentType());
+//                image.setAdvert(advert);
+//
+//                if(isFirstImage){
+//                    image.setFeatured(true);
+//                    isFirstImage=false;
+//                }else{
+//                    image.setFeatured(false);
+//                }
+//
+//               Images images =imagesRepository.save(image);
+//                imageIds.add(images.getId());
+//
+//            }catch(IOException e){
+//                throw  new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
+//            }
+//        }
+//        return imageIds;
+//    }
 
-       Advert advert =advertService.getAdvertForFavorites(advertId);
+    //yardımcı metod:
+    public String convertToBase64(byte[] data) {
+        return Base64.getEncoder().encodeToString(data);
+    }
 
-        List<Long> imageIds = new ArrayList<>();
+    public List<ImagesResponse> uploadImages(Long advertId, MultipartFile[] files) {
+
+        Advert advert = advertService.getAdvertForFavorites(advertId);
+        List<ImagesResponse> imageResponses = new ArrayList<>();
         boolean isFirstImage = true;
 
-        for (MultipartFile file:files) {
-            try{
+        for (MultipartFile file : files) {
+            try {
                 Images image = new Images();
 
                 image.setData(file.getBytes());
@@ -61,22 +100,38 @@ public class ImagesService {
                 image.setType(file.getContentType());
                 image.setAdvert(advert);
 
-                if(isFirstImage){
+                if (isFirstImage) {
                     image.setFeatured(true);
-                    isFirstImage=false;
-                }else{
+                    isFirstImage = false;
+                } else {
                     image.setFeatured(false);
                 }
 
-               Images images =imagesRepository.save(image);
-                imageIds.add(images.getId());
+                Images savedImage = imagesRepository.save(image);
 
-            }catch(IOException e){
-                throw  new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
+                // Base64'e çevir
+                String base64Data = convertToBase64(savedImage.getData());
+
+                // ImageResponse objesi yarat
+                ImagesResponse response = ImagesResponse.builder()
+                        .id(savedImage.getId())
+                        .name(savedImage.getName())
+                        .type(savedImage.getType())
+                        .featured(savedImage.isFeatured())
+                        .advertId(advertId)
+                        .data(base64Data)
+                        .build();
+
+                imageResponses.add(response);
+
+            } catch (IOException e) {
+                throw new NotLoadingCompleted(ErrorMessages.UPLOADING_FAILED);
             }
         }
-        return imageIds;
+        return imageResponses;
     }
+
+
 
 
 
