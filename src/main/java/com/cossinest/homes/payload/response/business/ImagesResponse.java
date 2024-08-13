@@ -13,6 +13,11 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class ImagesResponse {
 
-    List<Long> imagesId;
+    private Long id;
+    private String name;
+    private String type;
+    private boolean featured;
+    private Long advertId;
+    private String data;
 
 }

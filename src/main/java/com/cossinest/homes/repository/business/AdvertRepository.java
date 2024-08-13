@@ -1,5 +1,6 @@
 package com.cossinest.homes.repository.business;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.enums.Status;
 import jakarta.transaction.Transactional;
@@ -42,17 +43,19 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     Page<Advert> findByAdvertByQuery(Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, Integer status, String location, String query, Pageable pageable);
 */
     @Query("SELECT a FROM Advert a WHERE " +
-            "a.category.id = :category AND " +
-            "a.advertType.id = :advertTypeId AND " +
-            "(:priceStart IS NULL OR :priceEnd IS NULL OR a.price BETWEEN :priceStart AND :priceEnd) AND " +
-            "(:query IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(a.description) LIKE LOWER(CONCAT('%', :query, '%')))")
-    Page<Advert> findByAdvertByQuery(@Param("category") Long category,
-                                     @Param("advertTypeId") Long advertTypeId,
-                                     @Param("priceStart") Double priceStart,
-                                     @Param("priceEnd") Double priceEnd,
-                                     @Param("query") String query,
-                                     Pageable pageable);
-
+            "(:query IS NULL OR a.description LIKE %:query% OR a.title LIKE %:query% ) " +
+            "AND (:categoryId IS NULL OR a.category.id = :categoryId) " +
+            "AND (:advertTypeId IS NULL OR a.advertType.id = :advertTypeId) " +
+            "AND (:priceStart IS NULL OR a.price >= :priceStart) " +
+            "AND (:priceEnd IS NULL OR a.price <= :priceEnd)")
+    Page<Advert> findByAdvertByQuery(
+            @Param("query") String query,
+            @Param("categoryId") Long categoryId,
+            @Param("advertTypeId") Long advertTypeId,
+            @Param("priceStart") Double priceStart,
+            @Param("priceEnd") Double priceEnd,
+            Pageable pageable
+    );
 
 
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")
@@ -104,6 +107,5 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
     @Modifying
     @Query("DELETE FROM Advert a WHERE a.builtIn = ?1")
     void deleteByBuiltIn(boolean b);
-
 
 }
