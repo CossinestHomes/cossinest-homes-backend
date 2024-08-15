@@ -64,10 +64,10 @@ public class Category {
     private Integer seq = 0;
 
 
-    @NotNull(message = "slug can not be null")
+   // @NotNull(message = "slug can not be null")
    // @NotBlank(message = "slug can not be white space")
     @Size(min=5, max=200, message = "slug '${validatedValue}' must be between {min} and {max} long")
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String slug;
 
 

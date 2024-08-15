@@ -46,7 +46,9 @@ public class AdvertMapper {
                 .districtId(advert.getDistrict().getId())
                 .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
                 .advertTypeId(advert.getAdvertType().getId())
-                .categoryId(advert.getCategory().getId());
+                .categoryId(advert.getCategory().getId())
+                .favoritesList(advert.getFavoritesList())
+                .tourRequestList(advert.getTourRequestList());
 
         // Only set userId if it's not null
         if (advert.getUser() != null && advert.getUser().getId() != null) {
