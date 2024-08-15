@@ -45,44 +45,31 @@ import java.util.stream.Collectors;
 public class AdvertService {
 
     private final PageableHelper pageableHelper;
-
     private final AdvertRepository advertRepository;
-
     private final AdvertMapper advertMapper;
-
     private final CategoryService categoryService;
-
     private final MethodHelper methodHelper;
-
     private final CityService cityService;
-
     private final CountryService countryService;
-
     private final CategoryPropertyValueService categoryPropertyValueService;
-
     private final CategoryPropertyKeyService categoryPropertyKeyService;
-
     private final AdvertTypesService advertTypesService;
-
     private final DateTimeValidator dateTimeValidator;
-
     private final LogService logService;
-
     private final DistrictService districtService;
-
-
     //private final ImagesService imagesService;
 
-
+    @Transactional
     public List<Advert> getAllAdverts(){
         return advertRepository.findAll();
     }
 
+    @Transactional
     public Advert getAdvertForFavorites(Long id){
         return advertRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
     }
 
-
+    @Transactional
     public Page<AdvertResponse> getAllAdvertsByPage(String query, Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
@@ -105,6 +92,7 @@ public class AdvertService {
        return categoryForAdvertList;
     }
 
+    @Transactional
     public List<AdvertResponse> getPopularAdverts(int value) {
 
         List<Advert> advertList = getAllAdverts();
@@ -116,24 +104,25 @@ public class AdvertService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Page<AdvertResponse> getAllAdvertForAuthUser(HttpServletRequest request, int page, int size, String sort, String type) {
 
         Pageable pageable=pageableHelper.getPageableWithProperties(page,size,sort,type);
 
         User user= methodHelper.getUserByHttpRequest(request);
 
-
-
         return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
     }
 
 
+    @Transactional
     public AdvertResponse getAdvertBySlug(String slug) {
         Advert advert = advertRepository.findBySlug(slug).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND));
 
         return advertMapper.mapAdvertToAdvertResponse(advert);
     }
 
+    @Transactional
     public ResponseEntity<AdvertResponse> getAdvertByIdForCustomer(Long id, HttpServletRequest request) {
 
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
@@ -146,6 +135,7 @@ public class AdvertService {
         return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(advert));
     }
 
+    @Transactional
     public ResponseEntity<AdvertResponse> getAdvertByIdForAdmin(Long id, HttpServletRequest request) {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.ADMIN.name());
 
@@ -201,8 +191,6 @@ public class AdvertService {
             }
         }
 
-
-
         advert.setCategoryPropertyValuesList(advertValueList);
 
         // viewCount alanını varsayılan değere ayarlayın
@@ -216,7 +204,6 @@ public class AdvertService {
             advert.setIsActive(false);
         }
 
-
         // Advert'ı kaydedin ve ID'yi elde edin
         Advert savedAdvert = advertRepository.save(advert);
         savedAdvert.generateSlug();
@@ -229,14 +216,10 @@ public class AdvertService {
         }
         savedAdvert.setImagesList(imagesList);
 
-
         logService.createLogEvent(savedAdvert.getUser(), savedAdvert, LogEnum.CREATED);
 
         // Advert'ı ve ilişkili resimleri tekrar kaydedin
         savedAdvert = advertRepository.save(savedAdvert);
-
-
-
 
         return advertMapper.mapAdvertToAdvertResponse(savedAdvert);
     }
@@ -246,8 +229,6 @@ public class AdvertService {
     public AdvertResponse updateUsersAdvert(AdvertRequest advertRequest, Long id, HttpServletRequest request, MultipartFile[] files) {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.CUSTOMER.name());
         Advert advert=isAdvertExistById(id);
-
-
 
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
@@ -289,8 +270,6 @@ public class AdvertService {
         updateAdvert.setImagesList(advert.getImagesList());
 
         Advert returnedAdvert=advertRepository.save(updateAdvert);
-
-
 
         logService.createLogEvent(advert.getUser(),advert, LogEnum.UPDATED);
 
@@ -353,6 +332,7 @@ public class AdvertService {
         return advertMapper.mapAdvertToAdvertResponse(returnedAdvert);
     }
 
+    @Transactional
     public AdvertResponse deleteAdvert(Long id, HttpServletRequest request) {
         User user = methodHelper.getUserByHttpRequest(request);
         methodHelper.checkRoles(user, RoleType.ADMIN, RoleType.MANAGER);
@@ -401,6 +381,7 @@ public class AdvertService {
 
     }
 
+    @Transactional
     public Page<Advert> getPopulerAdverts(int amount,Pageable pageable) {
 
      return advertRepository.getMostPopulerAdverts(amount,pageable);
@@ -465,13 +446,13 @@ public class AdvertService {
     }
 
 
+//    @Transactional
+//    public void resetAdvertTables() {
+//      //  advertRepository.deleteByBuiltIn(false);
+//
+//    }
 
     @Transactional
-    public void resetAdvertTables() {
-      //  advertRepository.deleteByBuiltIn(false);
-
-    }
-
     public Set<Advert> getAdvertsByIdList(Set<Long> advertIdList) {
         return advertRepository.findByIdIn(advertIdList);
     }
