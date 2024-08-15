@@ -74,7 +74,7 @@ public class AdvertController {
     }
 
 
-    @Transactional
+
     @GetMapping("/popular/{value}")
     public ResponseMessage<List<AdvertResponse>> getPopularAdverts(@PathVariable(required = false) Integer value){
 
@@ -89,7 +89,7 @@ public class AdvertController {
               .build();
     }
 
-    @Transactional
+
     @GetMapping("/auth")
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public Page<AdvertResponse> getAllAdvertForAuthUserByPage(
@@ -102,7 +102,7 @@ public class AdvertController {
         return advertService.getAllAdvertForAuthUser(request,page,size,sort,type);
     }
 
-    @Transactional
+
     @GetMapping("/admin")
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
     public Page<AdvertResponse> getAllAdvertsByPageForAdmin(
@@ -119,7 +119,7 @@ public class AdvertController {
         return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, page, size, sort, type);
     }
 
-    @Transactional
+
     @GetMapping("/{slug}")
     public ResponseMessage<AdvertResponse> getAdvertBySlug(@PathVariable String slug){
         AdvertResponse advertResponse= advertService.getAdvertBySlug(slug);
@@ -131,7 +131,7 @@ public class AdvertController {
                 .build();
     }
 
-    @Transactional
+
     @GetMapping("/{id}/auth")
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<AdvertResponse> getAdvertByIdForCustomer(@PathVariable Long id, HttpServletRequest request) {
@@ -140,7 +140,7 @@ public class AdvertController {
 
     }
 
-    @Transactional
+
     @GetMapping("/{id}/admin")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<AdvertResponse> getAdvertByIdForAdmin(@PathVariable Long id, HttpServletRequest request) {
