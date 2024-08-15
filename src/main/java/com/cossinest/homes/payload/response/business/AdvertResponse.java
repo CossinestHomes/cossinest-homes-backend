@@ -1,6 +1,8 @@
 package com.cossinest.homes.payload.response.business;
 
+import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.Images;
+import com.cossinest.homes.domain.concretes.business.TourRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -58,7 +60,9 @@ public class AdvertResponse {
 
     private ImagesResponse images;
 
+    private List<Favorites> favoritesList;
 
+    private List<TourRequest> tourRequestList;
 
     //TODO: favourites
 
