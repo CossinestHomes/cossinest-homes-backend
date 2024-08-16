@@ -45,7 +45,7 @@ public class CityController {
                 .build();
     }
 
-    @GetMapping("/getCityAdvertTotal")
+    @PostMapping("/getCityAdvertTotal")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseMessage<List<CityAdvertTotalResponse>>getCityAdvertTotal(@Valid @RequestBody CityAdvertTotalRequest totalRequest,
                                                                             HttpServletRequest request){
