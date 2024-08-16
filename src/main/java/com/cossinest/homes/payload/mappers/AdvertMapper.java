@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Component
@@ -44,7 +45,10 @@ public class AdvertMapper {
                 .cityId(advert.getCity().getId())
                 .properties(methodHelper.getAdvertResponseProperties(advert, categoryPropertyValueService))
                 .districtId(advert.getDistrict().getId())
-                .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
+                .featuredImage(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
+                .images(advert.getImagesList().stream()
+                        .map(imageMapper::toImageResponse)
+                        .collect(Collectors.toList()))
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
                 .favoritesList(advert.getFavoritesList())
@@ -172,7 +176,10 @@ public class AdvertMapper {
                 .districtId(advert.getDistrict().getId())
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
-                .images(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())));
+                .featuredImage(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
+        .images(advert.getImagesList().stream()
+                .map(imageMapper::toImageResponse)
+                .collect(Collectors.toList()));
 
         return builder.build();
     }
