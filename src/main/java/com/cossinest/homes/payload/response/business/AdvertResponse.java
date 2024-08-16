@@ -3,19 +3,20 @@ package com.cossinest.homes.payload.response.business;
 import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvertResponse {
 
     private Long id;
@@ -65,6 +66,9 @@ public class AdvertResponse {
     private List<Favorites> favoritesList;
 
     private List<TourRequest> tourRequestList;
+
+    private int tourRequestCount;
+    private int favoritesCount;
 
     //TODO: favourites
 
