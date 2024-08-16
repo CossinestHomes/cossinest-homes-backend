@@ -25,8 +25,8 @@ import static java.util.stream.DoubleStream.builder;
 @RestController
 public class CityController {
 
-    @Autowired
-    private  CityService cityService;
+
+    private final CityService cityService;
 
     @GetMapping("/getAll") //http://localhost:8080/city/getAll
     public ResponseMessage<List<City>> getAllCity(){
