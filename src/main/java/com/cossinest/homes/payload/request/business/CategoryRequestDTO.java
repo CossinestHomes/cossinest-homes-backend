@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -50,6 +52,8 @@ public class CategoryRequestDTO {
   //  @NotBlank(message = "is_active can not be white space")
     @Column(name = "is_active")
     private boolean active;
+
+    private List<PropertyKeyRequest> categoryPropertyKeys;
 
 
 
