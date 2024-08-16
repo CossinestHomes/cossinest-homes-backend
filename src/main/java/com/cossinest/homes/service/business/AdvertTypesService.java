@@ -114,4 +114,8 @@ public class AdvertTypesService {
     public void saveAdvertTypeRunner(AdvertType advertType) {
         advertTypesRepository.save(advertType);
     }
+
+    public AdvertType findByIdAdvertType(long l) {
+       return advertTypesRepository.findById(l).orElseThrow(()->new ResourceNotFoundException("AdvertType is not found"));
+    }
 }

@@ -19,6 +19,7 @@ public class ErrorMessages {
     public static final String EXCEL_COULD_NOT_BE_CREATED = "Excel could not be created";
     public static final String CATEGORY_VALUE_IS_NOT_FOUND = "Category value is not found";
     public static final String RESET_CODE_IS_NOT_FOUND ="Reset code is not found. Code: %s" ;
+    public static final String THERE_IS_NO_TOURREQUEST_OF_ADVERT = "There is no tourRequest of this advert id: %s";
 
 
     private ErrorMessages() {

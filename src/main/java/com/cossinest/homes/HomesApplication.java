@@ -182,6 +182,11 @@ public class HomesApplication implements CommandLineRunner {
 				advert.setDistrict(districtService.getDistrictByIdForAdvert((Long) o[4]));
 				advert.setCity(cityService.getCityById((Long) o[5]));
 
+				advert.setCategory(categoryService.getCategoryById(1L));
+				advert.setAdvertType(advertTypesService.findByIdAdvertType(1L));
+
+
+
 				advertService.saveRunner(advert);
 
 				String[] imageNames = {"mustakil.jpg", "yatak.jpg", "banyo.jpg", "mutfak.jpg"}; // Bu diziyi fotoğraf isimleriyle doldur

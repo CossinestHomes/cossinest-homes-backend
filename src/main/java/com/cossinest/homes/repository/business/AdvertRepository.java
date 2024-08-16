@@ -47,15 +47,18 @@ public interface AdvertRepository extends JpaRepository<Advert,Long> {
             "AND (:categoryId IS NULL OR a.category.id = :categoryId) " +
             "AND (:advertTypeId IS NULL OR a.advertType.id = :advertTypeId) " +
             "AND (:priceStart IS NULL OR a.price >= :priceStart) " +
-            "AND (:priceEnd IS NULL OR a.price <= :priceEnd)")
+            "AND (:priceEnd IS NULL OR a.price <= :priceEnd)" +
+            "AND (:status IS NULL OR a.status = :status)")
     Page<Advert> findByAdvertByQuery(
             @Param("query") String query,
             @Param("categoryId") Long categoryId,
             @Param("advertTypeId") Long advertTypeId,
             @Param("priceStart") Double priceStart,
             @Param("priceEnd") Double priceEnd,
+             @Param("status")Integer status,
             Pageable pageable
     );
+
 
 
     @Query("SELECT a FROM Advert a WHERE a.user.id= ?1 ")

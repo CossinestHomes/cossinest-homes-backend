@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/tour-requests") // http://localhost:8080/tour-requests
 @RequiredArgsConstructor
@@ -133,4 +135,12 @@ public class TourRequestController {
                                                                   HttpServletRequest httpServletRequest){
         return tourRequestService.deleteTourRequest(id,httpServletRequest);
     }
+
+    @GetMapping("/{id}") //localhost:8080/tour-requests/1 + GET
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','CUSTOMER')")
+    public ResponseMessage<List<TourRequestResponse>>getTourRequestById(@PathVariable Long id, HttpServletRequest request){
+        return tourRequestService.getTourRequestByAdvertId(id,request);
+    }
+
+
 }
