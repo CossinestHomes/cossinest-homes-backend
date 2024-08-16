@@ -58,7 +58,9 @@ public class AdvertResponse {
 
   //  private List<Images> imagesIdsList;
 
-    private ImagesResponse images;
+    private List<ImagesResponse> images;
+
+    private ImagesResponse featuredImage;
 
     private List<Favorites> favoritesList;
 
