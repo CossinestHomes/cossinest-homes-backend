@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
-public class AdvertsTotalResponse {
-
+public class CityAdvertTotalResponse {
+    private String city;
     private Integer advertsTotal;
 }
