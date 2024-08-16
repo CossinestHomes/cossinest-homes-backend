@@ -89,7 +89,7 @@ public class User {
 
     // todo:  log eklenecek
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<Favorites>favoritesList=new ArrayList<>();
 
 

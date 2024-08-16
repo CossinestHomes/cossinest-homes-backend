@@ -27,9 +27,10 @@ public class AdvertMapper {
     private final ImageMapper imageMapper;
 
     //Advert==>DTO
-    public AdvertResponse mapAdvertToAdvertResponse (Advert advert){
-        AdvertResponse.AdvertResponseBuilder builder = AdvertResponse.builder()
+    public AdvertResponse mapAdvertToAdvertResponse(Advert advert) {
+        return AdvertResponse.builder()
                 .id(advert.getId())
+                .userId(advert.getUser().getId())
                 .price(advert.getPrice())
                 .slug(advert.getSlug())
                 .builtIn(advert.getBuiltIn())
@@ -52,30 +53,33 @@ public class AdvertMapper {
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
                 .favoritesList(advert.getFavoritesList())
-                .tourRequestList(advert.getTourRequestList());
+                .tourRequestList(advert.getTourRequestList())
+                .favoritesCount(advert.getFavoritesList().size())
+                .tourRequestCount(advert.getTourRequestList().size())
+                .build();
 
         // Only set userId if it's not null
-        if (advert.getUser() != null && advert.getUser().getId() != null) {
+      /*  if (advert.getUser() != null && advert.getUser().getId() != null) {
             builder.userId(advert.getUser().getId());
         }
 
-        return builder.build();
+        return builder.build();*/
     }
 
     //status response için yardımcı method
-    public String getStatusName(int statusNumber){
-        if(statusNumber==0){
+    public String getStatusName(int statusNumber) {
+        if (statusNumber == 0) {
             return Status.PENDING.name();
-        }else if(statusNumber==1){
+        } else if (statusNumber == 1) {
             return Status.ACTIVATED.name();
-        } else if (statusNumber==2) {
+        } else if (statusNumber == 2) {
             return Status.REJECTED.name();
-        }else return null;
+        } else return null;
     }
 
 
     //DTO==>Advert
-    public Advert mapAdvertRequestToAdvert(AbstractAdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType, District district){
+    public Advert mapAdvertRequestToAdvert(AbstractAdvertRequest advertRequest, Category category, City city, User user, Country country, AdvertType advertType, District district) {
         return Advert.builder()
                 .title(advertRequest.getTitle())
                 .description(advertRequest.getDescription())
@@ -92,7 +96,7 @@ public class AdvertMapper {
                 .build();
     }
 
-    public Advert mapAdvertRequestToUpdateAdvert(Long id,AbstractAdvertRequest advertRequest,Category category, City city, Country country, AdvertType advertType,District district,User user){
+    public Advert mapAdvertRequestToUpdateAdvert(Long id, AbstractAdvertRequest advertRequest, Category category, City city, Country country, AdvertType advertType, District district, User user) {
         return Advert.builder()
                 .id(id)
                 .user(user)
@@ -110,7 +114,8 @@ public class AdvertMapper {
                 .location(advertRequest.getLocation())
                 .build();
     }
-    public Advert mapAdvertRequestToUpdateAdvertForAdmin(Long id, AdvertRequestForAdmin advertRequest, Category category, City city, Country country, AdvertType advertType, District district){
+
+    public Advert mapAdvertRequestToUpdateAdvertForAdmin(Long id, AdvertRequestForAdmin advertRequest, Category category, City city, Country country, AdvertType advertType, District district) {
         return Advert.builder()
                 .id(id)
                 .country(country)
@@ -131,7 +136,7 @@ public class AdvertMapper {
     }
 
     //Category POJO==>DTO
-    public CategoryForAdvertResponse mapperCategoryToCategoryForAdvertResponse(Category category){
+    public CategoryForAdvertResponse mapperCategoryToCategoryForAdvertResponse(Category category) {
         return CategoryForAdvertResponse.builder()
                 .category(category.getTitle())
                 .amount(category.getAdverts().size())
@@ -162,8 +167,8 @@ public class AdvertMapper {
                 .orElse(images.get(0));
     }
 
-    public AdvertResponse mapAdvertToAdvertResponseForAll (Advert advert){
-        AdvertResponse.AdvertResponseBuilder builder = AdvertResponse.builder()
+    public AdvertResponse mapAdvertToAdvertResponseForAll(Advert advert) {
+        return AdvertResponse.builder()
                 .id(advert.getId())
                 .price(advert.getPrice())
                 .slug(advert.getSlug())
@@ -177,10 +182,12 @@ public class AdvertMapper {
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
                 .featuredImage(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
-        .images(advert.getImagesList().stream()
-                .map(imageMapper::toImageResponse)
-                .collect(Collectors.toList()));
+                .images(advert.getImagesList().stream()
+                        .map(imageMapper::toImageResponse)
+                        .collect(Collectors.toList()))
+                .favoritesCount(advert.getFavoritesList().size())
+                .tourRequestCount(advert.getTourRequestList().size())
+                .build();
 
-        return builder.build();
     }
 }
