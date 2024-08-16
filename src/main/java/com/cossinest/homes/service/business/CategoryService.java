@@ -165,19 +165,19 @@ public class CategoryService {
     public ResponseMessage<CategoryResponseDTO> updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
 
         Category category = findCategoryById(id);
-        boolean existTitle = categoryRepository.existsByTitle(categoryRequestDTO.getTitle());  // categoryRequest ile gelen Title DB'de VAR mi?
+      //  boolean existTitle = categoryRepository.existsByTitle(categoryRequestDTO.getTitle());  // categoryRequest ile gelen Title DB'de VAR mi?
 
         if (category.getBuiltIn()) {
             throw new ResourceNotFoundException(ErrorMessages.CATEGORY_CAN_NOT_UPDATE);
         }
 
-        if (existTitle) {
-            throw new ConflictException(ErrorMessages.CATEGORY_TITLE_ALREADY_EXIST);
+//        if (existTitle) {
+//            throw new ConflictException(ErrorMessages.CATEGORY_TITLE_ALREADY_EXIST);
 
 /*      1.senaryo: categoryRequest ile gelen Title Arsa,                 DB'de MEVCUT Title : Arsa            --> TRUE && FALSE    (UPDATE OLUR)
         2.senaryo: categoryRequest ile gelen Title Villa ve DB de VAR,   DB'de MEVCUT Title : Arsa            --> TRUE && TRUE     (UPDATE OLMAZ)
         3.senaryo: categoryRequest ile gelen Title Daire ama DB de YOK,  DB'de MEVCUT Title : Arsa            --> FALSE && TRUE    (UPDATE OLUR)    */
-        }
+      //  }
 
         // DTO ===>>> POJO
 

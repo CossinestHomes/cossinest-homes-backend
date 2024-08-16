@@ -22,7 +22,6 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PropertyKeyRequest {
 
-    @NotNull
     private String propertyName;
 
     private Boolean builtIn = false;
