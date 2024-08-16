@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -137,6 +138,19 @@ public class CategoryService {
         }
 
         category.generateSlug();
+
+        Set<CategoryPropertyKey> categoryPropertyKeys = new HashSet<>();
+        if (categoryRequestDTO.getCategoryPropertyKeys() != null) {
+            for (PropertyKeyRequest propertyKeyRequest : categoryRequestDTO.getCategoryPropertyKeys()) {
+                CategoryPropertyKey categoryPropertyKey = new CategoryPropertyKey();
+                categoryPropertyKey.setPropertyName(propertyKeyRequest.getPropertyName());
+                categoryPropertyKey.setCategory(category);  // Kategori ile ilişkilendir
+                categoryPropertyKeys.add(categoryPropertyKey);
+            }
+        }
+
+        // Kategori'ye CategoryPropertyKey'leri ekle
+        category.setCategoryPropertyKeys(categoryPropertyKeys);
 
         Category createdCategory = categoryRepository.save(category);
 
