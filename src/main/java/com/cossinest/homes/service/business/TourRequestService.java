@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -371,4 +372,19 @@ public class TourRequestService {
     }
 
 
+    public ResponseMessage<List<TourRequestResponse>> getTourRequestByAdvertId(Long id, HttpServletRequest request) {
+        User user=methodHelper.getUserByHttpRequest(request);
+        methodHelper.controlRoles(user,RoleType.ADMIN,RoleType.CUSTOMER,RoleType.MANAGER);
+        Advert advert=advertService.isAdvertExistById(id);
+        List<TourRequest> tourRequestList=getTourRequestByAdvert(advert);
+        return ResponseMessage.<List<TourRequestResponse>>builder()
+                .message("Advert`s TourRequest fetched successfully")
+                .status(HttpStatus.OK)
+                .object(tourRequestList.stream().map(tourRequestMapper::tourRequestToTourRequestResponse).collect(Collectors.toList()))
+                .build();
+    }
+
+    private List<TourRequest> getTourRequestByAdvert(Advert advert) {
+      return   tourRequestRepository.findByAdvertId(advert).orElseThrow(()-> new ResourceNotFoundException(String.format(ErrorMessages.THERE_IS_NO_TOURREQUEST_OF_ADVERT,advert.getId())) );
+    }
 }

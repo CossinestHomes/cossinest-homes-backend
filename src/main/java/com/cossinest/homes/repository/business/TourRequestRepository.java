@@ -1,5 +1,6 @@
 package com.cossinest.homes.repository.business;
 
+import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.StatusType;
@@ -73,4 +74,6 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
 
 
     Optional<TourRequest> findByIdAndGuestUserId_Id(Long id, Long id1);
+
+   Optional<List<TourRequest>> findByAdvertId(Advert advert);
 }

@@ -42,12 +42,13 @@ public class AdvertController {
             @RequestParam(value = "advert_type_id", required = false) Long advertTypeId,
             @RequestParam(value = "priceStart", required = false) Double priceStart,
             @RequestParam(value = "priceEnd", required = false) Double priceEnd,
+            @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "sort", defaultValue = "category.id") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
-        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, page, size, sort, type);
+        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd,status, page, size, sort, type);
     }
 
     @GetMapping("/cities")
@@ -111,12 +112,13 @@ public class AdvertController {
             @RequestParam(value = "advert_type_id", required = false) Long advertTypeId,
             @RequestParam(value = "priceStart", required = false) Double priceStart,
             @RequestParam(value = "priceEnd", required = false) Double priceEnd,
+            @RequestParam(value = "status",required = false) Integer status,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "sort", defaultValue = "category.id") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
-        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd, page, size, sort, type);
+        return advertService.getAllAdvertsByPage(query, categoryId, advertTypeId, priceStart, priceEnd,status, page, size, sort, type);
     }
 
 

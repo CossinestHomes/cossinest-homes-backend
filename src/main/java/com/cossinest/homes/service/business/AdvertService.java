@@ -70,13 +70,13 @@ public class AdvertService {
     }
 
     @Transactional
-    public Page<AdvertResponse> getAllAdvertsByPage(String query, Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd, int page, int size, String sort, String type) {
+    public Page<AdvertResponse> getAllAdvertsByPage(String query, Long categoryId, Long advertTypeId, Double priceStart, Double priceEnd,Integer status, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
 
         if (methodHelper.priceControl(priceStart, priceEnd)) {
             throw new ConflictException(ErrorMessages.START_PRICE_AND_END_PRICE_INVALID);
         }
-        Page<Advert> advertsPage = advertRepository.findByAdvertByQuery(query, categoryId, advertTypeId, priceStart, priceEnd, pageable);
+        Page<Advert> advertsPage = advertRepository.findByAdvertByQuery(query, categoryId, advertTypeId, priceStart, priceEnd,status, pageable);
 
         return advertsPage.map(advertMapper::mapAdvertToAdvertResponseForAll);
     }
@@ -460,6 +460,7 @@ public class AdvertService {
     public void saveRunner(Advert advert) {
     advertRepository.save(advert);
     }
+
 
 
 }

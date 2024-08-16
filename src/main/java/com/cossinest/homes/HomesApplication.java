@@ -173,6 +173,8 @@ public class HomesApplication implements CommandLineRunner {
 				advert.setPrice((Double) o[3]);
 				advert.setDistrict(districtService.getDistrictByIdForAdvert((Long) o[4]));
 				advert.setCity(cityService.getCityById((Long) o[5]));
+				advert.setCategory(categoryService.getCategoryById(1L));
+				advert.setAdvertType(advertTypesService.findByIdAdvertType(1L));
 				advertService.saveRunner(advert);
 			}
 
