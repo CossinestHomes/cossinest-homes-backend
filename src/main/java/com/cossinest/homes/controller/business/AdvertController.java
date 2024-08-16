@@ -6,6 +6,7 @@ import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.ResponseMessage;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.AdvertsTotalResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.payload.response.business.CityForAdvertsResponse;
 import com.cossinest.homes.service.business.AdvertService;
@@ -206,6 +207,10 @@ public class AdvertController {
 
     }
 
+    @GetMapping("/advertsTotal")
+    public ResponseEntity<AdvertsTotalResponse>getAdvertsTotal(){
+        return advertService.getAdvertsTotal();
+    }
 
 
 

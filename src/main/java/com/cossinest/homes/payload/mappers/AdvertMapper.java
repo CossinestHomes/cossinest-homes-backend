@@ -7,6 +7,7 @@ import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
 import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.AdvertsTotalResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
 import com.cossinest.homes.service.helper.MethodHelper;
@@ -189,5 +190,9 @@ public class AdvertMapper {
                 .tourRequestCount(advert.getTourRequestList().size())
                 .build();
 
+    }
+
+    public AdvertsTotalResponse advertTotalToResponse(Integer advertsTotal) {
+      return   AdvertsTotalResponse.builder().advertsTotal(advertsTotal).build();
     }
 }

@@ -17,6 +17,7 @@ import com.cossinest.homes.payload.request.business.AdvertRequestForAdmin;
 import com.cossinest.homes.payload.request.business.CreateAdvertPropertyRequest;
 import com.cossinest.homes.payload.request.business.CreateAdvertRequest;
 import com.cossinest.homes.payload.response.business.AdvertResponse;
+import com.cossinest.homes.payload.response.business.AdvertsTotalResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 
 import com.cossinest.homes.repository.business.AdvertRepository;
@@ -462,5 +463,10 @@ public class AdvertService {
     }
 
 
+    public ResponseEntity<AdvertsTotalResponse> getAdvertsTotal() {
+       Integer advertsTotal =advertRepository.findAll().size();
 
+       return ResponseEntity.ok(advertMapper.advertTotalToResponse(advertsTotal));
+
+    }
 }
