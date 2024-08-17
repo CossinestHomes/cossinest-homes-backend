@@ -10,6 +10,7 @@ import com.cossinest.homes.payload.response.business.AdvertResponse;
 import com.cossinest.homes.payload.response.business.CityAdvertTotalResponse;
 import com.cossinest.homes.payload.response.business.CategoryForAdvertResponse;
 import com.cossinest.homes.service.business.CategoryPropertyValueService;
+import com.cossinest.homes.service.business.FavoritesService;
 import com.cossinest.homes.service.helper.MethodHelper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +56,6 @@ public class AdvertMapper {
                 .categoryId(advert.getCategory().getId())
                 .favoritesList(advert.getFavoritesList())
                 .tourRequestList(advert.getTourRequestList())
-                .favoritesCount(advert.getFavoritesList().size())
-                .tourRequestCount(advert.getTourRequestList().size())
                 .build();
 
         // Only set userId if it's not null

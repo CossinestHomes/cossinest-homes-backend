@@ -186,6 +186,19 @@ public class FavoritesService {
       return   favoritesRepository.findAllById(favoritesList);
 
     }
+
+    //yardımcı metod:
+
+    public Integer favoritesCount(List<Favorites> favorites , Long advertId){
+        List<Favorites> favoritesOfAdvert= favoritesRepository.findAllByAdvert_Id(advertId);
+
+        if(!favoritesOfAdvert.isEmpty()){
+            Integer favoritesCount= favoritesOfAdvert.size();
+            return favoritesCount;
+        }
+        return null;
+
+    }
 }
 
 

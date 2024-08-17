@@ -166,10 +166,10 @@ public class HomesApplication implements CommandLineRunner {
 		}
 
 		if (advertService.getAllAdverts().size() == 0) {
-			Object[] arr1 = {"title", "description", "location", 10.10, 1L, 1L};
-			Object[] arr2 = {"title", "description", "location", 10.10, 1L, 1L};
-			Object[] arr3 = {"title", "description", "location", 10.10, 1L, 1L};
-			Object[] arr4 = {"title", "description", "location", 10.10, 1L, 1L};
+			Object[] arr1 = {"Şehir Merkezinde Modern Daire", "3+1 odalı, geniş balkonlu ve yerden ısıtmalı modern daire. Merkezi konum, kapalı otopark ve güvenlik mevcut", "Ankara", 2500000.00, 1L, 2L};
+			Object[] arr2 = {"Deniz Manzaralı Ev", "Denize sıfır, 4+1 odalı, özel havuzlu villa. Eşsiz manzara, geniş bahçe ve lüks iç mekan.", "İzmir", 10000000.00, 1L, 3L};
+			Object[] arr3 = {"Doğa İçinde Ferah Ev", "2+1 odalı, bahçeli köy evi. Şehrin gürültüsünden uzak, huzurlu yaşam için ideal. Ahşap detaylarla sıcak bir atmosfer.", "Bursa", 12000000.00, 1L, 4L};
+			Object[] arr4 = {"Lüks Şehir Evi", "Antalya'nın prestijli bölgesinde 5+1 odalı lüks şehir evi. Akıllı ev sistemi, geniş bahçe ve muhteşem şehir manzarası.", "Antalya", 45000000.00, 1L, 5L};
 
 			List<Object[]> array = new ArrayList<>(new ArrayList<>(Arrays.asList(arr1, arr2, arr3, arr4)));
 
@@ -179,13 +179,11 @@ public class HomesApplication implements CommandLineRunner {
 				advert.setDescription((String) o[1]);
 				advert.setLocation((String) o[2]);
 				advert.setPrice((Double) o[3]);
+				advert.setCountry(countryService.getById(1L));
 				advert.setDistrict(districtService.getDistrictByIdForAdvert((Long) o[4]));
 				advert.setCity(cityService.getCityById((Long) o[5]));
-
 				advert.setCategory(categoryService.getCategoryById(1L));
 				advert.setAdvertType(advertTypesService.findByIdAdvertType(1L));
-
-
 
 				advertService.saveRunner(advert);
 

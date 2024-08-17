@@ -40,4 +40,6 @@ public interface FavoritesRepository extends JpaRepository<Favorites,Long> {
 
     @Query("SELECT f FROM Favorites f WHERE f.user.id=?1 AND f.advert.id=?2")
     Favorites getFavoriteByAdvertAndUser(Long id, Long advertId);
+
+    List<Favorites> findAllByAdvert_Id(Long advertId);
 }
