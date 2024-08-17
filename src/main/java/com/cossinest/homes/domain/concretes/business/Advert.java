@@ -104,7 +104,7 @@ public class Advert {
     }
 
     //,orphanRemoval = true
-    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Favorites> favoritesList;
 
