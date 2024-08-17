@@ -109,7 +109,12 @@ public class AdvertService {
 
         User user= methodHelper.getUserByHttpRequest(request);
 
-        return advertRepository.findAdvertsForUser(user.getId(),pageable).map(advertMapper::mapAdvertToAdvertResponse);
+        return advertRepository.findAdvertsForUser(user.getId(),pageable).map(
+                (advert)->{
+                    AdvertResponse response= advertMapper.mapAdvertToAdvertResponse(advert);
+                    response.setFavoritesCount(advert.getFavoritesList().size());
+                    return response;
+                });
     }
 
 

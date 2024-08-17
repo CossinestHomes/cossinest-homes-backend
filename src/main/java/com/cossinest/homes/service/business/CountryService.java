@@ -33,7 +33,7 @@ public class CountryService {
         countryRepository.deleteAll();
     }
 
-  public Country getById(int id) {
+  public Country getById(long id) {
       return  countryRepository.findById((long) id).orElseThrow(()->new ResourceNotFoundException(ErrorMessages.COUNTRY_NOT_FOUND));
     }
 
