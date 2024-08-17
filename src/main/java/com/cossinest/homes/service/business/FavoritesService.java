@@ -196,7 +196,7 @@ public class FavoritesService {
             Integer favoritesCount= favoritesOfAdvert.size();
             return favoritesCount;
         }
-        return null;
+        return 0;
 
     }
 }
