@@ -84,7 +84,7 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true) //ask
     private Set<Advert> advert=new HashSet<>();
 
-    @OneToMany(mappedBy = "ownerUserId",cascade = CascadeType.ALL,orphanRemoval = true) //iliski ismine bak yaz
+    @OneToMany(mappedBy = "ownerUser",cascade = CascadeType.ALL,orphanRemoval = true) //iliski ismine bak yaz
     private Set<TourRequest>tourRequests=new HashSet<>();
 
     // todo:  log eklenecek

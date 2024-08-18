@@ -9,7 +9,6 @@ import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.NotLoadingCompleted;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.messages.ErrorMessages;
-import com.cossinest.homes.payload.request.abstracts.AbstractAdvertRequest;
 import com.cossinest.homes.payload.request.user.AuthenticatedUsersRequest;
 import com.cossinest.homes.payload.request.user.CustomerRequest;
 import com.cossinest.homes.repository.business.FavoritesRepository;
@@ -293,7 +292,7 @@ public class MethodHelper {
                 createRow(sheet, rowNum++, headerStyle,"ID", "Name", "Last Name","Title");
 
                 for (TourRequest tourRequest : (List<TourRequest>) list) {
-                    createRow(sheet, rowNum++,null, tourRequest.getId(), tourRequest.getOwnerUserId().getFirstName(),tourRequest.getOwnerUserId().getLastName(), tourRequest.getAdvertId().getTitle());
+                    createRow(sheet, rowNum++,null, tourRequest.getId(), tourRequest.getOwnerUser().getFirstName(),tourRequest.getOwnerUser().getLastName(), tourRequest.getAdvert().getTitle());
                 }
             } else if (!list.isEmpty() && list.get(0) instanceof Advert) {
                 //TODO hem advert hemde advertType title var ikisinide gerek var mi?

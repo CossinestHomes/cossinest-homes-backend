@@ -7,11 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.ObjectInputFilter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -48,18 +46,17 @@ public class TourRequest {
     @JoinColumn(name = "advert_id",nullable = false)
     @ManyToOne
     @JsonIgnore  // Advert ile check et
-    private Advert advertId;
+    private Advert advert;
 
     @ManyToOne
     @JoinColumn(name = "ownerUser_id",nullable = false)
     @JsonIgnore
-    private User ownerUserId;
+    private User ownerUser;
 
     @ManyToOne
     @JoinColumn(name = "guestUser_id",nullable = false)
     @JsonIgnore
-    private User guestUserId;
-
+    private User guestUser;
 
     @PrePersist
     private void onCreate() {
