@@ -60,20 +60,33 @@ public class TourRequestController {
     }
 
 
-    @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=createAt&type=asc + GET
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
-            HttpServletRequest httpServletRequest,
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "sort",defaultValue = "tourDate") String sort,
-            @RequestParam(value = "type",defaultValue = "asc") String type,
-            @RequestParam(value = "createAt",required = false) String createAt,
-            @RequestParam(value = "tourTime",required = false) String tourTime,
-            @RequestParam(value = "status",required = false) String status,
-            @RequestParam(value = "tourDate",required = false) String tourDate)
-    {
-        return tourRequestService.getAllTourRequestByPageAdmin(httpServletRequest,page, size,sort,type,createAt,tourTime,status,tourDate);
+//    @GetMapping("/admin") // http://localhost:8080/tour-requests/admin?page=0&size=7&sort=createAt&type=asc + GET
+//    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+//    public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
+//            HttpServletRequest httpServletRequest,
+//            @RequestParam(value = "page",defaultValue = "0") int page,
+//            @RequestParam(value = "size",defaultValue = "10") int size,
+//            @RequestParam(value = "sort",defaultValue = "tourDate") String sort,
+//            @RequestParam(value = "type",defaultValue = "asc") String type,
+//            @RequestParam(value = "createAt",required = false) String createAt,
+//            @RequestParam(value = "tourTime",required = false) String tourTime,
+//            @RequestParam(value = "status",required = false) String status,
+//            @RequestParam(value = "tourDate",required = false) String tourDate)
+//    {
+//        return tourRequestService.getAllTourRequestByPageAdmin(httpServletRequest,page, size,sort,type,createAt,tourTime,status,tourDate);
+//    }
+
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
+    public Page<TourRequestResponse> getAllTourRequestByManagerAndAdminAsPage(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+            @RequestParam(value = "sort", defaultValue = "advert_id", required = false) String sort,
+            @RequestParam(value = "type", defaultValue = "asc", required = false) String type,
+            @RequestParam(value = "query", required = false) String query
+    ) {
+        return tourRequestService.getAllTourRequestByManagerAndAdminAsPage(page, size, sort, type, query);
     }
 
     @GetMapping("/{id}/auth") // http://localhost:8080/tour-requests/3/auth + GET

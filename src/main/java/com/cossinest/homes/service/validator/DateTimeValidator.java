@@ -9,7 +9,6 @@ import com.cossinest.homes.payload.request.business.TourRequestRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -21,7 +20,7 @@ public class DateTimeValidator {
     public void checkConflictTourRequestFromRepoByAdvert(List<TourRequest> tourRequestsFromRepo, TourRequestRequest tourRequestRequest) {
 
         for(TourRequest tourRequest: tourRequestsFromRepo ){
-            if((tourRequest.getAdvertId().getId().equals(tourRequestRequest.getAdvertId())) &&  //neden id kontrolu var?
+            if((tourRequest.getAdvert().getId().equals(tourRequestRequest.getAdvertId())) &&  //neden id kontrolu var?
                     (tourRequest.getTourDate().equals(tourRequestRequest.getTourDate()))) {
 
                long betweenMinutesTime = calculateMinutesBetweenTime(tourRequest,tourRequestRequest);

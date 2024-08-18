@@ -27,9 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,12 +73,12 @@ public class TourRequestService {
 
         TourRequest mappedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest,advert);
         mappedTourRequest.setStatus(StatusType.PENDING);
-        mappedTourRequest.setOwnerUserId(ownerUser);
-        mappedTourRequest.setGuestUserId(userGuest);
+        mappedTourRequest.setOwnerUser(ownerUser);
+        mappedTourRequest.setGuestUser(userGuest);
 
         TourRequest savedTourRequest = tourRequestRepository.save(mappedTourRequest);
 
-        logService.createLogEvent(userGuest,savedTourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_CREATED);
+        logService.createLogEvent(userGuest,savedTourRequest.getAdvert(), LogEnum.TOUR_REQUEST_CREATED);
 
 
         return ResponseMessage.<TourRequestResponse>builder()
@@ -163,33 +161,44 @@ public class TourRequestService {
     }
 
 
-        public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
-            HttpServletRequest httpServletRequest, int page, int size, String sort, String type,String createAt,String tourTime,String status,String tourDate) {
+//        public ResponseEntity<Page<TourRequestResponse>> getAllTourRequestByPageAdmin(
+//            HttpServletRequest httpServletRequest, int page, int size, String sort, String type,String createAt,String tourTime,String status,String tourDate) {
+//
+//            String userEmail = (String) httpServletRequest.getAttribute("email");
+//            User admin = methodHelper.findByUserByEmail(userEmail);
+//
+//            // Role kontrolü
+//            methodHelper.controlRoles(admin, RoleType.ADMIN, RoleType.MANAGER);
+//
+//            LocalDateTime createAtDate = (createAt != null && !createAt.isEmpty()) ? LocalDateTime.parse(createAt) : null;
+//            LocalTime tourTimeParsed = (tourTime != null && !tourTime.isEmpty()) ? LocalTime.parse(tourTime) : null;
+//            String statusType = (status != null && !status.isEmpty()) ? status : null;
+//            LocalDate tourDateParsed = (tourDate != null && !tourDate.isEmpty()) ? LocalDate.parse(tourDate) : null;
+//            StatusType statusType1 = null;
+//
+//            for (StatusType statusType2 :StatusType.values()  ) {
+//                if(statusType2.name.equalsIgnoreCase(status)){
+//                    statusType1 = statusType2;
+//                }
+//            }
+//
+//            Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
+//            Page<TourRequest> allTourRequests = tourRequestRepository.findAllByQueryAdmin(pageable, createAtDate, tourTimeParsed, statusType1, tourDateParsed);
+//
+//            return ResponseEntity.ok(allTourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse));
+//    }
 
-            String userEmail = (String) httpServletRequest.getAttribute("email");
-            User admin = methodHelper.findByUserByEmail(userEmail);
 
-            // Role kontrolü
-            methodHelper.controlRoles(admin, RoleType.ADMIN, RoleType.MANAGER);
+    public Page<TourRequestResponse> getAllTourRequestByManagerAndAdminAsPage(int page, int size, String sort, String type, String query) {
+        Pageable pageable= pageableHelper.getPageableWithProperties(page,size,sort,type);
 
-            LocalDateTime createAtDate = (createAt != null && !createAt.isEmpty()) ? LocalDateTime.parse(createAt) : null;
-            LocalTime tourTimeParsed = (tourTime != null && !tourTime.isEmpty()) ? LocalTime.parse(tourTime) : null;
-            String statusType = (status != null && !status.isEmpty()) ? status : null;
-            LocalDate tourDateParsed = (tourDate != null && !tourDate.isEmpty()) ? LocalDate.parse(tourDate) : null;
-            StatusType statusType1 = null;
+        if (query == null || query.isEmpty()) {
+            return tourRequestRepository.findAll(pageable).map(tourRequestMapper::tourRequestToTourRequestResponse);
+        }
+        return tourRequestRepository.getTourRequestsByPageWithQuery(query, pageable)
+                .map(tourRequestMapper::tourRequestToTourRequestResponse);
 
-            for (StatusType statusType2 :StatusType.values()  ) {
-                if(statusType2.name.equalsIgnoreCase(status)){
-                    statusType1 = statusType2;
-                }
-            }
-
-            Pageable pageable = pageableHelper.getPageableWithProperties(page, size, sort, type);
-            Page<TourRequest> allTourRequests = tourRequestRepository.findAllByQueryAdmin(pageable, createAtDate, tourTimeParsed, statusType1, tourDateParsed);
-
-            return ResponseEntity.ok(allTourRequests.map(tourRequestMapper::tourRequestToTourRequestResponse));
     }
-
 
 
 
@@ -240,7 +249,7 @@ public class TourRequestService {
         List<TourRequest> tourRequestList = getAlTourRequestl();
 
         dateTimeValidator.checkConflictTourRequestFromRepoByAdvert(tourRequestList,tourRequestRequest);
-        dateTimeValidator.checkConflictTourRequestFromRepoByUserForOwner(tourRequest.getOwnerUserId(),tourRequestRequest);
+        dateTimeValidator.checkConflictTourRequestFromRepoByUserForOwner(tourRequest.getOwnerUser(),tourRequestRequest);
         dateTimeValidator.checkConflictTourRequestFromRepoByUserForGuest(guestUser,tourRequestRequest);
 
         //request to entity
@@ -248,8 +257,8 @@ public class TourRequestService {
         TourRequest updatedTourRequest = tourRequestMapper.tourRequestRequestToTourRequest(tourRequestRequest,advert);
         updatedTourRequest.setId(id);
         updatedTourRequest.setStatus(StatusType.PENDING);
-        updatedTourRequest.setGuestUserId(guestUser);
-        updatedTourRequest.setOwnerUserId(advert.getUser());
+        updatedTourRequest.setGuestUser(guestUser);
+        updatedTourRequest.setOwnerUser(advert.getUser());
         updatedTourRequest.setCreateAt(LocalDateTime.now());
 
 
@@ -275,7 +284,7 @@ public class TourRequestService {
 
          tourRequest.setStatus(StatusType.CANCELED);
 
-        logService.createLogEvent(guestUser,tourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_CANCELED);
+        logService.createLogEvent(guestUser,tourRequest.getAdvert(), LogEnum.TOUR_REQUEST_CANCELED);
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
                 .status(HttpStatus.OK)
@@ -295,7 +304,7 @@ public class TourRequestService {
 
         tourRequest.setStatus(StatusType.APPROVED);
 
-        logService.createLogEvent(guestUser,tourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_ACCEPTED);
+        logService.createLogEvent(guestUser,tourRequest.getAdvert(), LogEnum.TOUR_REQUEST_ACCEPTED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
@@ -319,7 +328,7 @@ public class TourRequestService {
 
         tourRequest.setStatus(StatusType.DECLINED);
 
-        logService.createLogEvent(guestUser,tourRequest.getAdvertId(), LogEnum.TOUR_REQUEST_DECLINED);
+        logService.createLogEvent(guestUser,tourRequest.getAdvert(), LogEnum.TOUR_REQUEST_DECLINED);
 
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequestRepository.save(tourRequest)))
@@ -387,4 +396,6 @@ public class TourRequestService {
     private List<TourRequest> getTourRequestByAdvert(Advert advert) {
       return   tourRequestRepository.findByAdvertId(advert).orElseThrow(()-> new ResourceNotFoundException(String.format(ErrorMessages.THERE_IS_NO_TOURREQUEST_OF_ADVERT,advert.getId())) );
     }
+
+
 }

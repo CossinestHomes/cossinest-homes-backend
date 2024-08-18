@@ -109,7 +109,7 @@ public class Advert {
     private List<Favorites> favoritesList;
 
     //,orphanRemoval = true
-    @OneToMany(mappedBy = "advertId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<TourRequest> tourRequestList;
 

@@ -1,5 +1,6 @@
 package com.cossinest.homes.repository.business;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
 import com.cossinest.homes.domain.concretes.user.User;
@@ -39,27 +40,29 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
 //            @Param("tourDate") String tourDate
 //    );
 
-    @Query("SELECT t FROM TourRequest t WHERE t.guestUserId.id = :userId AND " +
-            "(LOWER(t.advertId.title) LIKE LOWER(CONCAT('%', :query, '%')))")
+    @Query("SELECT t FROM TourRequest t WHERE t.guestUser.id = :userId AND " +
+            "(LOWER(t.advert.title) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<TourRequest> findAllByGuestUserId_IdAndQuery(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
 
     Page<TourRequest> findAllByGuestUserId_Id(Long userId, Pageable pageable);
 
-    @Query("SELECT t FROM TourRequest t WHERE " +
-            "(:createAt IS NULL OR t.createAt = :createAt) " +
-            "AND (:tourTime IS NULL OR t.tourTime = :tourTime) " +
-            "AND (:status IS NULL OR t.status = :status) " +
-            "AND (:tourDate IS NULL OR t.tourDate = :tourDate) " +
-            "ORDER BY t.tourDate ASC")
-    Page<TourRequest> findAllByQueryAdmin(
-            Pageable pageable,
-            @Param("createAt") LocalDateTime createAt,
-            @Param("tourTime") LocalTime tourTime,
-            @Param("status") StatusType status,
-            @Param("tourDate") LocalDate tourDate
-    );
+//    @Query("SELECT t FROM TourRequest t WHERE " +
+//            "(:createAt IS NULL OR t.createAt = :createAt) " +
+//            "AND (:tourTime IS NULL OR t.tourTime = :tourTime) " +
+//            "AND (:status IS NULL OR t.status = :status) " +
+//            "AND (:tourDate IS NULL OR t.tourDate = :tourDate) " +
+//            "ORDER BY t.tourDate ASC")
+//    Page<TourRequest> findAllByQueryAdmin(
+//            Pageable pageable,
+//            @Param("createAt") LocalDateTime createAt,
+//            @Param("tourTime") LocalTime tourTime,
+//            @Param("status") StatusType status,
+//            @Param("tourDate") LocalDate tourDate
+//    );
 
-    @Query("SELECT t FROM TourRequest t WHERE (t.guestUserId.id=?1 OR  t.ownerUserId.id=?1) AND t.id=?2")
+
+
+    @Query("SELECT t FROM TourRequest t WHERE (t.guestUser.id=?1 OR  t.ownerUser.id=?1) AND t.id=?2")
     TourRequest findByIdByCustomer(Long userId, Long tourRequestId);
 
 
@@ -76,4 +79,8 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
     Optional<TourRequest> findByIdAndGuestUserId_Id(Long id, Long id1);
 
    Optional<List<TourRequest>> findByAdvertId(Advert advert);
+
+    @Query("SELECT t FROM TourRequest t WHERE (:query IS NULL OR LOWER(t.advert.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(t.ownerUser.firstName) LIKE LOWER(CONCAT('%', :query, '%')))")
+    Page<TourRequest> getTourRequestsByPageWithQuery(@Param("query") String query, Pageable pageable);
+
 }
