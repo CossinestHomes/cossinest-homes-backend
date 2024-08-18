@@ -98,8 +98,8 @@ public class HomesApplication implements CommandLineRunner {
 			//	adminRequest.setUsername("SuperAdmin"); // builtIN degeri TRUE olarak setlenmis olacak
 			adminRequest.setEmail("admin@admin.com");
 			adminRequest.setPassword(passwordEncoder.encode("A1a@secure"));
-			adminRequest.setFirstName("Eda");
-			adminRequest.setLastName("Duygu");
+			adminRequest.setFirstName("Super");
+			adminRequest.setLastName("Admin");
 			adminRequest.setPhone("123-123-123-4444");
 			adminRequest.setBuiltIn(true);
 
