@@ -107,23 +107,7 @@ public class HomesApplication implements CommandLineRunner {
 
 		}
 
-		if (categoryService.countBuiltInTrue() == 0) {
-			List<Category> categories = List.of(
-					new Category(1L, "Müstakil Ev", "ev_icon", true, 0, "mustakil-ev", true),
-					new Category(2L, "Apartman Dairesi", "dairesi_icon", true, 0, "apartman-dairesi", true),
-					new Category(3L, "Ofis", "ofis_icon", true, 0, "kelepir-ofis", true),
-					new Category(4L, "Villa", "villa_icon", true, 0, "kelepir-villa", true),
-					new Category(5L, "Arsa", "arsa_icon", true, 0, "kelepir-arsa", true)
-			);
-
-			for (Category category : categories) {
-				category.setCreatedAt(LocalDateTime.now());
-				category.setUpdatedAt(LocalDateTime.now());
-			}
-
-			categoryService.saveAll(categories);
-		}
-
+		categoryService.generateCategory();
 		categoryPropertyKeyService.generateCategoryPropertyKeys();
 
 
