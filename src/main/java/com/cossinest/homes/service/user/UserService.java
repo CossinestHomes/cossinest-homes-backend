@@ -163,6 +163,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public ResponseEntity<UserResponse> getUserById(Long id, HttpServletRequest request) {
 
         User user = methodHelper.getUserByHttpRequest(request);

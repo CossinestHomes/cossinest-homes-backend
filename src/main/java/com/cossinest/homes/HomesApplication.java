@@ -12,6 +12,7 @@ import com.cossinest.homes.payload.request.user.UserSaveRequest;
 import com.cossinest.homes.repository.business.ImagesRepository;
 import com.cossinest.homes.repository.user.UserRoleRepository;
 import com.cossinest.homes.service.business.*;
+import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.user.UserService;
 import com.cossinest.homes.service.validator.UserRoleService;
 import org.springframework.boot.CommandLineRunner;
@@ -23,10 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -46,10 +44,11 @@ public class HomesApplication implements CommandLineRunner {
 	private final DistrictService districtService;
 	private final AdvertService advertService;
 	private final ImagesRepository imagesRepository;
+	private final MethodHelper methodHelper;
 
 	public HomesApplication (AdvertService advertService, AdvertTypesService advertTypesService, UserRoleService userRoleService,
                              UserService userService,
-                             UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CategoryPropertyKeyService categoryPropertyKeyService, CountryService countryService, DistrictService districtService, ImagesService imagesService, ImagesRepository imagesRepository) {
+                             UserRoleRepository userRoleRepository, CategoryService categoryService, PasswordEncoder passwordEncoder, CityService cityService, CategoryPropertyKeyService categoryPropertyKeyService, CountryService countryService, DistrictService districtService, ImagesService imagesService, ImagesRepository imagesRepository, MethodHelper methodHelper) {
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.userRoleRepository = userRoleRepository;
@@ -63,6 +62,7 @@ public class HomesApplication implements CommandLineRunner {
 		this.advertService=advertService;
 
         this.imagesRepository = imagesRepository;
+        this.methodHelper = methodHelper;
     }
 
 
@@ -184,6 +184,9 @@ public class HomesApplication implements CommandLineRunner {
 				advert.setCity(cityService.getCityById((Long) o[5]));
 				advert.setCategory(categoryService.getCategoryById(1L));
 				advert.setAdvertType(advertTypesService.findByIdAdvertType(1L));
+				advert.setCreatedAt(LocalDateTime.now());
+				advert.setBuiltIn(true);
+				advert.setUser(methodHelper.findUserWithId(1L));
 
 				advertService.saveRunner(advert);
 
