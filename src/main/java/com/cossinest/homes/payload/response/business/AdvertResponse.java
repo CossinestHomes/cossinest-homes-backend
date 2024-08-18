@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.response.business;
 
+import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
@@ -10,6 +11,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -66,6 +68,8 @@ public class AdvertResponse {
     private List<Favorites> favoritesList;
 
     private List<TourRequest> tourRequestList;
+
+    private Set<CategoryPropertyKey> categoryPropertyKeys;
 
     private int tourRequestCount;
     private int favoritesCount;
