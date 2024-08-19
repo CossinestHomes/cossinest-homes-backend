@@ -10,8 +10,16 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class TourRequestMapper {
+
+
     public TourRequestResponse tourRequestToTourRequestResponse(TourRequest tourRequest) {
         return TourRequestResponse.builder()
+                .advertId(tourRequest.getAdvert())
+                .advertTitle(tourRequest.getAdvert().getTitle())
+                .advertFeaturedImage(tourRequest.getAdvert().getFeaturedImage())
+                .advertCountry(tourRequest.getAdvert().getCountry())
+                .advertCity(tourRequest.getAdvert().getCity())
+                .advertDistrict(tourRequest.getAdvert().getDistrict())
                 .tourDate(tourRequest.getTourDate())
                 .tourTime(tourRequest.getTourTime())
                 .guestUserId(tourRequest.getGuestUser())
