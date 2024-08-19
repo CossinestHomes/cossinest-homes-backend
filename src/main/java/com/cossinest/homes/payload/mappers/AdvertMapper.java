@@ -46,7 +46,6 @@ public class AdvertMapper {
                 .viewCount(advert.getViewCount())
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
-                .properties(methodHelper.getAdvertResponseProperties(advert, categoryPropertyValueService))
                 .districtId(advert.getDistrict().getId())
                 .featuredImage(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
                 .images(advert.getImagesList().stream()
@@ -54,6 +53,7 @@ public class AdvertMapper {
                         .collect(Collectors.toList()))
                 .advertTypeId(advert.getAdvertType().getId())
                 .categoryId(advert.getCategory().getId())
+                .categoryPropertyKeys(advert.getCategory().getCategoryPropertyKeys())
                 .favoritesList(advert.getFavoritesList())
                 .tourRequestList(advert.getTourRequestList())
                 .build();
