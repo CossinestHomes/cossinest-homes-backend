@@ -268,6 +268,7 @@ public class AdvertService {
         }
         updateAdvert.setUpdatedAt(LocalDateTime.now());
 
+        updateAdvert.setStatus(advertRequest.getStatus());
         updateAdvert.setIsActive(advert.getIsActive());
         updateAdvert.setSlug(advert.getSlug());
         updateAdvert.setImagesList(advert.getImagesList());
@@ -324,6 +325,7 @@ public class AdvertService {
         }
         updateAdvert.setUpdatedAt(LocalDateTime.now());
 
+        updateAdvert.setStatus(advertRequest.getStatus());
         updateAdvert.setIsActive(advert.getIsActive());
         updateAdvert.setSlug(advert.getSlug());
         updateAdvert.setImagesList(advert.getImagesList());
@@ -464,6 +466,4 @@ public class AdvertService {
     advertRepository.save(advert);
     }
 
-
-
-}
+    }

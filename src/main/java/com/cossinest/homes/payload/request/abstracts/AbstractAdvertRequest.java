@@ -29,7 +29,7 @@ public abstract class AbstractAdvertRequest {
     @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = "Description must consist of the characters .")
     private String description;
 
-
+    private int status;
 
     @NotNull(message = "Price must not be empty")
     @Min(value = 1)

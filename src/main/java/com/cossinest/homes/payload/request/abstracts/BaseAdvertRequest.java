@@ -1,5 +1,6 @@
 package com.cossinest.homes.payload.request.abstracts;
 
+import com.cossinest.homes.domain.enums.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +19,7 @@ public abstract class BaseAdvertRequest extends AbstractAdvertRequest  {
 
     private Boolean builtIn;
 
-    @NotNull(message = "Is active must not be empty")
-    private Boolean isActive;
+    private Boolean isActive= true;
 
 
     private Integer viewCount;

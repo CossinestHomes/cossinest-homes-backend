@@ -38,7 +38,7 @@ public class AdvertMapper {
                 .builtIn(advert.getBuiltIn())
                 .description(advert.getDescription())
                 .title(advert.getTitle())
-                .status(getStatusName(advert.getStatus()))
+                .status(methodHelper.updateAdvertStatus(advert.getStatus() ,advert))
                 .createAt(advert.getCreatedAt())
                 .updateAt(advert.getUpdatedAt())
                 .location(advert.getLocation())
@@ -112,6 +112,7 @@ public class AdvertMapper {
                 .status(Status.PENDING.getValue())//update de status u tekrardan pending e çek
                 .category(category)
                 .location(advertRequest.getLocation())
+                .status(advertRequest.getStatus())
                 .build();
     }
 
@@ -175,7 +176,7 @@ public class AdvertMapper {
                 .builtIn(advert.getBuiltIn())
                 .description(advert.getDescription())
                 .title(advert.getTitle())
-                .status(getStatusName(advert.getStatus()))
+                .status(methodHelper.updateAdvertStatus(advert.getStatus() ,advert))
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
                 .districtId(advert.getDistrict().getId())

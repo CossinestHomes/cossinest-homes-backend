@@ -4,6 +4,7 @@ import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.domain.enums.Status;
 import com.cossinest.homes.exception.BadRequestException;
 import com.cossinest.homes.exception.ConflictException;
 import com.cossinest.homes.exception.NotLoadingCompleted;
@@ -428,6 +429,31 @@ public class MethodHelper {
             throw new BadRequestException(ErrorMessages.THE_USER_HAS_RELATED_RECORDS_WITH_ADVERTS_OR_TOUR_REQUESTS);
         }
 
+    }
+
+    public int updateAdvertStatus(int caseNumber, Advert advert) {
+        Status status;
+        switch (caseNumber) {
+            case 0:
+                status = Status.PENDING;
+                advert.setIsActive(false);
+                System.out.println("Advert status set to PENDING. Advert is now inactive.");
+                break;
+            case 1:
+                status = Status.ACTIVATED;
+                advert.setIsActive(true);
+                System.out.println("Advert status set to ACTIVATED. Advert is now active.");
+                break;
+            case 2:
+                status = Status.REJECTED;
+                advert.setIsActive(false);
+                System.out.println("Advert status set to REJECTED. Advert is inactive.");
+                break;
+            default:
+                System.out.println("Invalid case number.");
+                return Status.PENDING.getValue();
+        }
+        return caseNumber;
     }
 
 
