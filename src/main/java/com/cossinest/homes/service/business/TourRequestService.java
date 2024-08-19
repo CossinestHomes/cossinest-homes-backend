@@ -47,6 +47,7 @@ public class TourRequestService {
     private  final AdvertService advertService;
     private final LogService logService;
 
+    @Transactional
     public ResponseMessage<TourRequestResponse>saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
 
         // Advertta Date-time cakismasi var mi?
