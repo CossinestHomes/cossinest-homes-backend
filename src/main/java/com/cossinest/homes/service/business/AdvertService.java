@@ -236,6 +236,11 @@ public class AdvertService {
         if(advert.getBuiltIn()){
             throw new ResourceNotFoundException(ErrorMessages.THIS_ADVERT_DOES_NOT_UPDATE);
         }
+
+        if (!advert.getUser().getId().equals(user.getId())) {
+            throw new ResourceNotFoundException(ErrorMessages.ADVERT_NOT_FOUND_FOR_USER);
+        }
+
         Map<String, Object> detailsMap = new HashMap<>();
         getAdvertDetails(advertRequest,request,detailsMap);
 
