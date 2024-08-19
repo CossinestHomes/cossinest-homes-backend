@@ -20,6 +20,7 @@ import com.cossinest.homes.service.helper.PageableHelper;
 import com.cossinest.homes.service.validator.DateTimeValidator;
 import com.cossinest.homes.service.validator.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,6 @@ import java.util.stream.Collectors;
 @Service
 public class TourRequestService {
 
-
     private final TourRequestRepository tourRequestRepository;
     private final TourRequestMapper tourRequestMapper;
     private final DateTimeValidator dateTimeValidator;
@@ -46,9 +46,6 @@ public class TourRequestService {
     private final PageableHelper pageableHelper;
     private  final AdvertService advertService;
     private final LogService logService;
-
-
-
 
     public ResponseMessage<TourRequestResponse>saveTourRequest(TourRequestRequest tourRequestRequest, HttpServletRequest httpServletRequest) {
 
@@ -143,6 +140,7 @@ public class TourRequestService {
 //                .status(HttpStatus.OK)
 //                .build();}
 
+    @Transactional
     public Page<TourRequestResponse> getAllTourRequestByPageForCustomer(HttpServletRequest httpServletRequest, String query, int page, int size, String sort, String type) {
         String userEmail = (String) httpServletRequest.getAttribute("email");
         User userByEmail = methodHelper.findByUserByEmail(userEmail);
@@ -189,6 +187,7 @@ public class TourRequestService {
 //    }
 
 
+    @Transactional
     public Page<TourRequestResponse> getAllTourRequestByManagerAndAdminAsPage(int page, int size, String sort, String type, String query) {
         Pageable pageable= pageableHelper.getPageableWithProperties(page,size,sort,type);
 
@@ -201,11 +200,7 @@ public class TourRequestService {
     }
 
 
-
-
-
-
-
+    @Transactional
     public ResponseEntity<TourRequestResponse> getTourRequestByIdAuth(Long id, HttpServletRequest httpServletRequest) {
 
         //Rol kontrolü
@@ -218,6 +213,7 @@ public class TourRequestService {
        return ResponseEntity.ok(tourRequestMapper.tourRequestToTourRequestResponse(tourRequest));
     }
 
+    @Transactional
     public ResponseMessage<TourRequestResponse> getTourRequestByIdAdmin(Long id,HttpServletRequest httpServletRequest){
 
         //Rol kontrolü
@@ -335,8 +331,6 @@ public class TourRequestService {
                 .status(HttpStatus.OK)
                 .message(SuccesMessages.TOUR_REQUEST_DECLINED_SUCCESSFULLY)
                 .build();
-
-
     }
 
     public ResponseMessage<TourRequestResponse> deleteTourRequest(Long id, HttpServletRequest httpServletRequest) {
@@ -352,8 +346,6 @@ public class TourRequestService {
 
         tourRequestRepository.delete(tourRequest);
 
-
-
         return ResponseMessage.<TourRequestResponse>builder()
                 .object(tourRequestMapper.tourRequestToTourRequestResponse(tourRequest))
                 .status(HttpStatus.OK)
@@ -361,8 +353,6 @@ public class TourRequestService {
                 .build();
 
     }
-
-
 
     public List<TourRequest> getTourRequest(LocalDateTime date1, LocalDateTime date2, StatusType statusType) {
 
@@ -381,6 +371,7 @@ public class TourRequestService {
     }
 
 
+    @Transactional
     public ResponseMessage<List<TourRequestResponse>> getTourRequestByAdvertId(Long id, HttpServletRequest request) {
         User user=methodHelper.getUserByHttpRequest(request);
         methodHelper.controlRoles(user,RoleType.ADMIN,RoleType.CUSTOMER,RoleType.MANAGER);

@@ -21,6 +21,6 @@ public interface CityRepository extends JpaRepository<City,Long> {
 
     List<City> findByNameIn(Set<String> cityNames);
 
-    @Query("SELECT c FROM City c WHERE LOWER(c.name) IN :names")
-    List<City> findByNameInIgnoreCase(@Param("names") Set<String> names);
+//    @Query("SELECT c FROM City c WHERE LOWER(c.name) IN :names")
+//    List<City> findByNameInIgnoreCase(@Param("names") Set<String> names);
 }
