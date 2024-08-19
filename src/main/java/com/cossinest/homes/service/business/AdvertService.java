@@ -241,9 +241,9 @@ public class AdvertService {
 
         List<CategoryPropertyValue>advertValueList=new ArrayList<>();
 
-        for (CreateAdvertPropertyRequest request1 :advertRequest.getProperties()) {
-
-            advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        for (CreateAdvertPropertyRequest request1 : advertRequest.getProperties()) {
+            List<CategoryPropertyValue> values = categoryPropertyValueService.categoryFindAllByValue(request1.getValue());
+            advertValueList.addAll(values);
         }
         List<Images> imagesList = methodHelper.getImagesForAdvert(files, advert != null ? advert.getImagesList() : null);
         if (imagesList != null && advert != null) {
@@ -268,7 +268,6 @@ public class AdvertService {
         }
         updateAdvert.setUpdatedAt(LocalDateTime.now());
 
-        updateAdvert.setStatus(advertRequest.getStatus());
         updateAdvert.setIsActive(advert.getIsActive());
         updateAdvert.setSlug(advert.getSlug());
         updateAdvert.setImagesList(advert.getImagesList());
@@ -296,9 +295,9 @@ public class AdvertService {
 
         List<CategoryPropertyValue>advertValueList=new ArrayList<>();
 
-        for (CreateAdvertPropertyRequest request1 :advertRequest.getProperties()) {
-
-            advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        for (CreateAdvertPropertyRequest request1 : advertRequest.getProperties()) {
+            List<CategoryPropertyValue> values = categoryPropertyValueService.categoryFindAllByValue(request1.getValue());
+            advertValueList.addAll(values);
         }
 
         List<Images> imagesList = methodHelper.getImagesForAdvert(files, advert != null ? advert.getImagesList() : null);
@@ -401,9 +400,9 @@ public class AdvertService {
 
          List<CategoryPropertyValue>advertValueList=new ArrayList<>();
 
-        for (CreateAdvertPropertyRequest request1 :createRequest.getAdvertPropertyRequest()) {
-
-          advertValueList.add(categoryPropertyValueService.categoryFindByValue(request1.getValue()));
+        for (CreateAdvertPropertyRequest request1 : createRequest.getAdvertPropertyRequest()) {
+            List<CategoryPropertyValue> values = categoryPropertyValueService.categoryFindAllByValue(request1.getValue());
+            advertValueList.addAll(values); // Listeyi topluca ekleme
         }
 
         advert.setCategoryPropertyValuesList(advertValueList);

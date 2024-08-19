@@ -112,7 +112,6 @@ public class AdvertMapper {
                 .status(Status.PENDING.getValue())//update de status u tekrardan pending e çek
                 .category(category)
                 .location(advertRequest.getLocation())
-                .status(advertRequest.getStatus())
                 .build();
     }
 
