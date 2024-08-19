@@ -31,7 +31,7 @@ public class TourRequestResponse {
     private User guestUserId;
     private Advert advertId;
     private String advertTitle;
-    private Images advertFeaturedImage;
+    private ImagesResponse featuredImage;
     private District advertDistrict;
     private City advertCity;
     private Country advertCountry;
