@@ -25,7 +25,7 @@ public class DateTimeValidator {
 
                long betweenMinutesTime = calculateMinutesBetweenTime(tourRequest,tourRequestRequest);
 
-                    if(Math.abs(betweenMinutesTime)<30){
+                    if(Math.abs(betweenMinutesTime)<120){
                         // Tour sürelerini 30 dk olarak belirledim
                         throw new ConflictException(ErrorMessages.CONFLICT_TOUR_TIME);
                     }

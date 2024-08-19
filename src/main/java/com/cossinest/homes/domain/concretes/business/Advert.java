@@ -134,9 +134,9 @@ public class Advert {
     @JsonIgnore
     private List<Images> imagesList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "advert",cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "advert",cascade = CascadeType.ALL)
   @JsonIgnore
-    private List<Images> featuredImage = new ArrayList<>();
+    private Images featuredImage;
 
 
     //,orphanRemoval = true

@@ -1,6 +1,6 @@
 package com.cossinest.homes.payload.response.business;
 
-import com.cossinest.homes.domain.concretes.business.Advert;
+import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,6 +11,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,6 +30,12 @@ public class TourRequestResponse {
     private User ownerUserId;
     private User guestUserId;
     private Advert advertId;
+    private String advertTitle;
+    private Images advertFeaturedImage;
+    private District advertDistrict;
+    private City advertCity;
+    private Country advertCountry;
+
 
 
 
