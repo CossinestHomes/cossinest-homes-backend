@@ -16,6 +16,7 @@ import com.cossinest.homes.repository.user.UserRepository;
 import com.cossinest.homes.service.helper.MethodHelper;
 import com.cossinest.homes.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class FavoritesService {
     private final AdvertMapper advertMapper;
 
 
+    @Transactional
     public List<AdvertResponse> getAuthenticatedUsersFavorites(HttpServletRequest httpServletRequest) {
 
         // HttpServletRequest kullanarak oturumdaki kullanıcı e-posta adresini al
@@ -67,6 +69,8 @@ public class FavoritesService {
         return favoriteAdverts.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
 
     }
+
+    @Transactional
     public List<AdvertResponse> getUsersFavorites (Long id){
 
         //TODO user döner
@@ -88,6 +92,7 @@ public class FavoritesService {
 
 //BAKILACAK!!!! - DELETE KISMI(104)
 
+    @Transactional
     public AdvertResponse addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest, Long advertId)
     {
         User user = methodHelper.getUserByHttpRequest(httpServletRequest);

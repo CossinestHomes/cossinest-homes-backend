@@ -4,6 +4,7 @@ import com.cossinest.homes.domain.concretes.business.CategoryPropertyKey;
 import com.cossinest.homes.domain.concretes.business.Favorites;
 import com.cossinest.homes.domain.concretes.business.Images;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
+import com.cossinest.homes.domain.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -31,7 +32,7 @@ public class AdvertResponse {
 
     private Double price;
 
-    private String status;
+    private int status;
 
     private Boolean builtIn;
 
