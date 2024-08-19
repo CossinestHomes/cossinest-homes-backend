@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,11 +32,10 @@ public class CategoryPropertyValueService {
 
     }
 
-    public CategoryPropertyValue categoryFindByValue(String value) {
-
-      return categoryPropertyValueRepository.findByValue(value).orElseThrow(()-> new BadRequestException(String.format(ErrorMessages.CATEGORY_VALUE_IS_NOT_FOUND,value)));
-
+    public List<CategoryPropertyValue> categoryFindAllByValue(String value) {
+        return categoryPropertyValueRepository.findAllByValue(value);
     }
+
 
     public void resetCategoryPropertyValueTables() {
         categoryPropertyValueRepository.deleteAll();
