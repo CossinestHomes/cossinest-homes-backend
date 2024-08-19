@@ -16,7 +16,6 @@ public class TourRequestMapper {
         return TourRequestResponse.builder()
                 .advertId(tourRequest.getAdvert())
                 .advertTitle(tourRequest.getAdvert().getTitle())
-                .advertFeaturedImage(tourRequest.getAdvert().getFeaturedImage())
                 .advertCountry(tourRequest.getAdvert().getCountry())
                 .advertCity(tourRequest.getAdvert().getCity())
                 .advertDistrict(tourRequest.getAdvert().getDistrict())

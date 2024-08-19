@@ -45,15 +45,15 @@ public class CityController {
                 .build();
     }
 
-    @PostMapping("/getCityAdvertTotal")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseMessage<List<CityAdvertTotalResponse>>getCityAdvertTotal(@Valid @RequestBody CityAdvertTotalRequest totalRequest,
-                                                                            HttpServletRequest request){
-        return ResponseMessage.<List<CityAdvertTotalResponse>>builder()
-                .status(HttpStatus.OK)
-                .object(cityService.getCitiesAdvertsTotal(totalRequest,request))
-                .build();
-
-    }
+//    @PostMapping("/getCityAdvertTotal")
+//    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+//    public ResponseMessage<List<CityAdvertTotalResponse>>getCityAdvertTotal(@Valid @RequestBody CityAdvertTotalRequest totalRequest,
+//                                                                            HttpServletRequest request){
+//        return ResponseMessage.<List<CityAdvertTotalResponse>>builder()
+//                .status(HttpStatus.OK)
+//                .object(cityService.getCitiesAdvertsTotal(totalRequest,request))
+//                .build();
+//
+//    }
 
 }

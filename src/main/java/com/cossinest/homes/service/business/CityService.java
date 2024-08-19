@@ -79,18 +79,18 @@ public class CityService {
         return cityRepository.getByCity(countryId);
     }
 
-    public List<CityAdvertTotalResponse> getCitiesAdvertsTotal(CityAdvertTotalRequest totalRequest, HttpServletRequest request) {
-
-        methodHelper.checkRoles(methodHelper.getUserByHttpRequest(request), RoleType.ADMIN,RoleType.MANAGER);
-        
-        Set<String> cityNames = totalRequest.getCities().stream()
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
-
-        List<City> cities = cityRepository.findByNameInIgnoreCase(cityNames);
-
-        return cities.stream().map(cityMapper::mapperCityAdvertTotalResponse).collect(Collectors.toList());
-    }
+//    public List<CityAdvertTotalResponse> getCitiesAdvertsTotal(CityAdvertTotalRequest totalRequest, HttpServletRequest request) {
+//
+//        methodHelper.checkRoles(methodHelper.getUserByHttpRequest(request), RoleType.ADMIN,RoleType.MANAGER);
+//
+//        Set<String> cityNames = totalRequest.getCities().stream()
+//                .map(String::toLowerCase)
+//                .collect(Collectors.toSet());
+//
+//        List<City> cities = cityRepository.findByNameInIgnoreCase(cityNames);
+//
+//        return cities.stream().map(cityMapper::mapperCityAdvertTotalResponse).collect(Collectors.toList());
+//    }
 
 
 //
