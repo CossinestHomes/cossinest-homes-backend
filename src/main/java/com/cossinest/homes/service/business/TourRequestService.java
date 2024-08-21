@@ -228,6 +228,7 @@ public class TourRequestService {
     }
 
 
+    @Transactional
     public ResponseMessage<TourRequestResponse> updateTourRequestAuth(TourRequestRequest tourRequestRequest, Long id, HttpServletRequest httpServletRequest) {
 
         //Rol kontrolü
@@ -334,6 +335,7 @@ public class TourRequestService {
                 .build();
     }
 
+    @Transactional
     public ResponseMessage<TourRequestResponse> deleteTourRequest(Long id, HttpServletRequest httpServletRequest) {
 
         //Talep yönetici tarafından siliniyor

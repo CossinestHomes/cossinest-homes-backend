@@ -4,6 +4,7 @@ import com.cossinest.homes.domain.concretes.business.*;
 import com.cossinest.homes.domain.concretes.user.UserRole;
 import com.cossinest.homes.domain.enums.Cities;
 import com.cossinest.homes.domain.enums.RoleType;
+import com.cossinest.homes.domain.enums.Status;
 import com.cossinest.homes.payload.request.business.CategoryRequestDTO;
 import com.cossinest.homes.payload.request.business.CityRequest;
 import com.cossinest.homes.payload.request.business.CountryRequest;
@@ -171,6 +172,8 @@ public class HomesApplication implements CommandLineRunner {
 				advert.setCreatedAt(LocalDateTime.now());
 				advert.setBuiltIn(true);
 				advert.setUser(methodHelper.findUserWithId(1L));
+				advert.setStatus(Status.ACTIVATED.getValue());
+				advert.setIsActive(true);
 
 				advertService.saveRunner(advert);
 
