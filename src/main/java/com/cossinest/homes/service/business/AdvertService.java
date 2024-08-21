@@ -143,7 +143,7 @@ public class AdvertService {
         User user = methodHelper.getUserAndCheckRoles(request,RoleType.ADMIN.name());
 
         Advert advert=isAdvertExistById(id);
-        return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponse(advert));
+        return ResponseEntity.ok(advertMapper.mapAdvertToAdvertResponseForAll(advert));
     }
 
     @Transactional
