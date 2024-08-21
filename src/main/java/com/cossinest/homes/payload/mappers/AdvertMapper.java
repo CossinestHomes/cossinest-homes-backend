@@ -170,6 +170,7 @@ public class AdvertMapper {
     public AdvertResponse mapAdvertToAdvertResponseForAll(Advert advert) {
         return AdvertResponse.builder()
                 .id(advert.getId())
+                .userId(advert.getUser().getId())
                 .price(advert.getPrice())
                 .slug(advert.getSlug())
                 .builtIn(advert.getBuiltIn())
