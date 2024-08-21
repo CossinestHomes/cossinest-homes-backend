@@ -154,6 +154,4 @@ public class TourRequestController {
     public ResponseMessage<List<TourRequestResponse>>getTourRequestById(@PathVariable Long id, HttpServletRequest request){
         return tourRequestService.getTourRequestByAdvertId(id,request);
     }
-
-
 }

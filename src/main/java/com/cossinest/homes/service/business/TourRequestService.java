@@ -388,7 +388,7 @@ public class TourRequestService {
     }
 
     private List<TourRequest> getTourRequestByAdvert(Advert advert) {
-      return   tourRequestRepository.findByAdvertId(advert).orElseThrow(()-> new ResourceNotFoundException(String.format(ErrorMessages.THERE_IS_NO_TOURREQUEST_OF_ADVERT,advert.getId())) );
+      return   tourRequestRepository.findByAdvert(advert).orElseThrow(()-> new ResourceNotFoundException(String.format(ErrorMessages.THERE_IS_NO_TOURREQUEST_OF_ADVERT,advert.getId())) );
     }
 
 
