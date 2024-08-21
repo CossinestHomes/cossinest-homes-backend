@@ -1,11 +1,8 @@
 package com.cossinest.homes.repository.business;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.cossinest.homes.domain.concretes.business.Advert;
 import com.cossinest.homes.domain.concretes.business.TourRequest;
-import com.cossinest.homes.domain.concretes.user.User;
 import com.cossinest.homes.domain.enums.StatusType;
-import com.cossinest.homes.payload.request.business.TourRequestRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -78,7 +74,7 @@ public interface TourRequestRepository extends JpaRepository<TourRequest,Long> {
 
     Optional<TourRequest> findByIdAndGuestUserId_Id(Long id, Long id1);
 
-   Optional<List<TourRequest>> findByAdvertId(Advert advert);
+   Optional<List<TourRequest>> findByAdvert(Advert advert);
 
     @Query("SELECT t FROM TourRequest t WHERE (:query IS NULL OR LOWER(t.advert.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(t.ownerUser.firstName) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<TourRequest> getTourRequestsByPageWithQuery(@Param("query") String query, Pageable pageable);
