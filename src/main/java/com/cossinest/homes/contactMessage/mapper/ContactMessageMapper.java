@@ -29,6 +29,7 @@ public class ContactMessageMapper {
                 .last_name(contactMessage.getLast_name())
                 .email(contactMessage.getEmail())
                 .message(contactMessage.getMessage())
+                .createdAt(contactMessage.getCreate_at())
                 .build();
     }
 

@@ -8,6 +8,7 @@ import com.cossinest.homes.contactMessage.messages.Messages;
 import com.cossinest.homes.contactMessage.repository.ContactMessageRepository;
 import com.cossinest.homes.exception.ResourceNotFoundException;
 import com.cossinest.homes.payload.response.ResponseMessage;
+import com.cossinest.homes.service.helper.PageableHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ public class ContactMessageService {
 
     private final ContactMessageRepository contactMessageRepository;
     private final ContactMessageMapper contactMessageMapper;
+    private final PageableHelper pageableHelper;
 
     public ResponseMessage<ContactMessageResponse> save(ContactMessageRequest contactMessageRequest) {
         ContactMessage contactMessage = contactMessageMapper.requestToContactMessage(contactMessageRequest);
@@ -51,19 +53,11 @@ public class ContactMessageService {
         return Messages.DELETE_CONTACT_MESSAGE_BY_ID;
     }
 
-    public Page<ContactMessageResponse> getAllByQuery(String q, int page, int size, String sort, String type) {
-            Pageable pageable= PageRequest.of(page, size, Sort.by(String.valueOf(sort)).ascending());
-                if(Objects.equals(type, "DESC")){
-                    pageable=PageRequest.of(page, size, Sort.by(String.valueOf(sort)).descending());
-                }
+    public Page<ContactMessageResponse> getAllByQuery(String query, int page, int size, String sort, String type) {
+            Pageable pageable= pageableHelper.getPageableWithProperties(page, size, sort, type);
 
-                Page<ContactMessageResponse> messages = contactMessageRepository.getAllMessageByQuery(q, pageable).map(contactMessageMapper::contactMessageToResponse);
+                Page<ContactMessageResponse> messages = contactMessageRepository.getAllMessageByQuery(query, pageable).map(contactMessageMapper::contactMessageToResponse);
 
-                    messages.forEach(message -> message.setStatus(1));
-
-                    if(q !=null && messages.isEmpty() ){
-                        throw new ResourceNotFoundException(Messages.NOT_FOUND_QUERY);
-                    }
                 return messages;
     }
 

@@ -27,13 +27,13 @@ public class ContactMessageController {
     @GetMapping("/contact-messages")  //http://localhost:8080/contact-messages + GET
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public Page<ContactMessageResponse> getAllMessages(
-            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size" , defaultValue = "20") int size,
-            @RequestParam(value = "sort" , defaultValue = "category_id") String sort,
-            @RequestParam(value = "type" , defaultValue = "ASC") String type
+            @RequestParam(value = "sort" , defaultValue = "id") String sort,
+            @RequestParam(value = "type" , defaultValue = "asc") String type
     ){
-        return contactMessageService.getAllByQuery(q, page, size, sort, type);
+        return contactMessageService.getAllByQuery(query, page, size, sort, type);
     }
 
     @GetMapping("/contact-messages/{contactMessageId}") // //http://localhost:8080/contact-messages/1 + GET
