@@ -6,6 +6,7 @@ import com.cossinest.homes.service.business.FavoritesService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,16 +20,15 @@ public class FavoritesController {
     private final FavoritesService favoritesService;
 
     @GetMapping("/auth") //http:localhost:8080/favorites/auth
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<List<AdvertResponse>> getAuthenticatedUsersFavorites(HttpServletRequest request) {
-
         List<AdvertResponse> favorites = favoritesService.getAuthenticatedUsersFavorites(request);
 
         return ResponseEntity.ok(favorites);
     }
 
     @GetMapping("/admin/{id}") //http://localhost:8080/favorites/admin/23
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<List<AdvertResponse>> getUsersFavorites(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(favoritesService.getUsersFavorites(id));
@@ -36,7 +36,7 @@ public class FavoritesController {
     }
 
     @PostMapping("/{id}/auth")
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseEntity<AdvertResponse> addAndRemoveAuthenticatedUserFavorites(HttpServletRequest httpServletRequest,
                                                                                  @PathVariable Long id) {
         //TODO advertRequeste gerek yok
@@ -45,7 +45,7 @@ public class FavoritesController {
     }
 
     @DeleteMapping("/auth") // http://localhost:8080/favorites/auth + DELETE
-    //@PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     public ResponseMessage removeAllFavoritesofAuthenticatedUser(HttpServletRequest httpServletRequest) {
         return favoritesService.removeAllFavoritesofAuthenticatedUser(httpServletRequest);
     }
@@ -53,7 +53,7 @@ public class FavoritesController {
 
 
     @DeleteMapping("/admin") // http://localhost:8080/favorites/admin + DELETE
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseMessage removeAllFavoritesOfAUser(HttpServletRequest request,Long id) {
         return favoritesService.removeAllFavoritesOfAUser(request,id);
     }
@@ -63,7 +63,7 @@ public class FavoritesController {
 
 
     @DeleteMapping("/{id}/admin") // http://localhost:8080/favorites/{id}/admin + DELETE
-    //@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseMessage removeFavoriteByIdForAdmin(@PathVariable Long id,HttpServletRequest request) {
         return favoritesService.removeFavoriteByIdForAdmin(request,id);
     }
