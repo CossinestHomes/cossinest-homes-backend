@@ -38,7 +38,7 @@ public class AdvertMapper {
                 .builtIn(advert.getBuiltIn())
                 .description(advert.getDescription())
                 .title(advert.getTitle())
-                .status(methodHelper.updateAdvertStatus(advert.getStatus() ,advert))
+                .status(methodHelper.updateAdvertStatus(advert.getStatus(), advert))
                 .createAt(advert.getCreatedAt())
                 .updateAt(advert.getUpdatedAt())
                 .location(advert.getLocation())
@@ -176,7 +176,7 @@ public class AdvertMapper {
                 .builtIn(advert.getBuiltIn())
                 .description(advert.getDescription())
                 .title(advert.getTitle())
-                .status(methodHelper.updateAdvertStatus(advert.getStatus() ,advert))
+                .status(methodHelper.updateAdvertStatus(advert.getStatus(), advert))
                 .countryId(advert.getCountry().getId())
                 .cityId(advert.getCity().getId())
                 .districtId(advert.getDistrict().getId())
@@ -198,5 +198,31 @@ public class AdvertMapper {
         return CityAdvertTotalResponse.builder().advertsTotal(advertsTotal)
                 .city(city).
                 build();
+    }
+
+    public AdvertResponse mapAdvertToAdvertResponseForFav(Advert advert) {
+        return AdvertResponse.builder()
+                .id(advert.getId())
+                .userId(advert.getUser().getId())
+                .price(advert.getPrice())
+                .slug(advert.getSlug())
+                .builtIn(advert.getBuiltIn())
+                .description(advert.getDescription())
+                .title(advert.getTitle())
+                .status(methodHelper.updateAdvertStatus(advert.getStatus(), advert))
+                .location(advert.getLocation())
+                .isActive(advert.getIsActive())
+                .viewCount(advert.getViewCount())
+                .countryId(advert.getCountry().getId())
+                .cityId(advert.getCity().getId())
+                .districtId(advert.getDistrict().getId())
+                .featuredImage(imageMapper.toImageResponse(getFeaturedImage(advert.getImagesList())))
+                .images(advert.getImagesList().stream()
+                        .map(imageMapper::toImageResponse)
+                        .collect(Collectors.toList()))
+                .advertTypeId(advert.getAdvertType().getId())
+                .categoryId(advert.getCategory().getId())
+                .categoryPropertyKeys(advert.getCategory().getCategoryPropertyKeys())
+                .build();
     }
 }

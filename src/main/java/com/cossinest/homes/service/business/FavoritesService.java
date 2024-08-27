@@ -46,7 +46,8 @@ public class FavoritesService {
         //User user = methodHelper.findByUserByEmail(email); cahitin yazdıgı method il
 
         // Kullanıcıyı e-posta adresine göre veritabanından bul
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.USER_IS_NOT_FOUND));
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException(ErrorMessages.USER_IS_NOT_FOUND));
 
 
         // Kullanıcının ID'sini al
@@ -58,15 +59,21 @@ public class FavoritesService {
         // Tüm ilanları al:
         //List<Advert> allAdverts = advertService.getAllAdverts(); //advert service de mehmet hoca ile yazdıgımız method. ama bu kullanıslı olmadı bence
 
-        List<Advert> favoriteAdverts = new ArrayList<>();
+//        List<Advert> favoriteAdverts = new ArrayList<>();
+//
+//        for (Favorites favorite : favoriteList
+//        ) {
+//            favoriteAdverts.add(favorite.getAdvert());
+//
+//        }
 
-        for (Favorites favorite : favoriteList
-        ) {
-            favoriteAdverts.add(favorite.getAdvert());
+        List<Advert> adverts = favoriteList.stream()
+                .map(Favorites::getAdvert)
+                .collect(Collectors.toList());
 
-        }
-
-        return favoriteAdverts.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
+        return adverts.stream().
+                map(advertMapper::mapAdvertToAdvertResponseForFav).
+                collect(Collectors.toList());
 
     }
 
@@ -86,7 +93,7 @@ public class FavoritesService {
         }
 
         // Favori ilanları AdvertResponse nesnelerine dönüştür ve döndür
-        return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponse).collect(Collectors.toList());
+        return favoriteAdvert.stream().map(advertMapper::mapAdvertToAdvertResponseForFav).collect(Collectors.toList());
 
     }
 
