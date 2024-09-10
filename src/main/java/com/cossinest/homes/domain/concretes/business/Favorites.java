@@ -24,7 +24,7 @@ public class Favorites {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd 'T' HH:mm:ssXXX", timezone = "US")
     @Column(nullable = false)
-    private LocalDateTime create_at = LocalDateTime.now();
+    private LocalDateTime create_at;
 
     @JoinColumn(name = "user_id")
     @ManyToOne
@@ -40,5 +40,11 @@ public class Favorites {
             user.getFavoritesList().remove(this);
         }
     }
+
+    @PrePersist
+    protected void onCreate() {
+        this.create_at = LocalDateTime.now();
+    }
+
 }
 
